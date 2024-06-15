@@ -259,12 +259,18 @@ const OCRComponent = () => {
       receiveMessage(message);
     }
   }
-  function receiveMessage(data) {
-    if (data.type == 'subscription' && data.event == 'create') {
-      toast.success(data?.data?.[0].user.fullname + ' đã đặt')
-      setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
-    }
-  }
+
+  const receiveMessage = (function() {
+    let hasRun = false; // Biến trạng thái ẩn bên trong closure
+    return function(data) {
+      if (hasRun) return; // Nếu hàm đã chạy, không thực hiện logic bên trong hàm nữa
+      if (data.type == 'subscription' && data.event == 'create') {
+        toast.success(data?.data?.[0].user.fullname + ' đã đặt');
+        setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
+        hasRun = true; // Cập nhật trạng thái sau khi hàm đã chạy
+      }
+    };
+  })();
   const groupedData = orderList?.reduce((acc, { user, name, date_created }) => {
     let group = acc.find(group => group.user.id === user?.id);
     if (!group) {
