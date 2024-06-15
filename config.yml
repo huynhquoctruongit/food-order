@@ -1,0 +1,3 @@
+realtime:
+  enabled: true
+  pubsub: 'redis://localhost:6379'
