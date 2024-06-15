@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { staticToken, createDirectus, realtime } from '@directus/sdk';
+import toast, { Toaster } from 'react-hot-toast';
 
 const OCRComponent = () => {
   const invoices = [
@@ -260,6 +261,7 @@ const OCRComponent = () => {
   }
   function receiveMessage(data) {
     if (data.type == 'subscription' && data.event == 'create') {
+      toast.success(data?.data?.[0].user.fullname + ' đã đặt')
       setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
     }
   }
@@ -272,10 +274,16 @@ const OCRComponent = () => {
     group.items.push({ name: name, date_created: date_created });
     return acc;
   }, []);
-  console.log(userSelect, 'userSelect');
   const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.extract_menus
+  const bIds = groupedData?.map(item => item.user.id);
+  const userNonOrderd = dataUser?.filter(item => !bIds?.includes(item.id));
   return (
     <div>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{ duration: 5000 }}
+      />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -328,7 +336,7 @@ const OCRComponent = () => {
             )}
           </div>
           <div className='text-left mt-[20px]'>
-            <p className='font-bold text-left'>Kết quả nhận dạng:</p>
+            <p className='font-bold text-left'>Hôm nay ăn gì :</p>
             {loading && <p>Đang xử lý "ây ai" ... ^^</p>}
             <div className="">
               {listFood?.map((elm, index) => (
@@ -356,13 +364,20 @@ const OCRComponent = () => {
           </div>
         </div>
         <Table className={`${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
-          <TableCaption>Các đồng chí đang đặt</TableCaption>
+          <TableCaption className="text-left">
+            <p>Các đồng chí đã đặt : {groupedData?.map((orderd) => {
+              return <span className="font-bold">{orderd.user.fullname}, </span>
+            })}</p>
+            <p>Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
+              return <span className="font-bold">{orderd.fullname}, </span>
+            })}</p>
+          </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Tên</TableHead>
+              <TableHead className="w-[100px]">Đồng chí</TableHead>
               <TableHead>Món</TableHead>
               <TableHead>Giá</TableHead>
-              <TableHead className="text-right">Giờ đặt</TableHead>
+              <TableHead className="text-right">Đặt lúc</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -379,8 +394,8 @@ const OCRComponent = () => {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell>Tổng thiệt hại</TableCell>
-              <TableCell className="text-right">{orderList?.length * 35}k</TableCell>
+              <TableCell colSpan={3} className="font-bold">Tổng thiệt hại</TableCell>
+              <TableCell className="text-right font-bold">{orderList?.length * 35}k</TableCell>
             </TableRow>
           </TableFooter>
         </Table>
