@@ -92,11 +92,12 @@ const OCRComponent = () => {
   const today = new Date();
   const todayFormatted = dayjs().format('YYYY-MM-DD');
   const tomorrowFormatted = dayjs().add(1, 'day').format('YYYY-MM-DD');
+  // &filter[date_created][_between]=${todayFormatted},${tomorrowFormatted}
   const { data: orderToday } = useSWR(
-    `/items/order_84?fields=*,user.*&filter[date_created][_between]=${todayFormatted},${tomorrowFormatted}`
+    `/items/order_84?fields=*,user.*`
   )
   const { data: menuToday } = useSWR(
-    `/items/menus?fields=*&filter[date_created][_between]=${todayFormatted},${tomorrowFormatted}&sort=-date_created`
+    `/items/menus?fields=*&sort=-date_created`
   )
   const dataUser = data?.data?.data
   const menu = menuToday?.data?.data
