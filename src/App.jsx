@@ -32,8 +32,6 @@ import {
 } from "@/components/ui/table"
 import { staticToken, createDirectus, realtime } from '@directus/sdk';
 
-
-
 const OCRComponent = () => {
   const invoices = [
     {
@@ -109,6 +107,14 @@ const OCRComponent = () => {
   const [selectFood, setFoodSelect] = useState([])
   const [orderList, setOrderList] = useState([])
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const userLocal = localStorage.getItem("user")
+    if (userLocal) {
+      setSelectUser(JSON.parse(userLocal))
+      setUser(JSON.parse(userLocal)?.fullname)
+    }
+  }, [])
 
   useEffect(() => {
     const orderMembers = orderToday?.data?.data
@@ -266,6 +272,7 @@ const OCRComponent = () => {
     group.items.push({ name: name, date_created: date_created });
     return acc;
   }, []);
+  console.log(userSelect, 'userSelect');
   const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.extract_menus
   return (
     <div>
@@ -296,6 +303,7 @@ const OCRComponent = () => {
                     onSelect={(currentValue) => {
                       setUser(currentValue === user ? "" : currentValue)
                       setSelectUser(elm)
+                      localStorage.setItem("user", JSON.stringify(elm))
                       setOpen(false)
                     }}
                   >
@@ -371,7 +379,7 @@ const OCRComponent = () => {
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell>Tổng thiệt hại</TableCell>
               <TableCell className="text-right">{orderList?.length * 35}k</TableCell>
             </TableRow>
           </TableFooter>
