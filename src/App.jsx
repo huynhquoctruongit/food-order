@@ -396,10 +396,10 @@ const OCRComponent = () => {
           </div>
           <Table className={`${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
             <TableCaption className="text-left">
-              <p>Các đồng chí đã đặt : {groupedData?.map((orderd) => {
+              <p className="ml-[15px]">Các đồng chí đã đặt : {groupedData?.map((orderd) => {
                 return <span className="font-bold">{orderd.user.fullname}, </span>
               })}</p>
-              <p>Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
+              <p className="ml-[15px]">Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
                 return <span className="font-bold">{orderd.fullname}, </span>
               })}</p>
             </TableCaption>
