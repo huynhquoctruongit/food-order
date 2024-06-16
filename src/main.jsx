@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <div className="w-full bg-black text-white font-bold">
           <div className='root-wrapper flex items-center gap-[20px] py-[10px]'>
             <Link to="/">
-              <p className="cursor-pointer text-white">Đặt món</p>
+              <p className="cursor-pointer text-white">Đặt cơm</p>
             </Link>
             <Link to="/report">
               <p className="cursor-pointer text-white">Báo cáo <span className='font-normal text-[12px]'>(Comming soon)</span></p>

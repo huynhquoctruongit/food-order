@@ -103,7 +103,7 @@ const OCRComponent = () => {
   };
 
   const handleFileChange = async (event) => {
-    if (userSelect?.fullname !== "Thu Hồng") {
+    if (userSelect?.fullname !== "Hồng Phạm") {
       toast.error("Chị Hồng đó phải hông ta :3");
     } else {
       const file = event.target.files[0];
@@ -247,6 +247,7 @@ const OCRComponent = () => {
           setOrderList(filterDelete)
         } else {
           toast.success(data?.data?.[0].user.fullname + ' đã đặt');
+          setFoodSelect([])
           setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
         }
 
@@ -267,9 +268,9 @@ const OCRComponent = () => {
   const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.extract_menus
   const bIds = groupedData?.map(item => item.user.id);
   const userNonOrderd = dataUser?.filter(item => !bIds?.includes(item.id));
-
   return (
     <div className='py-20'>
+      <h1 className="font-bold mb-[20px]">Đặt cơm</h1>
       <div className="root-wrapper">
         <Toaster
           position="top-center"
@@ -319,8 +320,8 @@ const OCRComponent = () => {
           </PopoverContent>
         </Popover>
         <div className="flex gap-20 mt-[100px] ">
-          <div className={`${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
-            <div className={`${userSelect?.fullname !== "Thu Hồng" && "opacity-[0.6] cursor-not-allowed"}`}><Input id="picture" type="file" onChange={handleFileChange} /> </div>
+          <div className={`${!userSelect?.id ? "opacity-[0.4] cursor-not-allowed select-none" : "opacity-1"}`}>
+            <div className={`${userSelect?.fullname !== "Hồng Phạm" && "opacity-[0.2] cursor-not-allowed"}`}><Input id="picture" type="file" onChange={handleFileChange} /> </div>
             <div className='flex gap-[20px]'>
               <div className='mt-[20px]'>
                 {(imageSrc || menu?.[0]?.image) && (
@@ -331,19 +332,21 @@ const OCRComponent = () => {
                 <p className='font-bold text-left'>Hôm nay ăn gì :</p>
                 {loading && <p>Đang xử lý "ây ai" ... ^^</p>}
                 <div className="">
-                  {listFood?.map((elm, index) => (
-                    <div className="items-top flex space-x-2 py-[20px]">
-                      <Checkbox onCheckedChange={() => onSelectFood(elm)} id={index} />
-                      <div className="grid gap-1.5 leading-none">
-                        <label
-                          htmlFor={index}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {elm}
-                        </label>
+                  {listFood?.map((elm, index) => {
+                    return (
+                      <div className="items-top flex space-x-2 py-[20px]">
+                        <Checkbox onCheckedChange={() => onSelectFood(elm)} id={index} />
+                        <div className="grid gap-1.5 leading-none">
+                          <label
+                            htmlFor={index}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {elm}
+                          </label>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
                 <Dialog open={selectFood?.length > 0 ? isPopup : false} onOpenChange={() => setPopup(!isPopup)}>
                   <DialogTrigger asChild>
