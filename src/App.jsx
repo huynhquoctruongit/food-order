@@ -394,12 +394,12 @@ const OCRComponent = () => {
               </div>
             </div>
           </div>
-          <Table className={`md:mt-0 mt-[30px] ${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
+          <Table className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
             <TableCaption className="text-left">
-              <p className="ml-[15px]">Các đồng chí đã đặt : {groupedData?.map((orderd) => {
+              <p>Các đồng chí đã đặt : {groupedData?.map((orderd) => {
                 return <span className="font-bold">{orderd.user.fullname}, </span>
               })}</p>
-              <p className="ml-[15px]">Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
+              <p>Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
                 return <span className="font-bold">{orderd.fullname}, </span>
               })}</p>
             </TableCaption>
@@ -416,10 +416,10 @@ const OCRComponent = () => {
             <TableBody>
               {groupedData?.map((elm) => (
                 <TableRow key={elm.user.fullname}>
-                  <TableCell className="font-medium">{elm.user.fullname}</TableCell>
+                  <TableCell className="font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
                   <TableCell className="text-left min-w-[200px]">{elm.items?.map((item) => (
                     <div className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
-                      <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span></div>
+                     {userSelect?.fullname ==  elm.user.fullname && <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span>}</div>
                   ))}</TableCell>
                   <TableCell className="text-left">{elm.items?.[0].note}</TableCell>
                   <TableCell className="text-left">35k/món</TableCell>

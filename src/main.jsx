@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <p className="cursor-pointer text-white">Đặt cơm</p>
             </Link>
             <Link to="/report">
-              <p className="cursor-pointer text-white">Báo cáo <span className='font-normal text-[12px]'>(Comming soon)</span></p>
+              <p className="cursor-pointer text-white">Báo cáo <span className='font-normal text-[12px]'>(Coming soon)</span></p>
             </Link>
           </div>
         </div>
