@@ -320,7 +320,7 @@ const OCRComponent = () => {
             </Command>
           </PopoverContent>
         </Popover>
-        <div className="flex gap-20 mt-[70px] ">
+        <div className="md:flex gap-20 mt-[70px] ">
           <div className={`${!userSelect?.id ? "opacity-[0.4] cursor-not-allowed select-none" : "opacity-1"}`}>
             <div className={`${userSelect?.fullname !== "Hồng Phạm" && "opacity-[0.2] cursor-not-allowed"}`}><Input id="picture" type="file" onChange={handleFileChange} /> </div>
             <div className='flex gap-[20px]'>
