@@ -269,7 +269,7 @@ const OCRComponent = () => {
   const bIds = groupedData?.map(item => item.user.id);
   const userNonOrderd = dataUser?.filter(item => !bIds?.includes(item.id));
   return (
-    <div className='py-20'>
+    <div className='py-10'>
       <h1 className="font-bold mb-[20px]">Đặt cơm</h1>
       <div className="root-wrapper">
         <Toaster
@@ -320,7 +320,7 @@ const OCRComponent = () => {
             </Command>
           </PopoverContent>
         </Popover>
-        <div className="flex gap-20 mt-[100px] ">
+        <div className="flex gap-20 mt-[70px] ">
           <div className={`${!userSelect?.id ? "opacity-[0.4] cursor-not-allowed select-none" : "opacity-1"}`}>
             <div className={`${userSelect?.fullname !== "Hồng Phạm" && "opacity-[0.2] cursor-not-allowed"}`}><Input id="picture" type="file" onChange={handleFileChange} /> </div>
             <div className='flex gap-[20px]'>
