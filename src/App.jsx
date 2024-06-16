@@ -291,7 +291,7 @@ const OCRComponent = () => {
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0 bg-white">
+          <PopoverContent className="w-[200px] p-0 bg-white text-black">
             <Command>
               <CommandInput placeholder="Search name..." />
               <CommandList>
@@ -301,6 +301,7 @@ const OCRComponent = () => {
                     <CommandItem
                       key={elm.fullname}
                       value={elm.fullname}
+                      className="text-black"
                       onSelect={(currentValue) => {
                         setUser(currentValue === user ? "" : currentValue)
                         setSelectUser(elm)
@@ -358,15 +359,15 @@ const OCRComponent = () => {
                       <p className='text-center mx-auto text-white'>Đặt đơn</p>
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] bg-white">
+                  <DialogContent className="sm:max-w-[425px] bg-white text-black">
                     <DialogHeader>
-                      <DialogTitle>Chốt đơn</DialogTitle>
-                      <DialogDescription>
+                      <DialogTitle className="text-black">Chốt đơn</DialogTitle>
+                      <DialogDescription className="text-black">
                         Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
                         <div className='mt-[20px]'>{selectFood?.map((elm) => {
                           let processed_text = elm.replace(pattern, '')
                           return (
-                            <p>- {processed_text}</p>
+                            <p className="text-black">- {processed_text}</p>
                           )
                         })}</div>
                       </DialogDescription>
