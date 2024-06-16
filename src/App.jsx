@@ -394,7 +394,7 @@ const OCRComponent = () => {
               </div>
             </div>
           </div>
-          <Table className={`${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
+          <Table className={`md:mt-0 mt-[30px] ${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
             <TableCaption className="text-left">
               <p className="ml-[15px]">Các đồng chí đã đặt : {groupedData?.map((orderd) => {
                 return <span className="font-bold">{orderd.user.fullname}, </span>
@@ -417,7 +417,7 @@ const OCRComponent = () => {
               {groupedData?.map((elm) => (
                 <TableRow key={elm.user.fullname}>
                   <TableCell className="font-medium">{elm.user.fullname}</TableCell>
-                  <TableCell className="text-left">{elm.items?.map((item) => (
+                  <TableCell className="text-left min-w-[200px]">{elm.items?.map((item) => (
                     <div className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
                       <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span></div>
                   ))}</TableCell>
