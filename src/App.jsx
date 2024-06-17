@@ -80,6 +80,9 @@ const OCRComponent = () => {
   const [orderNote, setOrderNote] = useState("")
   const [isPopup, setPopup] = useState("")
   const [valueUser, setCreateUser] = useState("")
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [passwordAdmin, setPassWord] = useState("")
+
   let pattern = /^\d+[.,]?\s*/;
 
   useEffect(() => {
@@ -105,7 +108,7 @@ const OCRComponent = () => {
 
   const handleFileChange = async (event) => {
     if (userSelect?.fullname !== "Hồng Phạm") {
-      toast.error("Chị Hồng đó phải hông ta :3");
+      toast.error("Có phải chị Hồng đó không ta :)))");
     } else {
       const file = event.target.files[0];
       if (file) {
@@ -257,25 +260,44 @@ const OCRComponent = () => {
     };
   })();
   const onCreateUser = async () => {
-    if (valueUser) {
-      const params = {
-        fullname: valueUser
-      }
-      const res = await AxiosAPI.post("/items/user_84", params)
-      if (res) {
-        const userGet = res.data?.data
-        localStorage.setItem("user", JSON.stringify(userGet))
-        setSelectUser(userGet)
-        setUser(userGet?.fullname)
+    if (isAdmin) {
+      goAdmin()
+    } else {
+      if (valueUser) {
+        const params = {
+          fullname: valueUser
+        }
+        const res = await AxiosAPI.post("/items/user_84", params)
+        if (res) {
+          const userGet = res.data?.data
+          localStorage.setItem("user", JSON.stringify(userGet))
+          setSelectUser(userGet)
+          setUser(userGet?.fullname)
+        }
       }
     }
-
   }
   const logOut = () => {
     localStorage.removeItem("user")
     setSelectUser({})
     setUser("")
   }
+  const goAdmin = async () => {
+    const res = await AxiosAPI.get("/items/user_84")
+    const userGet = res.data?.data
+    const adminUser = userGet?.find((elm) => elm.fullname === "Hồng Phạm")
+    if (adminUser.password == passwordAdmin) {
+      localStorage.setItem("user", JSON.stringify(adminUser))
+      setSelectUser(adminUser)
+      setUser(adminUser?.fullname)
+    } else {
+      toast.error("Thử nhớ lại coi, sai gòi kìa !");
+    }
+  }
+  useEffect(() => {
+    setPassWord("")
+  }, [isAdmin])
+
   const groupedData = orderList?.reduce((acc, { user, name, note, id, date_created }) => {
     let group = acc.find(group => group.user.id === user?.id);
     if (!group) {
@@ -303,11 +325,27 @@ const OCRComponent = () => {
                   <p className="text-black">- {processed_text}</p>
                 )
               })}</div>
+
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="items-center gap-4">
-              <Input onInput={(e) => setCreateUser(e.target.value)} placeholder="Nhập họ tên nhen" />
+          <div className="grid gap-2 py-4">
+            <p>{isAdmin ? "Mật khẩu" : "Họ tên"}</p>
+            {isAdmin ? <div className="items-center gap-4">
+              <Input value={passwordAdmin} onInput={(e) => setPassWord(e.target.value)} placeholder="Nhập mật khẩu" />
+            </div> : <div className="items-center gap-4">
+              <Input value={valueUser} onInput={(e) => setCreateUser(e.target.value)} placeholder="Nhập họ tên nhen" />
+            </div>}
+          </div>
+
+          <div className="items-top flex space-x-2 pb-[20px]">
+            <Checkbox onCheckedChange={() => setIsAdmin(!isAdmin)} className="checked-order" id="admin" />
+            <div className="grid gap-1.5 leading-none">
+              <label
+                htmlFor="admin"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Là chị Hồng ?
+              </label>
             </div>
           </div>
           <DialogFooter>
