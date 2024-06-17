@@ -79,6 +79,7 @@ const OCRComponent = () => {
   const [loading, setLoading] = useState(false)
   const [orderNote, setOrderNote] = useState("")
   const [isPopup, setPopup] = useState("")
+  const [valueUser, setCreateUser] = useState("")
   let pattern = /^\d+[.,]?\s*/;
 
   useEffect(() => {
@@ -149,12 +150,6 @@ const OCRComponent = () => {
     const arr = generateText(text);
     setArrayFood(arr);
     const params = { extract_menus: arr, image: imageUpload.data.data.id }
-    // connection.sendMessage({
-    //   type: 'items',
-    //   collection: 'menus',
-    //   action: 'create',
-    //   data: params
-    // });
     AxiosAPI.post("/items/menus", params)
   }
   const generateText = (text) => {
@@ -261,6 +256,26 @@ const OCRComponent = () => {
       }
     };
   })();
+  const onCreateUser = async () => {
+    if (valueUser) {
+      const params = {
+        fullname: valueUser
+      }
+      const res = await AxiosAPI.post("/items/user_84", params)
+      if (res) {
+        const userGet = res.data?.data
+        localStorage.setItem("user", JSON.stringify(userGet))
+        setSelectUser(userGet)
+        setUser(userGet?.fullname)
+      }
+    }
+
+  }
+  const logOut = () => {
+    localStorage.removeItem("user")
+    setSelectUser({})
+    setUser("")
+  }
   const groupedData = orderList?.reduce((acc, { user, name, note, id, date_created }) => {
     let group = acc.find(group => group.user.id === user?.id);
     if (!group) {
@@ -276,14 +291,49 @@ const OCRComponent = () => {
   const userNonOrderd = dataUser?.filter(item => !bIds?.includes(item.id));
   return (
     <div className='py-10'>
-      <h1 className="font-bold mb-[20px]">Đặt cơm</h1>
+      <Dialog open={!user ? true : false}>
+        <DialogContent className="sm:max-w-[425px] bg-white text-black">
+          <DialogHeader>
+            <DialogTitle className="text-black">Cho tui biết ai đang đặt vậy?</DialogTitle>
+            <DialogDescription className="text-black">
+              Không hiện lần sau nữa đâu nè
+              <div className='mt-[20px]'>{selectFood?.map((elm) => {
+                let processed_text = elm.replace(pattern, '')
+                return (
+                  <p className="text-black">- {processed_text}</p>
+                )
+              })}</div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="items-center gap-4">
+              <Input onInput={(e) => setCreateUser(e.target.value)} placeholder="Nhập họ tên nhen" />
+            </div>
+          </div>
+          <DialogFooter>
+            {/* <Button type="submit">Save changes</Button> */}
+            <Button
+              onClick={onCreateUser}
+              variant="outline"
+              role="combobox"
+              className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
+            >
+              <p className='text-center mx-auto text-white'>Lụm</p>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div className="root-wrapper">
+        <div className='flex items-center justify-between'>
+          <h1 className="font-bold mb-[20px]">Đặt cơm</h1>
+          <p className='border-[1px] border-[#d1d0d0] p-[5px]'><span className='font-bold'>{user}</span> | <span className='text-white cursor-pointer bg-black px-[6px] py-[3px] text-[12px] font-bold' onClick={logOut}>Logout</span></p>
+        </div>
         <Toaster
           position="top-center"
           reverseOrder={false}
           toastOptions={{ duration: 5000 }}
         />
-        <Popover open={open} onOpenChange={setOpen}>
+        {/* <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
@@ -325,7 +375,7 @@ const OCRComponent = () => {
               </CommandList>
             </Command>
           </PopoverContent>
-        </Popover>
+        </Popover> */}
         <div className="md:flex gap-20 mt-[70px] ">
           <div className={`${!userSelect?.id ? "opacity-[0.4] cursor-not-allowed select-none" : "opacity-1"}`}>
             <div className={`${userSelect?.fullname !== "Hồng Phạm" && "opacity-[0.2] cursor-not-allowed"}`}><Input id="picture" type="file" onChange={handleFileChange} /> </div>
