@@ -253,7 +253,7 @@ const OCRComponent = () => {
           if (fullName == JSON.parse(userLocal).fullname) {
             setTimeout(() => {
               location.reload()
-            }, 1000);
+            }, 1500);
           }
           setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
         }
