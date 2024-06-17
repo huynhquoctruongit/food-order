@@ -251,7 +251,9 @@ const OCRComponent = () => {
           const fullName = data?.data?.[0]?.user?.fullname
           const userLocal = localStorage.getItem("user")
           if (fullName == JSON.parse(userLocal).fullname) {
-            location.reload()
+            setTimeout(() => {
+              location.reload()
+            }, 1000);
           }
           setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
         }
