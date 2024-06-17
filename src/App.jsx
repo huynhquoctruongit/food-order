@@ -248,13 +248,17 @@ const OCRComponent = () => {
         } else {
           toast.success(data?.data?.[0].user.fullname + ' đã đặt');
           setFoodSelect([])
+          const fullName = data?.data?.[0]?.user?.fullname
+          const userLocal = localStorage.getItem("user")
+          if (fullName == JSON.parse(userLocal).fullname) {
+            location.reload()
+          }
           setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
         }
 
       }
     };
   })();
-
   const groupedData = orderList?.reduce((acc, { user, name, note, id, date_created }) => {
     let group = acc.find(group => group.user.id === user?.id);
     if (!group) {
@@ -336,7 +340,7 @@ const OCRComponent = () => {
                   {listFood?.map((elm, index) => {
                     return (
                       <div className="items-top flex space-x-2 py-[20px]">
-                        <Checkbox onCheckedChange={() => onSelectFood(elm)} id={index} />
+                        <Checkbox className="checked-order" onCheckedChange={() => onSelectFood(elm)} id={index} />
                         <div className="grid gap-1.5 leading-none">
                           <label
                             htmlFor={index}
@@ -419,7 +423,7 @@ const OCRComponent = () => {
                   <TableCell className="font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
                   <TableCell className="text-left min-w-[200px]">{elm.items?.map((item) => (
                     <div className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
-                     {userSelect?.fullname ==  elm.user.fullname && <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span>}</div>
+                      {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span>}</div>
                   ))}</TableCell>
                   <TableCell className="text-left">{elm.items?.[0].note}</TableCell>
                   <TableCell className="text-left">35k/món</TableCell>
