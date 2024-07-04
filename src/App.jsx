@@ -281,7 +281,7 @@ const OCRComponent = () => {
     const res = await AxiosAPI.get("/items/user_84")
     const userGet = res.data?.data
     const adminUser = userGet?.find((elm) => elm.fullname === "Hồng Phạm")
-    if (adminUser.password == passwordAdmin) {
+    if (adminUser?.password == passwordAdmin) {
       localStorage.setItem("user", JSON.stringify(adminUser))
       setSelectUser(adminUser)
       setUser(adminUser?.fullname)
