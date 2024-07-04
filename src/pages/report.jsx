@@ -33,7 +33,7 @@ const Report = () => {
     const orderMembers = orderToday?.data?.data
     const reciptList = reciptData?.data?.data
     const groupedData = orderMembers?.reduce((acc, { user, name, price, date_created, id }) => {
-        let group = acc.find(group => group.user.id === user?.id);
+        let group = acc.find(group => (group.user.id == user?.id || group.user.fullname === user?.fullname));
         if (!group) {
             group = { user: { id: user?.id, fullname: user?.fullname }, items: [] };
             acc.push(group);
@@ -113,7 +113,7 @@ const Report = () => {
             total = total + parseInt(elm.price)
         })
         reciptList?.map((elm) => {
-            if (orderUser.user.id == elm.user.id) {
+            if (orderUser.user.id == elm?.user?.id) {
                 total = total - Math.ceil(elm?.amount)
             }
         })
@@ -180,7 +180,7 @@ const Report = () => {
                     </TableHeader>
                     <TableBody>
                         {groupedData?.map((userItem) => {
-                            const recipt = reciptList?.find((elm) => elm.user.fullname === userItem.user.fullname && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
+                            const recipt = reciptList?.find((elm) => elm?.user?.fullname === userItem?.user?.fullname && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
                             return (
                                 <TableRow key={userItem.user.fullname}>
                                     <TableCell className="font-medium text-left"><div className="p-[6px]">{userItem.user.fullname}</div></TableCell>
