@@ -205,8 +205,8 @@ const Report = () => {
                     </TableBody>
                     <TableFooter>
                         <TableRow className="bg-black hover:bg-black hover:text-white text-white">
-                            <TableCell className="font-bold text-left" colSpan={5}>Còn lại</TableCell>
-                            <TableCell className="text-right font-bold" colSpan={5}>{orderMembers?.length * 35}k</TableCell>
+                            <TableCell className="font-bold text-left" colSpan={5}>Tổng</TableCell>
+                            <TableCell className="text-right font-bold" colSpan={5}>Tự tính dùm cái i</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
