@@ -7,6 +7,7 @@ import { SWRConfig } from "swr";
 import { fetcherClient } from "./libs/api/axios-client";
 import Report from "@/pages/report"
 import { Link } from "react-router-dom"
+import { Toaster } from "@/components/ui/toaster"
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -23,25 +24,35 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Link to="/">
               <p className="cursor-pointer text-white">Đặt cơm</p>
             </Link>
-            <Link to="/report">
-              <p className="cursor-pointer text-white">Báo cáo <span className='font-normal text-[12px]'>(Coming soon)</span></p>
+            <Link to="/report?week=thisWeek">
+              <p className="cursor-pointer text-white">Báo cáo</p>
             </Link>
           </div>
         </div>
 
         <Routes>
+
           <Route
             element={
-              <App />
+              <>
+                <App />
+                <Toaster> </Toaster>
+              </>
+
             }
             path="/"
           />
           <Route
             element={
-              <Report />
+              <>
+                <Toaster></Toaster>
+                <Report />
+              </>
+
             }
             path="/report"
           />
+
           {/* <Route element={<PrivateRoute />} path="*" /> */}
         </Routes>
       </BrowserRouter>

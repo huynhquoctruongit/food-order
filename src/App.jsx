@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import { Check, ChevronsUpDown } from "lucide-react"
-import dayjs from 'dayjs';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import useSWR from "swr";
 import AxiosAPI from "@/libs/api/axios-client.ts"
-import { io } from "socket.io-client";
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Table,
@@ -30,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { staticToken, createDirectus, realtime } from '@directus/sdk';
-import toast, { Toaster } from 'react-hot-toast';
+// import toast, { Toaster } from 'react-hot-toast';
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -43,10 +27,14 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Link } from "react-router-dom"
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc'; // Import plugin UTC để xử lý múi giờ UTC
+import { useToast } from "@/components/ui/use-toast"
+dayjs.extend(utc); // Kích hoạt plugin UTC
+
 
 const OCRComponent = () => {
-
+  const { toast } = useToast()
   const url = "https://admin.qnsport.vn/websocket";
   const access_token = '6rYHvFJ2LRtR3Qg7DrhJK-_MTQGsBYnr';
   const connection = createDirectus(url)
@@ -57,21 +45,19 @@ const OCRComponent = () => {
   const { data } = useSWR(
     "/items/user_84",
   )
-  const today = new Date();
+  const now = dayjs().add(7, 'hour');
+  const utcTime = now.utc().format();
+
   const todayFormatted = dayjs().format('YYYY-MM-DD');
-  const tomorrowFormatted = dayjs().add(1, 'day').format('YYYY-MM-DD');
-  // &filter[date_created][_between]=${todayFormatted},${tomorrowFormatted}
   const { data: orderToday, mutate: mutateOrder } = useSWR(
-    `/items/order_84?fields=*,user.*&filter[date_created][_gte]=${"2024-06-16T00:00:00.000Z"}`
-  )
+    `/items/order_84?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`)
   const { data: menuToday } = useSWR(
-    `/items/menus?fields=*&sort=-date_created`
+    `/items/menus?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`
   )
   const dataUser = data?.data?.data
   const menu = menuToday?.data?.data
   const [imageSrc, setImageSrc] = useState('');
   const [arrayFood, setArrayFood] = useState([]);
-  const [open, setOpen] = React.useState(false)
   const [user, setUser] = React.useState("")
   const [userSelect, setSelectUser] = useState({})
   const [selectFood, setFoodSelect] = useState([])
@@ -95,7 +81,8 @@ const OCRComponent = () => {
 
   useEffect(() => {
     const orderMembers = orderToday?.data?.data
-    setOrderList(orderMembers)
+    const filterOther = orderMembers?.filter((elm) => elm.name !== "orther-food")
+    setOrderList(filterOther)
   }, [orderToday])
 
   const onSelectFood = (elm) => {
@@ -108,7 +95,11 @@ const OCRComponent = () => {
 
   const handleFileChange = async (event) => {
     if (userSelect?.fullname !== "Hồng Phạm") {
-      toast.error("Có phải chị Hồng đó không ta :)))");
+      toast({
+        variant: "destructive",
+        title: "Không có quyền !",
+        description: "Có phải chị Hồng đó không ta :)))",
+      })
     } else {
       const file = event.target.files[0];
       if (file) {
@@ -152,7 +143,7 @@ const OCRComponent = () => {
     }
     const arr = generateText(text);
     setArrayFood(arr);
-    const params = { extract_menus: arr, image: imageUpload.data.data.id }
+    const params = { extract_menus: arr, image: imageUpload.data.data.id, date_created: utcTime }
     AxiosAPI.post("/items/menus", params)
   }
   const generateText = (text) => {
@@ -182,7 +173,6 @@ const OCRComponent = () => {
       arr.push(currentMeal.trim());
     }
 
-
     return arr
   };
   const onOrder = () => {
@@ -194,7 +184,8 @@ const OCRComponent = () => {
         name: processed_text,
         price: 35,
         note: orderNote,
-        user: userSelect.id
+        user: userSelect.id,
+        date_created: utcTime
       }
       connection.sendMessage({
         type: 'items',
@@ -244,7 +235,11 @@ const OCRComponent = () => {
           const filterDelete = orderList?.filter((elm) => elm.id !== data?.data[0])
           setOrderList(filterDelete)
         } else {
-          toast.success(data?.data?.[0].user.fullname + ' đã đặt');
+          toast({
+            variant: "success",
+            title: data?.data?.[0].user.fullname,
+            description: "✌ Đã đặt",
+          })
           setFoodSelect([])
           const fullName = data?.data?.[0]?.user?.fullname
           const userLocal = localStorage.getItem("user")
@@ -291,7 +286,11 @@ const OCRComponent = () => {
       setSelectUser(adminUser)
       setUser(adminUser?.fullname)
     } else {
-      toast.error("Thử nhớ lại coi, sai gòi kìa !");
+      toast({
+        variant: "destructive",
+        title: "Sai gòi !!!",
+        description: "Thử nhớ lại coi, sai gòi kìa !",
+      })
     }
   }
   useEffect(() => {
@@ -312,7 +311,7 @@ const OCRComponent = () => {
   const bIds = groupedData?.map(item => item.user.id);
   const userNonOrderd = dataUser?.filter(item => !bIds?.includes(item.id));
   return (
-    <div className='py-10'>
+    <div className='py-10 bg-white text-black min-h-[calc(100vh-64px)]'>
       <Dialog open={!user ? true : false}>
         <DialogContent className="sm:max-w-[425px] bg-white text-black">
           <DialogHeader>
@@ -322,7 +321,7 @@ const OCRComponent = () => {
               <div className='mt-[20px]'>{selectFood?.map((elm) => {
                 let processed_text = elm.replace(pattern, '')
                 return (
-                  <p className="text-black">- {processed_text}</p>
+                  <p key={processed_text} className="text-black">- {processed_text}</p>
                 )
               })}</div>
 
@@ -344,7 +343,7 @@ const OCRComponent = () => {
                 htmlFor="admin"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Là chị Hồng ?
+                Admin ?
               </label>
             </div>
           </div>
@@ -366,54 +365,7 @@ const OCRComponent = () => {
           <h1 className="font-bold mb-[20px]">Đặt cơm</h1>
           <p className='border-[1px] border-[#d1d0d0] p-[5px]'><span className='font-bold'>{user}</span> | <span className='text-white cursor-pointer bg-black px-[6px] py-[3px] text-[12px] font-bold' onClick={logOut}>Logout</span></p>
         </div>
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          toastOptions={{ duration: 5000 }}
-        />
-        {/* <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className={`w-[200px] justify-between ${!userSelect?.id && "border-[1px] border-[red]"}`}
-            >
-              <p className={`${!userSelect?.id && "text-[red]"}`}>{user
-                ? dataUser?.find((elm) => elm?.fullname === user)?.fullname
-                : "Select user..."}</p>
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0 bg-white text-black">
-            <Command>
-              <CommandInput placeholder="Search name..." />
-              <CommandList>
-                <CommandEmpty>No user found.</CommandEmpty>
-                <CommandGroup>
-                  {dataUser?.map((elm) => (
-                    <CommandItem
-                      key={elm.fullname}
-                      value={elm.fullname}
-                      className="text-black"
-                      onSelect={(currentValue) => {
-                        setUser(currentValue === user ? "" : currentValue)
-                        setSelectUser(elm)
-                        localStorage.setItem("user", JSON.stringify(elm))
-                        setOpen(false)
-                      }}
-                    >
-                      <Check
-                        className={`mr-2 h-4 w-4 ${user === elm.fullname ? "opacity-100" : "opacity-0"}`}
-                      />
-                      {elm.fullname}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover> */}
+
         <div className="md:flex gap-20 mt-[70px] ">
           <div className={`${!userSelect?.id ? "opacity-[0.4] cursor-not-allowed select-none" : "opacity-1"}`}>
             <div className={`${userSelect?.fullname !== "Hồng Phạm" && "opacity-[0.2] cursor-not-allowed"}`}><Input id="picture" type="file" onChange={handleFileChange} /> </div>
@@ -429,7 +381,7 @@ const OCRComponent = () => {
                 <div className="">
                   {listFood?.map((elm, index) => {
                     return (
-                      <div className="items-top flex space-x-2 py-[20px]">
+                      <div key={index + "-elm"} className="items-top flex space-x-2 py-[20px]">
                         <Checkbox className="checked-order" onCheckedChange={() => onSelectFood(elm)} id={index} />
                         <div className="grid gap-1.5 leading-none">
                           <label
@@ -461,7 +413,7 @@ const OCRComponent = () => {
                         <div className='mt-[20px]'>{selectFood?.map((elm) => {
                           let processed_text = elm.replace(pattern, '')
                           return (
-                            <p className="text-black">- {processed_text}</p>
+                            <p key={processed_text} className="text-black">- {processed_text}</p>
                           )
                         })}</div>
                       </DialogDescription>
@@ -491,10 +443,10 @@ const OCRComponent = () => {
           <Table className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
             <TableCaption className="text-left">
               <p>Các đồng chí đã đặt : {groupedData?.map((orderd) => {
-                return <span className="font-bold">{orderd.user.fullname}, </span>
+                return <span key={orderd.user.fullname} className="font-bold">{orderd.user.fullname}, </span>
               })}</p>
               <p>Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
-                return <span className="font-bold">{orderd.fullname}, </span>
+                return <span key={orderd.fullname} className="font-bold">{orderd.fullname}, </span>
               })}</p>
             </TableCaption>
             <TableHeader>
@@ -512,7 +464,7 @@ const OCRComponent = () => {
                 <TableRow key={elm.user.fullname}>
                   <TableCell className="font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
                   <TableCell className="text-left min-w-[200px]">{elm.items?.map((item) => (
-                    <div className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
+                    <div key={elm.name} className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
                       {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span>}</div>
                   ))}</TableCell>
                   <TableCell className="text-left">{elm.items?.[0].note}</TableCell>
