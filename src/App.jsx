@@ -377,7 +377,7 @@ const OCRComponent = () => {
               </div>
               <div className='text-left mt-[20px]'>
                 <p className='font-bold text-left'>Hôm nay ăn gì :</p>
-                {loading && <p>Đang xử lý "ây ai" ... ^^</p>}
+                {loading && <p className='text-red-600'>Đang xử lý AI ...</p>}
                 <div className="">
                   {listFood?.map((elm, index) => {
                     return (

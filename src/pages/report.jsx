@@ -25,7 +25,7 @@ const Report = () => {
     const [userSelect, setSelectUser] = useState({})
     const dateCurrent = currentSelect?.[0] + "T05:00:00.000Z"
     const { data: orderToday, mutate: mutateOrder } = useSWR(currentSelect?.[0] &&
-        `/items/order_84?fields=*,user.*&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T05:00:00.000Z`
+        `/items/order_84?fields=*,user.*&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z`
     )
     const { data: reciptData, mutate: mutateRecipt } = useSWR(currentSelect?.[0] &&
         `/items/recipt_84?fields=*,user.*&filter[date_start][_eq]=${dateCurrent}`
