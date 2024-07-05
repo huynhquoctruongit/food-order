@@ -460,19 +460,22 @@ const OCRComponent = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {groupedData?.map((elm) => (
-                <TableRow key={elm.user.fullname}>
-                  <TableCell className="font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
-                  <TableCell className="text-left min-w-[200px]">{elm.items?.map((item) => (
-                    <div key={elm.name} className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
-                      {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span>}</div>
-                  ))}</TableCell>
-                  <TableCell className="text-left">{elm.items?.[0].note}</TableCell>
-                  <TableCell className="text-left">35k/món</TableCell>
-                  <TableCell className="text-right">{dayjs(elm.items[0]?.date_created).format("HH:MM")}</TableCell>
-                  <TableCell className="text-right">{elm.items?.length * 35}k</TableCell>
-                </TableRow>
-              ))}
+              {groupedData?.map((elm) => {
+                const dateFormat = dayjs(elm?.items?.[0]?.date_created)
+                return (
+                  <TableRow key={elm.user.fullname} >
+                    <TableCell className="font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
+                    <TableCell className="text-left min-w-[200px]">{elm.items?.map((item) => (
+                      <div key={elm.name} className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
+                        {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span>}</div>
+                    ))}</TableCell>
+                    <TableCell className="text-left">{elm.items?.[0].note}</TableCell>
+                    <TableCell className="text-left">35k/món</TableCell>
+                    <TableCell className="text-right">{dateFormat?.subtract(7, 'hour').format("HH:MM")}</TableCell>
+                    <TableCell className="text-right">{elm.items?.length * 35}k</TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
             <TableFooter>
               <TableRow>
@@ -483,7 +486,7 @@ const OCRComponent = () => {
           </Table>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
