@@ -471,7 +471,7 @@ const OCRComponent = () => {
                     ))}</TableCell>
                     <TableCell className="text-left">{elm.items?.[0].note}</TableCell>
                     <TableCell className="text-left">35k/món</TableCell>
-                    <TableCell className="text-right">{dateFormat?.subtract(7, 'hour').format("HH:MM")}</TableCell>
+                    <TableCell className="text-right">{dateFormat?.subtract(7, 'hour').format("HH:mm")}</TableCell>
                     <TableCell className="text-right">{elm.items?.length * 35}k</TableCell>
                   </TableRow>
                 )
