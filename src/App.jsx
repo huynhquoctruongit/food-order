@@ -42,7 +42,7 @@ const OCRComponent = () => {
     .with(realtime());
   connection.connect()
 
-  const { data } = useSWR(
+  const { data, mutate : mutateUser } = useSWR(
     "/items/user_84",
   )
   const now = dayjs().add(7, 'hour');
@@ -257,6 +257,7 @@ const OCRComponent = () => {
   const onCreateUser = async () => {
     if (isAdmin) {
       goAdmin()
+      mutateUser()
     } else {
       if (valueUser) {
         const params = {
@@ -268,6 +269,7 @@ const OCRComponent = () => {
           localStorage.setItem("user", JSON.stringify(userGet))
           setSelectUser(userGet)
           setUser(userGet?.fullname)
+          mutateUser()
         }
       }
     }
@@ -355,7 +357,7 @@ const OCRComponent = () => {
               role="combobox"
               className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
             >
-              <p className='text-center mx-auto text-white'>Lụm</p>
+              <p className='text-center mx-auto text-white'>Vàooo</p>
             </Button>
           </DialogFooter>
         </DialogContent>
