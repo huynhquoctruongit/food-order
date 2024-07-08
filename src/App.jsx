@@ -363,7 +363,7 @@ const OCRComponent = () => {
       <div className="root-wrapper">
         <div className='flex items-center justify-between'>
           <h1 className="font-bold mb-[20px]">Đặt cơm</h1>
-          <p className='border-[1px] border-[#d1d0d0] p-[5px]'><span className='font-bold'>{user}</span> | <span className='text-white cursor-pointer bg-black px-[6px] py-[3px] text-[12px] font-bold' onClick={logOut}>Logout</span></p>
+          <p className='border-[1px] border-[#d1d0d0] p-[5px]'><span className='font-bold'>{user}</span></p>
         </div>
 
         <div className="md:flex gap-20 mt-[70px] ">
