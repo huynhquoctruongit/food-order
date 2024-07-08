@@ -42,13 +42,14 @@ const OCRComponent = () => {
     .with(realtime());
   connection.connect()
 
-  const { data, mutate : mutateUser } = useSWR(
+  const { data, mutate: mutateUser } = useSWR(
     "/items/user_84",
   )
   const now = dayjs().add(7, 'hour');
   const utcTime = now.utc().format();
 
   const todayFormatted = dayjs().format('YYYY-MM-DD');
+  // &filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z
   const { data: orderToday, mutate: mutateOrder } = useSWR(
     `/items/order_84?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`)
   const { data: menuToday } = useSWR(
@@ -312,8 +313,36 @@ const OCRComponent = () => {
   const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.extract_menus
   const bIds = groupedData?.map(item => item.user.id);
   const userNonOrderd = dataUser?.filter(item => !bIds?.includes(item.id));
+
+  console.log(orderList, 'orderList');
+
+  const processItems = (items) => {
+    if (!items) return
+    const result = [];
+    items.forEach(item => {
+      const existingItem = result.find(r => r.name === item.name);
+      if (existingItem) {
+        existingItem.count++;
+        if (item.note) {
+          existingItem.notes.push(item.note);
+        }
+      } else {
+        result.push({
+          name: item.name,
+          count: 1,
+          notes: item.note ? [item.note] : []
+        });
+      }
+    });
+
+    return result;
+  };
+  const finalList = orderList && processItems(orderList)
+  console.log(finalList, 'finalList');
+
+
   return (
-    <div className='py-10 bg-white text-black min-h-[calc(100vh-64px)]'>
+    <div className='py-[20px] bg-white text-black min-h-[calc(100vh-64px)]'>
       <Dialog open={!user ? true : false}>
         <DialogContent className="sm:max-w-[425px] bg-white text-black">
           <DialogHeader>
@@ -367,81 +396,80 @@ const OCRComponent = () => {
           <h1 className="font-bold mb-[20px]">Đặt cơm</h1>
           <p className='border-[1px] border-[#d1d0d0] p-[5px]'><span className='font-bold'>{user}</span></p>
         </div>
-
-        <div className="md:flex gap-20 mt-[70px] ">
-          <div className={`${!userSelect?.id ? "opacity-[0.4] cursor-not-allowed select-none" : "opacity-1"}`}>
-            <div className={`${userSelect?.fullname !== "Hồng Phạm" && "opacity-[0.2] cursor-not-allowed"}`}><Input id="picture" type="file" onChange={handleFileChange} /> </div>
-            <div className='flex gap-[20px]'>
-              <div className='mt-[20px]'>
-                {(imageSrc || menu?.[0]?.image) && (
-                  <img className='w-[500px]' src={imageSrc || `https://admin.qnsport.vn/assets/${menu?.[0]?.image}`} alt="Uploaded" />
-                )}
-              </div>
-              <div className='text-left mt-[20px]'>
-                <p className='font-bold text-left'>Hôm nay ăn gì :</p>
-                {loading && <p className='text-red-600'>Đang xử lý AI ...</p>}
-                <div className="">
-                  {listFood?.map((elm, index) => {
-                    return (
-                      <div key={index + "-elm"} className="items-top flex space-x-2 py-[20px]">
-                        <Checkbox className="checked-order" onCheckedChange={() => onSelectFood(elm)} id={index} />
-                        <div className="grid gap-1.5 leading-none">
-                          <label
-                            htmlFor={index}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            {elm}
-                          </label>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-                <Dialog open={selectFood?.length > 0 ? isPopup : false} onOpenChange={() => setPopup(!isPopup)}>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={`${selectFood?.length > 0 ? "opacity-1" : "opacity-[0.6] cursor-not-allowed"} bg-black mt-[20px] w-[200px] text-center mx-auto hover:text-black hover:bg-black`}
-                    >
-                      <p className='text-center mx-auto text-white'>Đặt đơn</p>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] bg-white text-black">
-                    <DialogHeader>
-                      <DialogTitle className="text-black">Chốt đơn</DialogTitle>
-                      <DialogDescription className="text-black">
-                        Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
-                        <div className='mt-[20px]'>{selectFood?.map((elm) => {
-                          let processed_text = elm.replace(pattern, '')
-                          return (
-                            <p key={processed_text} className="text-black">- {processed_text}</p>
-                          )
-                        })}</div>
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="items-center gap-4">
-                        <Textarea defaultValue={orderNote} onInput={(e) => setOrderNote(e.target.value)} placeholder="Note dô đây nhen" />
+        <div className={`bg-gray-200 rounded-[12px] p-[20px] ${!userSelect?.id ? "opacity-[0.4] cursor-not-allowed select-none" : "opacity-1"}`}>
+          <div className={`${userSelect?.fullname !== "Hồng Phạm" && "opacity-[0.2] cursor-not-allowed"}`}><Input className="text-black w-[180px]" id="picture" type="file" onChange={handleFileChange} /> </div>
+          <div className='flex gap-[20px]'>
+            <div className='mt-[20px]'>
+              {(imageSrc || menu?.[0]?.image) && (
+                <img className='w-[200px] text-black' src={imageSrc || `https://admin.qnsport.vn/assets/${menu?.[0]?.image}`} alt="Uploaded" />
+              )}
+            </div>
+            <div className='text-left mt-[20px]'>
+              {loading && <p className='text-red-600'>Đang xử lý AI ...</p>}
+              <p className='text-[14px]'>{listFood?.length > 0 ? "Chọn món bên dưới :" : "Chưa có đồ ăn, vui lòng đợi 1 xíu nhen"}</p>
+              <div className="flex flex-wrap">
+                {listFood?.map((elm, index) => {
+                  return (
+                    <div key={index + "-elm"} className="items-top flex space-x-2 py-[20px] mr-[30px]">
+                      <Checkbox className="checked-order" onCheckedChange={() => onSelectFood(elm)} id={index} />
+                      <div className="grid gap-1.5 leading-none">
+                        <label
+                          htmlFor={index}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {elm}
+                        </label>
                       </div>
                     </div>
-                    <DialogFooter>
-                      {/* <Button type="submit">Save changes</Button> */}
-                      <Button
-                        onClick={onOrder}
-                        variant="outline"
-                        role="combobox"
-                        className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
-                      >
-                        <p className='text-center mx-auto text-white'>Bút xa gà chết</p>
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-
+                  )
+                })}
               </div>
+              <Dialog open={selectFood?.length > 0 ? isPopup : false} onOpenChange={() => setPopup(!isPopup)}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className={`${selectFood?.length > 0 ? "opacity-1" : "opacity-[0.6] cursor-not-allowed"} bg-black mt-[20px] w-[200px] text-center mx-auto hover:text-black hover:bg-black`}
+                  >
+                    <p className='text-center mx-auto text-white'>Đặt đơn</p>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px] bg-white text-black">
+                  <DialogHeader>
+                    <DialogTitle className="text-black">Chốt đơn</DialogTitle>
+                    <DialogDescription className="text-black">
+                      Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
+                      <div className='mt-[20px]'>{selectFood?.map((elm) => {
+                        let processed_text = elm.replace(pattern, '')
+                        return (
+                          <p key={processed_text} className="text-black font-bold">- {processed_text}</p>
+                        )
+                      })}</div>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="items-center gap-4">
+                      <Textarea defaultValue={orderNote} onInput={(e) => setOrderNote(e.target.value)} placeholder="Note dô đây nhen" />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    {/* <Button type="submit">Save changes</Button> */}
+                    <Button
+                      onClick={onOrder}
+                      variant="outline"
+                      role="combobox"
+                      className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
+                    >
+                      <p className='text-center mx-auto text-white'>Bút xa gà chết</p>
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
             </div>
           </div>
+        </div>
+        <div className="md:flex gap-[30px] mt-[70px]">
           <Table className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
             <TableCaption className="text-left">
               <p>Các đồng chí đã đặt : {groupedData?.map((orderd) => {
@@ -465,16 +493,16 @@ const OCRComponent = () => {
               {groupedData?.map((elm) => {
                 const dateFormat = dayjs(elm?.items?.[0]?.date_created)
                 return (
-                  <TableRow key={elm.user.fullname} >
-                    <TableCell className="font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
-                    <TableCell className="text-left min-w-[200px]">{elm.items?.map((item) => (
+                  <TableRow className={`${userSelect?.fullname == elm.user.fullname && "bg-slate-200"} hover:bg-slate-100`} key={elm.user.fullname} >
+                    <TableCell className="p-2 font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
+                    <TableCell className="p-2 text-left min-w-[200px]">{elm.items?.map((item) => (
                       <div key={elm.name} className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
-                        {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-red-500 cursor-pointer' onClick={() => deleteFood(item)}>X</span>}</div>
+                        {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-white bg-red-500 text-[12px] font-bold py-[] px-[12px] cursor-pointer' onClick={() => deleteFood(item)}>Huỷ</span>}</div>
                     ))}</TableCell>
-                    <TableCell className="text-left">{elm.items?.[0].note}</TableCell>
-                    <TableCell className="text-left">35k/món</TableCell>
-                    <TableCell className="text-right">{dateFormat?.subtract(7, 'hour').format("HH:mm")}</TableCell>
-                    <TableCell className="text-right">{elm.items?.length * 35}k</TableCell>
+                    <TableCell className="p-2 text-left">{elm.items?.[0].note}</TableCell>
+                    <TableCell className="p-2 text-left">35k/món</TableCell>
+                    <TableCell className="p-2 text-right">{dateFormat?.subtract(7, 'hour').format("HH:mm")}</TableCell>
+                    <TableCell className="p-2 text-right">{elm.items?.length * 35}k</TableCell>
                   </TableRow>
                 )
               })}
@@ -486,6 +514,21 @@ const OCRComponent = () => {
               </TableRow>
             </TableFooter>
           </Table>
+          <div className='text-left border-[1px] border-[#d1d0d0] p-[20px]'>
+            <p className='font-bold'>Hoá đơn : <span className='font-normal'>{orderList?.length} phần</span></p>
+            <div>
+              {finalList?.map((elm, index) => {
+                return (
+                  <div className={`${index % 2 && "bg-slate-200"} p-[10px]`}>
+                    <div className='whitespace-nowrap'><span className='font-bold'>SL: {elm.count}</span> - {elm.name}</div>
+                    <div className='ml-[12px]'>{elm.notes?.map((item, indexItem) => (
+                      <p>✎ Món {indexItem + 1} : {item}</p>
+                    ))}</div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </div >

@@ -161,9 +161,9 @@ const Report = () => {
                     </div>
                 </div>
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="border-l-[1px] border-l-black border-r-[1px] border-r-black">
                         <TableRow className="border-t-[1px] border-t-black border-b-black">
-                            <TableHead className="w-[200px] px-0 font-bold border-r-[1px] border-r-black">Tên</TableHead>
+                            <TableHead className="w-[200px] px-0 font-bold border-r-[1px] border-r-black text-center">Tên</TableHead>
                             {currentSelect?.map((elm, index) => {
                                 return (
                                     <TableHead className="font-bold px-0 items-center mx-auto border-r-[1px] border-r-black">
@@ -178,27 +178,27 @@ const Report = () => {
                             <TableHead className="text-right font-bold">Amount</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
-                        {groupedData?.map((userItem) => {
+                    <TableBody className="border-l-[1px] border-l-black border-r-[1px] border-r-black">
+                        {groupedData?.map((userItem, index) => {
                             const recipt = reciptList?.find((elm) => elm?.user?.fullname === userItem?.user?.fullname && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
                             return (
-                                <TableRow key={userItem.user.fullname}>
-                                    <TableCell className="font-medium text-left"><div className="p-[6px]">{userItem.user.fullname}</div></TableCell>
+                                <TableRow className={`${index %2 == 0 ? "bg-slate-200" : "bg-white"} hover:bg-unset`} key={userItem.user.fullname}>
+                                    <TableCell className="font-medium text-left p-2"><div className="p-[6px]">{userItem.user.fullname}</div></TableCell>
                                     {currentSelect?.map((elm, index) => {
                                         const ortherList = userItem?.items?.find((ortherItem) => ortherItem.name === "orther-food" && dayjs(ortherItem.date_created).format("YYYY-MM-DD") == elm)
                                         const riceList = userItem?.items?.filter((riceItem) => riceItem.name !== "orther-food" && dayjs(riceItem.date_created).format("YYYY-MM-DD") == elm)
                                         const match = ortherList && dayjs(ortherList.date_created).format("YYYY-MM-DD") == elm
                                         return (
-                                            <TableCell key={weekUrl + index + "-elm-wrapper"} className="text-left">
-                                                <input key={weekUrl + index + "-elm-input1"} disabled className="p-[6px] w-[50%] text-center bg-white text-black select-none" value={riceList?.length ? riceList?.length * 35 : ""}></input>
-                                                <input key={weekUrl + index + "-elm-input2"} disabled={!admin} className={`p-[6px] w-[50%] text-center bg-white text-black ${admin && "border-[1px] border-black"}`} defaultValue={match ? ortherList?.price : ""} onChange={(e) => onUpdateOrder(e, userItem, ortherList, dayjs(elm + "T12:00:00+07:00").format("YYYY-MM-DD"), "orther-food")}></input>
+                                            <TableCell key={weekUrl + index + "-elm-wrapper"} className="text-left p-2">
+                                                <input key={weekUrl + index + "-elm-input1"} disabled className="p-[6px] w-[50%] text-center bg-transparent text-black select-none" value={riceList?.length ? riceList?.length * 35 : ""}></input>
+                                                <input key={weekUrl + index + "-elm-input2"} disabled={!admin} className={`p-[6px] w-[50%] text-center bg-transparent text-black ${admin && "border-[1px] border-black"}`} defaultValue={match ? ortherList?.price : ""} onChange={(e) => onUpdateOrder(e, userItem, ortherList, dayjs(elm + "T12:00:00+07:00").format("YYYY-MM-DD"), "orther-food")}></input>
                                             </TableCell>
                                         )
                                     })}
-                                    <TableCell className="text-left">
-                                        <input disabled={!admin} className={`p-[6px] w-[100%] text-center bg-white text-black ${admin && "border-[1px] border-black"}`} defaultValue={recipt?.amount && Math.ceil(recipt?.amount)} onInput={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}></input>
+                                    <TableCell className="text-left p-2">
+                                        <input disabled={!admin} className={`p-[6px] w-[100%] text-center bg-transparent text-black ${admin && "border-[1px] border-black"}`} defaultValue={recipt?.amount && Math.ceil(recipt?.amount)} onInput={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}></input>
                                     </TableCell>
-                                    <TableCell className="text-right font-bold">{getMount(userItem)}k</TableCell>
+                                    <TableCell className="text-right font-bold p-2">{getMount(userItem)}k</TableCell>
                                 </TableRow>
                             )
                         })}
