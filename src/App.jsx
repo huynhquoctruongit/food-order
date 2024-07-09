@@ -3,6 +3,7 @@ import Tesseract from 'tesseract.js';
 import useSWR from "swr";
 import AxiosAPI from "@/libs/api/axios-client.ts"
 import { Checkbox } from "@/components/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Table,
   TableBody,
@@ -14,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { staticToken, createDirectus, realtime } from '@directus/sdk';
-// import toast, { Toaster } from 'react-hot-toast';
+import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -30,6 +31,8 @@ import { Textarea } from "@/components/ui/textarea"
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // Import plugin UTC để xử lý múi giờ UTC
 import { useToast } from "@/components/ui/use-toast"
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 dayjs.extend(utc); // Kích hoạt plugin UTC
 
 
@@ -69,6 +72,8 @@ const OCRComponent = () => {
   const [valueUser, setCreateUser] = useState("")
   const [isAdmin, setIsAdmin] = useState(false)
   const [passwordAdmin, setPassWord] = useState("")
+  const [isTimeout, setIsTimeout] = useState(false);
+  const [optionRice, setOptionRice] = useState({})
 
   let pattern = /^\d+[.,]?\s*/;
 
@@ -180,10 +185,11 @@ const OCRComponent = () => {
     setPopup(!isPopup)
     if (!userSelect?.id) return
     selectFood?.map((elm) => {
+      const price = optionRice[elm] == "no-rice" ? 25 : 35
       let processed_text = elm.replace(pattern, '');
       const params = {
         name: processed_text,
-        price: 35,
+        price: price,
         note: orderNote,
         user: userSelect.id,
         date_created: utcTime
@@ -300,13 +306,13 @@ const OCRComponent = () => {
     setPassWord("")
   }, [isAdmin])
 
-  const groupedData = orderList?.reduce((acc, { user, name, note, id, date_created }) => {
+  const groupedData = orderList?.reduce((acc, { user, name, note, id, date_created, price }) => {
     let group = acc.find(group => group.user.id === user?.id);
     if (!group) {
       group = { user: { id: user?.id, fullname: user?.fullname }, items: [] };
       acc.push(group);
     }
-    group.items.push({ name: name, note: note, id: id, date_created: date_created });
+    group.items.push({ name: name, note: note, id: id, date_created: date_created, price: price });
     return acc;
   }, []);
 
@@ -314,14 +320,21 @@ const OCRComponent = () => {
   const bIds = groupedData?.map(item => item.user.id);
   const userNonOrderd = dataUser?.filter(item => !bIds?.includes(item.id));
 
-  console.log(orderList, 'orderList');
-
   const processItems = (items) => {
     if (!items) return
     const result = [];
+   
     items.forEach(item => {
       const existingItem = result.find(r => r.name === item.name);
       if (existingItem) {
+        var countNoRice = 0
+        const match = items?.filter((elm) => elm.name == existingItem.name)
+        match?.map((elm) => {
+          if (elm.price == 25) {
+            countNoRice++
+            existingItem["no_rice"] = (countNoRice);
+          }
+        })
         existingItem.count++;
         if (item.note) {
           existingItem.notes.push(item.note);
@@ -330,7 +343,9 @@ const OCRComponent = () => {
         result.push({
           name: item.name,
           count: 1,
-          notes: item.note ? [item.note] : []
+          notes: item.note ? [item.note] : [],
+          price: item.price,
+          no_rice: item.price == 25 ? 1 : 0
         });
       }
     });
@@ -338,9 +353,25 @@ const OCRComponent = () => {
     return result;
   };
   const finalList = orderList && processItems(orderList)
-  console.log(finalList, 'finalList');
-
-
+  function isTimeBetweenCurrent() {
+    const currentTime = dayjs();
+    const startTime = dayjs('13:00', 'HH:mm');
+    const endTime = dayjs('24:00', 'HH:mm');
+    return currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
+  }
+  useEffect(() => {
+    setIsTimeout(isTimeBetweenCurrent());
+    const interval = setInterval(() => {
+      setIsTimeout(isTimeBetweenCurrent());
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+  const getSelectRice = (e, item) => {
+    setOptionRice({
+      ...optionRice,
+      [item]: e
+    })
+  }
   return (
     <div className='py-[20px] bg-white text-black min-h-[calc(100vh-64px)]'>
       <Dialog open={!user ? true : false}>
@@ -386,7 +417,7 @@ const OCRComponent = () => {
               role="combobox"
               className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
             >
-              <p className='text-center mx-auto text-white'>Vàooo</p>
+              <p className='text-center mx-auto text-white'>Vào đặt thôii</p>
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -424,12 +455,12 @@ const OCRComponent = () => {
                   )
                 })}
               </div>
-              <Dialog open={selectFood?.length > 0 ? isPopup : false} onOpenChange={() => setPopup(!isPopup)}>
+              <Dialog open={selectFood?.length > 0 && !isTimeout ? isPopup : false} onOpenChange={() => setPopup(!isPopup)}>
                 <DialogTrigger asChild>
                   <Button
                     variant="outline"
                     role="combobox"
-                    className={`${selectFood?.length > 0 ? "opacity-1" : "opacity-[0.6] cursor-not-allowed"} bg-black mt-[20px] w-[200px] text-center mx-auto hover:text-black hover:bg-black`}
+                    className={`${selectFood?.length > 0 && !isTimeout ? "opacity-1" : "opacity-[0.6] cursor-not-allowed"} bg-black mt-[20px] w-[200px] text-center mx-auto hover:text-black hover:bg-black`}
                   >
                     <p className='text-center mx-auto text-white'>Đặt đơn</p>
                   </Button>
@@ -442,7 +473,19 @@ const OCRComponent = () => {
                       <div className='mt-[20px]'>{selectFood?.map((elm) => {
                         let processed_text = elm.replace(pattern, '')
                         return (
-                          <p key={processed_text} className="text-black font-bold">- {processed_text}</p>
+                          <div className='mb-[20px]'>
+                            <p key={processed_text} className="text-black font-bold mb-[6px]">- {processed_text}</p>
+                            <RadioGroup onValueChange={(e) => getSelectRice(e, elm)} className="flex gap-[12px]" defaultValue="full-rice">
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="full-rice" id="full-rice" />
+                                <Label htmlFor="full-rice">Có cơm</Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="no-rice" id="no-rice" />
+                                <Label htmlFor="no-rice">Không lấy cơm</Label>
+                              </div>
+                            </RadioGroup>
+                          </div>
                         )
                       })}</div>
                     </DialogDescription>
@@ -465,62 +508,60 @@ const OCRComponent = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-
             </div>
           </div>
         </div>
-        <div className="md:flex gap-[30px] mt-[70px]">
-          <Table className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
-            <TableCaption className="text-left">
-              <p>Các đồng chí đã đặt : {groupedData?.map((orderd) => {
-                return <span key={orderd.user.fullname} className="font-bold">{orderd.user.fullname}, </span>
-              })}</p>
-              <p>Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
-                return <span key={orderd.fullname} className="font-bold">{orderd.fullname}, </span>
-              })}</p>
-            </TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Đồng chí</TableHead>
-                <TableHead>Món</TableHead>
-                <TableHead>Ghi chú</TableHead>
-                <TableHead>Giá</TableHead>
-                <TableHead className="text-right">Đặt lúc</TableHead>
-                <TableHead className="text-right">Tổng</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {groupedData?.map((elm) => {
-                const dateFormat = dayjs(elm?.items?.[0]?.date_created)
-                return (
-                  <TableRow className={`${userSelect?.fullname == elm.user.fullname && "bg-slate-200"} hover:bg-slate-100`} key={elm.user.fullname} >
-                    <TableCell className="p-2 font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
-                    <TableCell className="p-2 text-left min-w-[200px]">{elm.items?.map((item) => (
-                      <div key={elm.name} className='flex items-center'><p>{"(SL : 1) : " + item.name}</p>
-                        {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-white bg-red-500 text-[12px] font-bold py-[] px-[12px] cursor-pointer' onClick={() => deleteFood(item)}>Huỷ</span>}</div>
-                    ))}</TableCell>
-                    <TableCell className="p-2 text-left">{elm.items?.[0].note}</TableCell>
-                    <TableCell className="p-2 text-left">35k/món</TableCell>
-                    <TableCell className="p-2 text-right">{dateFormat?.subtract(7, 'hour').format("HH:mm")}</TableCell>
-                    <TableCell className="p-2 text-right">{elm.items?.length * 35}k</TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3} className="font-bold text-left">Tổng thiệt hại</TableCell>
-                <TableCell colSpan={3} className="text-right font-bold">{orderList?.length * 35}k</TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
+        <div className="md:flex gap-[30px] mt-[40px] relative">
+          <div className={isTimeout ? "bg-[#00000088] cursor-not-allowed select-none z-[1] absolute h-full w-full text-white text-[30px] font-bold flex justify-center items-center" : "absolute opacity-0"}>Đơn đã đặt</div>
+          <div className='p-[20px]'>
+            <Table className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${!userSelect?.id ? "opacity-[0.5] cursor-not-allowed select-none" : "opacity-1"}`}>
+              <TableCaption className="text-left">
+                <p>Các đồng chí đã đặt : {groupedData?.map((orderd) => {
+                  return <span key={orderd.user.fullname} className="font-bold">{orderd.user.fullname}, </span>
+                })}</p>
+                <p className='mt-[20px]'>Các đồng chí mãi làm chưa đặt : {userNonOrderd?.map((orderd) => {
+                  return <span key={orderd.fullname} className="font-bold">{orderd.fullname}, </span>
+                })}</p>
+              </TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Đồng chí</TableHead>
+                  <TableHead>Món</TableHead>
+                  <TableHead>Ghi chú</TableHead>
+                  <TableHead>Giá</TableHead>
+                  <TableHead className="text-right">Đặt lúc</TableHead>
+                  <TableHead className="text-right">Tổng</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {groupedData?.map((elm) => {
+                  const dateFormat = dayjs(elm?.items?.[0]?.date_created)
+                  return (
+                    <TableRow className={`${userSelect?.fullname == elm.user.fullname && "bg-slate-200"} hover:bg-slate-100`} key={elm.user.fullname} >
+                      <TableCell className="p-2 font-medium whitespace-nowrap">{elm.user.fullname}</TableCell>
+                      <TableCell className="p-2 text-left min-w-[200px]">{elm.items?.map((item) => (
+                        <div key={elm.name} className='flex items-center'><p>{"(SL : 1) : " + item.name}{item.price == 25 && <span className='text-red-600 ml-[12px]'>(Không cơm)</span>}</p>
+                          {userSelect?.fullname == elm.user.fullname && <span className='ml-[12px] text-white bg-red-500 text-[12px] font-bold py-[] px-[12px] cursor-pointer' onClick={() => deleteFood(item)}>Huỷ</span>}</div>
+                      ))}</TableCell>
+                      <TableCell className="p-2 text-left">{elm.items?.[0].note}</TableCell>
+                      <TableCell className="p-2 text-left">35k/món</TableCell>
+                      <TableCell className="p-2 text-right">{dateFormat?.subtract(7, 'hour').format("HH:mm")}</TableCell>
+                      <TableCell className="p-2 text-right h-full">{elm.items?.map((elm) => (
+                        <p>{elm.price}k</p>
+                      ))}</TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
           <div className='text-left border-[1px] border-[#d1d0d0] p-[20px]'>
             <p className='font-bold'>Hoá đơn : <span className='font-normal'>{orderList?.length} phần</span></p>
             <div>
               {finalList?.map((elm, index) => {
                 return (
                   <div className={`${index % 2 && "bg-slate-200"} p-[10px]`}>
-                    <div className='whitespace-nowrap'><span className='font-bold'>SL: {elm.count}</span> - {elm.name}</div>
+                    <div className='whitespace-nowrap'><span className='font-bold'>SL: {elm.count}</span> - {elm.name}{elm.no_rice > 0 && <span className='text-red-600 ml-[12px]'>({elm.no_rice} Phần không cơm)</span>}</div>
                     <div className='ml-[12px]'>{elm.notes?.map((item, indexItem) => (
                       <p>✎ Món {indexItem + 1} : {item}</p>
                     ))}</div>
