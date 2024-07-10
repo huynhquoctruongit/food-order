@@ -188,6 +188,7 @@ const Report = () => {
                                         const ortherList = userItem?.items?.find((ortherItem) => ortherItem.name === "orther-food" && dayjs(ortherItem.date_created).format("YYYY-MM-DD") == elm)
                                         const riceList = userItem?.items?.filter((riceItem) => riceItem.name !== "orther-food" && dayjs(riceItem.date_created).format("YYYY-MM-DD") == elm)
                                         const match = ortherList && dayjs(ortherList.date_created).format("YYYY-MM-DD") == elm
+                                        console.log(riceList,'riceList');
                                         return (
                                             <TableCell key={weekUrl + index + "-elm-wrapper"} className="text-left p-2">
                                                 <input key={weekUrl + index + "-elm-input1"} disabled className="p-[6px] w-[50%] text-center bg-transparent text-black select-none" value={riceList?.length ? riceList?.length * 35 : ""}></input>
