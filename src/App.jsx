@@ -32,6 +32,8 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc"; // Import plugin UTC để xử lý múi giờ UTC
 import { useToast } from "@/components/ui/use-toast";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import ListFood from "./modules/order/list-food";
+import ListOrder from "./modules/order/list-order";
 dayjs.extend(customParseFormat);
 dayjs.extend(utc); // Kích hoạt plugin UTC
 
@@ -394,7 +396,7 @@ const OCRComponent = () => {
     });
   };
   return (
-    <div className="py-[20px] text-black">
+    <div className="py-[20px] text-black" id="menu">
       <Dialog open={!user ? true : false}>
         <DialogContent className="sm:max-w-[425px] bg-white text-black">
           <DialogHeader>
@@ -465,32 +467,19 @@ const OCRComponent = () => {
         </DialogContent>
       </Dialog>
       <div className="root-wrapper">
-        <div className="flex items-center justify-between">
-          <p className="border-[1px] border-[#d1d0d0] p-[5px]">
-            <span className="font-bold">{user}</span>
-          </p>
+        <div className="flex flex-wrap mt-10">
+          <ListFood listFood={listFood} onSelectFood={onSelectFood} />
         </div>
-        <div
-          className={`bg-gray-200 rounded-[12px] p-[20px] ${
-            !userSelect?.id
-              ? "opacity-[0.4] cursor-not-allowed select-none"
-              : "opacity-1"
-          }`}
-        >
-          <div
-            className={`${
-              userSelect?.fullname !== "Hồng Phạm" &&
-              "opacity-[0.2] cursor-not-allowed"
-            }`}
-          >
+        <div>
+          {/* <div>
             <Input
               className="text-black w-[180px]"
               id="picture"
               type="file"
               onChange={handleFileChange}
             />{" "}
-          </div>
-          <div className="flex gap-[20px]">
+          </div> */}
+          {/* <div className="flex gap-[20px]">
             <div className="mt-[20px]">
               {(imageSrc || menu?.[0]?.image) && (
                 <img
@@ -503,125 +492,10 @@ const OCRComponent = () => {
                 />
               )}
             </div>
-            <div className="text-left mt-[20px]">
-              {loading && <p className="text-red-600">Đang xử lý AI ...</p>}
-              <p className="text-[14px]">
-                {listFood?.length > 0
-                  ? "Chọn món bên dưới:"
-                  : "Chưa có đồ ăn, vui lòng đợi 1 xíu nhen"}
-              </p>
-              <div className="flex flex-wrap">
-                {listFood?.map((elm, index) => {
-                  return (
-                    <div
-                      key={index + "-elm"}
-                      className="items-top flex space-x-2 py-[20px] mr-[30px]"
-                    >
-                      <Checkbox
-                        className="checked-order"
-                        onCheckedChange={() => onSelectFood(elm)}
-                        id={index}
-                      />
-                      <div className="grid gap-1.5 leading-none">
-                        <label
-                          htmlFor={index}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {elm}
-                        </label>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <Dialog
-                open={selectFood?.length > 0 && !isTimeout ? isPopup : false}
-                onOpenChange={() => setPopup(!isPopup)}
-              >
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    className={`${
-                      selectFood?.length > 0 && !isTimeout
-                        ? "opacity-1"
-                        : "opacity-[0.6] cursor-not-allowed"
-                    } bg-black mt-[20px] w-[200px] text-center mx-auto hover:text-black hover:bg-black`}
-                  >
-                    <p className="text-center mx-auto text-white">Đặt đơn</p>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] bg-white text-black">
-                  <DialogHeader>
-                    <DialogTitle className="text-black">Chốt đơn</DialogTitle>
-                    <DialogDescription className="text-black">
-                      Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
-                      <div className="mt-[20px]">
-                        {selectFood?.map((elm) => {
-                          let processed_text = elm.replace(pattern, "");
-                          return (
-                            <div className="mb-[20px]">
-                              <p
-                                key={processed_text}
-                                className="text-black font-bold mb-[6px]"
-                              >
-                                - {processed_text}
-                              </p>
-                              <RadioGroup
-                                onValueChange={(e) => getSelectRice(e, elm)}
-                                className="flex gap-[12px]"
-                                defaultValue="full-rice"
-                              >
-                                <div className="flex items-center space-x-2">
-                                  <RadioGroupItem
-                                    value="full-rice"
-                                    id="full-rice"
-                                  />
-                                  <Label htmlFor="full-rice">Có cơm</Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <RadioGroupItem
-                                    value="no-rice"
-                                    id="no-rice"
-                                  />
-                                  <Label htmlFor="no-rice">Không lấy cơm</Label>
-                                </div>
-                              </RadioGroup>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="items-center gap-4">
-                      <Textarea
-                        defaultValue={orderNote}
-                        onInput={(e) => setOrderNote(e.target.value)}
-                        placeholder="Note dô đây nhen"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    {/* <Button type="submit">Save changes</Button> */}
-                    <Button
-                      onClick={onOrder}
-                      variant="outline"
-                      role="combobox"
-                      className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
-                    >
-                      <p className="text-center mx-auto text-white">
-                        Bút xa gà chết
-                      </p>
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
+          </div> */}
         </div>
-        <div className="md:flex gap-[30px] mt-[40px] relative">
-          <div
+        <div className="mt-20">
+          {/* <div
             className={
               isTimeout
                 ? "bg-[#00000088] cursor-not-allowed select-none z-[1] absolute h-full w-full text-white text-[100px] font-bold flex justify-center items-center text-left"
@@ -631,8 +505,9 @@ const OCRComponent = () => {
             <span className="text-red-500">D</span>ON.
             <span className="text-red-500">D</span>A.
             <span className="text-red-500">D</span>AT
-          </div>
-          <div className={isTimeout && "p-[20px]"}>
+          </div> */}
+          <ListOrder groupedData={groupedData} onSelectFood={onSelectFood} />
+          {/* <div className={isTimeout && "p-[20px]"}>
             <Table
               className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${
                 !userSelect?.id
@@ -757,7 +632,7 @@ const OCRComponent = () => {
                 })}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -765,3 +640,96 @@ const OCRComponent = () => {
 };
 
 export default OCRComponent;
+
+// <div className="text-left mt-[20px]">
+// {loading && <p className="text-red-600">Đang xử lý AI ...</p>}
+// <p className="text-[14px]">
+//   {listFood?.length > 0
+//     ? "Chọn món bên dưới:"
+//     : "Chưa có đồ ăn, vui lòng đợi 1 xíu nhen"}
+// </p>
+
+// <Dialog
+//   open={selectFood?.length > 0 && !isTimeout ? isPopup : false}
+//   onOpenChange={() => setPopup(!isPopup)}
+// >
+//   <DialogTrigger asChild>
+//     <Button
+//       variant="outline"
+//       role="combobox"
+//       className={`${
+//         selectFood?.length > 0 && !isTimeout
+//           ? "opacity-1"
+//           : "opacity-[0.6] cursor-not-allowed"
+//       } bg-black mt-[20px] w-[200px] text-center mx-auto hover:text-black hover:bg-black`}
+//     >
+//       <p className="text-center mx-auto text-white">Đặt đơn</p>
+//     </Button>
+//   </DialogTrigger>
+//   <DialogContent className="sm:max-w-[425px] bg-white text-black">
+//     <DialogHeader>
+//       <DialogTitle className="text-black">Chốt đơn</DialogTitle>
+//       <DialogDescription className="text-black">
+//         Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
+//         <div className="mt-[20px]">
+//           {selectFood?.map((elm) => {
+//             let processed_text = elm.replace(pattern, "");
+//             return (
+//               <div className="mb-[20px]">
+//                 <p
+//                   key={processed_text}
+//                   className="text-black font-bold mb-[6px]"
+//                 >
+//                   - {processed_text}
+//                 </p>
+//                 <RadioGroup
+//                   onValueChange={(e) => getSelectRice(e, elm)}
+//                   className="flex gap-[12px]"
+//                   defaultValue="full-rice"
+//                 >
+//                   <div className="flex items-center space-x-2">
+//                     <RadioGroupItem
+//                       value="full-rice"
+//                       id="full-rice"
+//                     />
+//                     <Label htmlFor="full-rice">Có cơm</Label>
+//                   </div>
+//                   <div className="flex items-center space-x-2">
+//                     <RadioGroupItem
+//                       value="no-rice"
+//                       id="no-rice"
+//                     />
+//                     <Label htmlFor="no-rice">Không lấy cơm</Label>
+//                   </div>
+//                 </RadioGroup>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </DialogDescription>
+//     </DialogHeader>
+//     <div className="grid gap-4 py-4">
+//       <div className="items-center gap-4">
+//         <Textarea
+//           defaultValue={orderNote}
+//           onInput={(e) => setOrderNote(e.target.value)}
+//           placeholder="Note dô đây nhen"
+//         />
+//       </div>
+//     </div>
+//     <DialogFooter>
+//       {/* <Button type="submit">Save changes</Button> */}
+//       <Button
+//         onClick={onOrder}
+//         variant="outline"
+//         role="combobox"
+//         className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
+//       >
+//         <p className="text-center mx-auto text-white">
+//           Bút xa gà chết
+//         </p>
+//       </Button>
+//     </DialogFooter>
+//   </DialogContent>
+// </Dialog>
+// </div>

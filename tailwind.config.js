@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
   ],
   prefix: "",
   theme: {
@@ -18,6 +18,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        pastel: {
+          pink: "#FFCFC8",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -52,10 +55,11 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      borderRadius: {},
+      boxShadow: {
+        "button-small": "0px 6px 40px 0px rgba(231, 102, 81, 0.2)",
+        button: "0px 6px 40px 1px rgba(231, 102, 81, 0.3)",
+        button2: "0px 6px 40px 1px rgba(24, 141, 125, 0.32)",
       },
       keyframes: {
         "accordion-down": {
@@ -67,6 +71,7 @@ module.exports = {
           to: { height: "0" },
         },
       },
+
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
@@ -74,4 +79,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
