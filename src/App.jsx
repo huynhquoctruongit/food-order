@@ -25,6 +25,7 @@ import ListFood from "./modules/order/list-food";
 import ListOrder from "./modules/order/list-order";
 import ListRemaining from "./modules/order/list-remaining";
 import _ from "lodash";
+import ListFinal from "./modules/order/list-final";
 dayjs.extend(customParseFormat);
 dayjs.extend(utc); // Kích hoạt plugin UTC
 
@@ -54,7 +55,6 @@ const subscribeCore = async (event, cb) => {
 
 const OCRComponent = () => {
   const { toast } = useToast();
-  const refconnection = useRef(null);
   const refOder = useRef(null);
 
   const { data, mutate: mutateUser } = useSWR("/items/user_84");
@@ -112,95 +112,6 @@ const OCRComponent = () => {
     setFoodSelect([elm]);
   };
 
-  const handleFileChange = async (event) => {
-    if (userSelect?.fullname !== "Hồng Phạm") {
-      toast({
-        variant: "destructive",
-        title: "Không có quyền !",
-        description: "Có phải chị Hồng đó không ta :)))",
-      });
-    } else {
-      const file = event.target.files[0];
-      if (file) {
-        const newFormData = new FormData();
-
-        newFormData.append("file", file);
-        const imageUpload = await AxiosAPI.post("/files", newFormData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + access_token,
-          },
-        });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImageSrc(reader.result);
-          recognizeText(reader.result, imageUpload);
-        };
-        setLoading(true);
-        reader.readAsDataURL(file);
-      }
-    }
-  };
-
-  const recognizeText = (imageBase64, imageUpload) => {
-    Tesseract.recognize(
-      imageBase64,
-      "vie+eng" // Chỉ định mã ngôn ngữ là 'vie+eng' cho tiếng Việt và tiếng Anh
-    )
-      .then(({ data: { text } }) => {
-        processText(text, imageUpload);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const processText = (text, imageUpload) => {
-    const startIndex = text.toLowerCase().indexOf("có");
-    if (startIndex !== -1) {
-      text = text.substring(startIndex + 2);
-    }
-    const arr = generateText(text);
-    setArrayFood(arr);
-    const params = {
-      extract_menus: arr,
-      image: imageUpload.data.data.id,
-      date_created: utcTime,
-    };
-    AxiosAPI.post("/items/menus", params);
-  };
-  const generateText = (text) => {
-    text = text.replaceAll("#", "");
-    text = text.replaceAll("14", "4");
-    text = text.replaceAll(",", ".");
-    text = text.replaceAll("CƠM CHAY", "(CƠM CHAY) - ");
-    text = text.replaceAll("Cơm chay", "(CƠM CHAY) - ");
-    text = text.replaceAll("cơm chay", "(CƠM CHAY) - ");
-
-    let lines = text.split("\n");
-    let arr = [];
-    let currentMeal = "";
-    let filteredArr = lines.filter(
-      (item) => item !== "" && item !== "." && !/^\d+$/.test(item)
-    );
-    for (let line of filteredArr) {
-      if (/^\d+[.,]?\s*(.*)$/.test(line.trim())) {
-        if (currentMeal !== "") {
-          arr.push(currentMeal.trim());
-        }
-        currentMeal = line.trim();
-      } else {
-        currentMeal += " " + line.trim();
-      }
-    }
-
-    if (currentMeal !== "") {
-      arr.push(currentMeal.trim());
-    }
-
-    return arr;
-  };
   const onOrder = (message) => {
     setPopup(!isPopup);
     if (!userSelect?.id) return;
@@ -524,8 +435,11 @@ const OCRComponent = () => {
             <span className="text-red-500">D</span>A.
             <span className="text-red-500">D</span>AT
           </div> */}
-          <ListOrder groupedData={groupedData} deleteFood={deleteFood} />
+          <div className="hidden md:block">
+            <ListOrder groupedData={groupedData} deleteFood={deleteFood} />
+          </div>
           <ListRemaining userNonOrderd={userNonOrderd} />
+          <ListFinal order={refOder.current} />
           {/* <div className={isTimeout && "p-[20px]"}>
             <Table
               className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${

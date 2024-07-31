@@ -1,36 +1,148 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SWRConfig } from "swr";
-import { fetcherClient } from "./libs/api/axios-client";
+import { AxiosAPI, fetcherClient } from "./libs/api/axios-client";
 import Report from "@/pages/report";
 import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
 import { Button } from "./components/ui/button-hero.jsx";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
+import { access_token } from "./lib/utils";
+import { Loader2Icon } from "lucide-react";
+import Tesseract from "tesseract.js";
+import useMenu from "./hooks/use-menu";
+import dayjs from "dayjs";
 
 const GroupButtonHero = () => {
+  const [loading, setLoading] = useState();
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
   };
-  useEffect(() => {
-    console.log("render");
-  }, []);
+  const { mutate } = useMenu();
+  const { toast } = useToast();
+  const handleFileChange = async (event) => {
+    if (false) {
+      toast({
+        variant: "destructive",
+        title: "Không có quyền !",
+        description: "Có phải chị Hồng đó không ta :)))",
+      });
+    } else {
+      const file = event.target.files[0];
+      if (file) {
+        const newFormData = new FormData();
+
+        newFormData.append("file", file);
+        const imageUpload = await AxiosAPI.post("/files", newFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + access_token,
+          },
+        });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          recognizeText(reader.result, imageUpload);
+        };
+        setLoading(true);
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const recognizeText = (imageBase64, imageUpload) => {
+    Tesseract.recognize(
+      imageBase64,
+      "vie+eng" // Chỉ định mã ngôn ngữ là 'vie+eng' cho tiếng Việt và tiếng Anh
+    )
+      .then(({ data: { text } }) => {
+        processText(text, imageUpload);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const processText = async (text, imageUpload) => {
+    const startIndex = text.toLowerCase().indexOf("có");
+    if (startIndex !== -1) {
+      text = text.substring(startIndex + 2);
+    }
+    const arr = generateText(text);
+    const now = dayjs().add(7, "hour");
+    const utcTime = now.utc().format();
+    const params = {
+      extract_menus: arr,
+      image: imageUpload.data.data.id,
+      date_created: utcTime,
+    };
+    await AxiosAPI.post("/items/menus", params);
+    mutate();
+  };
+  const generateText = (text) => {
+    text = text.replaceAll("#", "");
+    text = text.replaceAll("14", "4");
+    text = text.replaceAll(",", ".");
+    text = text.replaceAll("CƠM CHAY", "(CƠM CHAY) - ");
+    text = text.replaceAll("Cơm chay", "(CƠM CHAY) - ");
+    text = text.replaceAll("cơm chay", "(CƠM CHAY) - ");
+
+    let lines = text.split("\n");
+    let arr = [];
+    let currentMeal = "";
+    let filteredArr = lines.filter(
+      (item) => item !== "" && item !== "." && !/^\d+$/.test(item)
+    );
+    for (let line of filteredArr) {
+      if (/^\d+[.,]?\s*(.*)$/.test(line.trim())) {
+        if (currentMeal !== "") {
+          arr.push(currentMeal.trim());
+        }
+        currentMeal = line.trim();
+      } else {
+        currentMeal += " " + line.trim();
+      }
+    }
+
+    if (currentMeal !== "") {
+      arr.push(currentMeal.trim());
+    }
+
+    return arr;
+  };
   return (
     <div className="flex items-center gap-6 mt-16">
       <Button variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
+      <input
+        type="file"
+        id="files"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
       <Button
         variant="secondary"
         size="default"
         className="flex items-center gap-2"
       >
-        Thêm menu
-        <SquaresPlusIcon className="w-4 h-4" />
+        <label
+          className="flex items-center gap-2 cursor-pointer"
+          htmlFor="files"
+        >
+          Thêm menu
+          {loading ? (
+            <Loader2Icon className="w-4 h-4 animate-spin" />
+          ) : (
+            <SquaresPlusIcon className="w-4 h-4" />
+          )}
+        </label>
       </Button>
     </div>
   );
@@ -51,29 +163,20 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <div>
               <div className="flex items-center justify-between root-wrapper py-3">
                 <h1 className="font-bold text-xl">
-                  ĐẶT CƠM VĂN PHÒNG LÒNG VÒNG
+                  ĐẶT CƠM{" "}
+                  <span className="hidden md:inline">VĂN PHÒNG LÒNG VÒNG</span>
                 </h1>
-                {/* <div className="">
-                <div className="root-wrapper flex items-center gap-[20px] py-[10px]">
-                  <Link to="/">
-                    <p className="cursor-pointer text-white">Đặt cơm</p>
-                  </Link>
-                  <Link to="/report?week=thisWeek">
-                    <p className="cursor-pointer text-white">Báo cáo</p>
-                  </Link>
-                </div>
-              </div> */}
                 <Profile />
               </div>
             </div>
-            <div className="relative flex items-center justify-center">
+            <div className="relative flex items-center justify-center pt-6 md:pt-0">
               <img
-                className="w-full object-contain aspect-[4/1]"
+                className="w-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
                 src="/hero.png"
                 alt=""
               />
 
-              <div className="absolute root-wrapper w-full flex items-center justify-between">
+              <div className="absolute root-wrapper w-full flex flex-col md:flex-row items-center justify-between">
                 <div className="text-left">
                   <h1 className="text-xl font-bold text-black">
                     APP ĐẶT CƠM TOP #1 Việt Nam

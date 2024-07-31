@@ -8,7 +8,7 @@ export const enumFood = [
   "/food3.png",
   "/food4.png",
 ];
-const ItemTable = ({ children, className }) => {
+export const ItemTable = ({ children, className }) => {
   return (
     <div
       className={
