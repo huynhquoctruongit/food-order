@@ -310,7 +310,7 @@ const OCRComponent = () => {
     });
   };
   return (
-    <div className="py-[20px] text-black" id="menu">
+    <div className="py-[20px] text-black pb-40" id="menu">
       <ModalChoose
         {...{
           selectFood,
@@ -651,7 +651,7 @@ const ModalChoose = ({
               className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
             >
               <span className="text-center mx-auto text-white">
-                Bút xa gà chết
+                Bút sa gà chết
               </span>
             </Button>
           </DialogFooter>

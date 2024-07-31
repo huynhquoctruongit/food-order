@@ -161,7 +161,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <div className="bg-white/40">
           <BrowserRouter>
             <div>
-              <div className="flex items-center justify-between root-wrapper py-3">
+              <div className="flex items-center justify-between text-black root-wrapper py-3">
                 <h1 className="font-bold text-xl">
                   ĐẶT CƠM{" "}
                   <span className="hidden md:inline">VĂN PHÒNG LÒNG VÒNG</span>
