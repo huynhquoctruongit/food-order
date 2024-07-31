@@ -2,7 +2,7 @@ import axios from "axios";
 
 // axios for API CMS
 export const AxiosClient = axios.create({
-  baseURL: import.meta.env.VITE_CMS,
+  baseURL: "https://admin.qnsport.vn",
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,10 +11,9 @@ AxiosClient.interceptors.response.use(function (response: any) {
   return response;
 });
 
-
 // axios for API Go
 export const AxiosAPI = axios.create({
-  baseURL: import.meta.env.VITE_API,
+  baseURL: "https://admin.qnsport.vn",
   headers: {
     "Content-Type": "application/json",
   },
