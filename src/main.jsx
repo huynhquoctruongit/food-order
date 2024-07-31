@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
@@ -13,10 +13,12 @@ import { SquaresPlusIcon } from "@heroicons/react/24/outline";
 
 const GroupButtonHero = () => {
   const onScroll = () => {
-    console.log("jáhdjhs");
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
   };
+  useEffect(() => {
+    console.log("render");
+  }, []);
   return (
     <div className="flex items-center gap-6 mt-16">
       <Button variant="default" size="default" onClick={onScroll}>
@@ -43,7 +45,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         fetcher: fetcherClient,
       }}
     >
-      <div className="bg-[url(/background.png)] bg-contain ">
+      <div className="bg-[url(/background.png)] bg-contain text-left">
         <div className="bg-white/40">
           <BrowserRouter>
             <div>
@@ -95,7 +97,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 element={
                   <>
                     <App />
-                    <Toaster> </Toaster>
                   </>
                 }
                 path="/"
@@ -103,7 +104,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <Route
                 element={
                   <>
-                    <Toaster></Toaster>
                     <Report />
                   </>
                 }
@@ -113,6 +113,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               {/* <Route element={<PrivateRoute />} path="*" /> */}
             </Routes>
           </BrowserRouter>
+          <Toaster />
         </div>
       </div>
     </SWRConfig>

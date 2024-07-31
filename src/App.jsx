@@ -1,19 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Tesseract from "tesseract.js";
 import useSWR from "swr";
 import AxiosAPI from "@/libs/api/axios-client.ts";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { staticToken, createDirectus, realtime } from "@directus/sdk";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -24,7 +14,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,17 +23,39 @@ import { useToast } from "@/components/ui/use-toast";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import ListFood from "./modules/order/list-food";
 import ListOrder from "./modules/order/list-order";
+import ListRemaining from "./modules/order/list-remaining";
+import _ from "lodash";
 dayjs.extend(customParseFormat);
 dayjs.extend(utc); // Kích hoạt plugin UTC
 
+const url = "https://admin.qnsport.vn/websocket";
+const access_token = "6rYHvFJ2LRtR3Qg7DrhJK-_MTQGsBYnr";
+
+const connection = createDirectus(url)
+  .with(staticToken(access_token))
+  .with(realtime());
+connection.connect();
+
+const subscribeDelete = _.debounce((cb) => subscribeCore("delete", cb), 100);
+const subscribeCreate = _.debounce((cb) => subscribeCore("create", cb), 100);
+
+const subscribeCore = async (event, cb) => {
+  const { subscription, unsubscribe } = await connection.subscribe("order_84", {
+    event: event,
+    query: {
+      sort: "-date_created",
+      fields: ["*", "user.*"],
+    },
+  });
+  for await (const message of subscription) {
+    if (message.event === event) cb(message);
+  }
+};
+
 const OCRComponent = () => {
   const { toast } = useToast();
-  const url = "https://admin.qnsport.vn/websocket";
-  const access_token = "6rYHvFJ2LRtR3Qg7DrhJK-_MTQGsBYnr";
-  const connection = createDirectus(url)
-    .with(staticToken(access_token))
-    .with(realtime());
-  connection.connect();
+  const refconnection = useRef(null);
+  const refOder = useRef(null);
 
   const { data, mutate: mutateUser } = useSWR("/items/user_84");
   const now = dayjs().add(7, "hour");
@@ -59,6 +70,9 @@ const OCRComponent = () => {
     `/items/menus?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`
   );
   const dataUser = data?.data?.data;
+  refOder.current = orderToday?.data?.data;
+  const refFunc = useRef(null);
+
   const menu = menuToday?.data?.data;
   const [imageSrc, setImageSrc] = useState("");
   const [arrayFood, setArrayFood] = useState([]);
@@ -77,13 +91,13 @@ const OCRComponent = () => {
 
   let pattern = /^\d+[.,]?\s*/;
 
-  useEffect(() => {
-    const userLocal = localStorage.getItem("user");
-    if (userLocal) {
-      setSelectUser(JSON.parse(userLocal));
-      setUser(JSON.parse(userLocal)?.fullname);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userLocal = localStorage.getItem("user");
+  //   if (userLocal) {
+  //     setSelectUser(JSON.parse(userLocal));
+  //     setUser(JSON.parse(userLocal)?.fullname);
+  //   }
+  // }, []);
 
   useEffect(() => {
     const orderMembers = orderToday?.data?.data;
@@ -94,11 +108,8 @@ const OCRComponent = () => {
   }, [orderToday]);
 
   const onSelectFood = (elm) => {
-    if (selectFood.includes(elm)) {
-      setFoodSelect(selectFood.filter((item) => item !== elm));
-    } else {
-      setFoodSelect([...selectFood, elm]);
-    }
+    setPopup(true);
+    setFoodSelect([elm]);
   };
 
   const handleFileChange = async (event) => {
@@ -190,7 +201,7 @@ const OCRComponent = () => {
 
     return arr;
   };
-  const onOrder = () => {
+  const onOrder = (message) => {
     setPopup(!isPopup);
     if (!userSelect?.id) return;
     selectFood?.map((elm) => {
@@ -199,7 +210,7 @@ const OCRComponent = () => {
       const params = {
         name: processed_text,
         price: price,
-        note: orderNote,
+        note: message,
         user: userSelect.id,
         date_created: utcTime,
       };
@@ -218,63 +229,60 @@ const OCRComponent = () => {
       action: "delete",
       id: item.id,
     });
-    subscribe("delete");
+  };
+  const createOrderSuccess = (data) => {
+    toast({
+      variant: "success",
+      title: data.user.fullname,
+      description: (
+        <span className="">
+          <img
+            className="w-5 h-5 shadow-button rounded-full inline mr-2"
+            src="/menu2.png"
+            alt=""
+          />
+          Đã đặt cơm <span className="font-bold"> {data.name} </span>
+        </span>
+      ),
+    });
+  };
+  const deleteOrderSuccess = (data) => {
+    toast({
+      variant: "success",
+      title: "... Đã xóa",
+      description: "Đã xóa món " + data,
+    });
+  };
+
+  refFunc.current = {
+    create: createOrderSuccess,
+    delete: deleteOrderSuccess,
+    mutate: mutateOrder,
   };
   useEffect(() => {
-    const cleanup = connection.onWebSocket("message", function (data) {
-      if (data.type == "auth" && data.status == "ok") {
-        subscribe("create");
-      }
+    const userLocal = localStorage.getItem("user");
+    if (userLocal) {
+      setSelectUser(JSON.parse(userLocal));
+      setUser(JSON.parse(userLocal)?.fullname);
+    }
+    subscribeCreate((message) => {
+      const newData = [...refOder.current, ...message.data];
+      refFunc.current.mutate(
+        { data: { data: newData } },
+        { revalidate: false }
+      );
+      refFunc.current.create(message.data[0] || {});
     });
-    connection.connect();
-    return cleanup;
+    subscribeDelete((message) => {
+      const newData = refOder.current.filter(
+        (item) => item.id !== message.data[0]
+      );
+      const data = refOder.current.find((item) => item.id === message.data[0]);
+      mutateOrder({ data: { data: newData } }, { revalidate: false });
+      deleteOrderSuccess(data?.name);
+    });
   }, []);
 
-  async function subscribe(event) {
-    const { subscription } = await connection.subscribe("order_84", {
-      event,
-      query: {
-        sort: "-date_created",
-        fields: ["*", "user.*"],
-      },
-    });
-
-    for await (const message of subscription) {
-      receiveMessage(message);
-    }
-  }
-
-  const receiveMessage = (function () {
-    return function (data) {
-      if (
-        data.type == "subscription" &&
-        (data.event == "create" || data.event == "delete")
-      ) {
-        mutateOrder();
-        if (data.event === "delete") {
-          const filterDelete = orderList?.filter(
-            (elm) => elm.id !== data?.data[0]
-          );
-          setOrderList(filterDelete);
-        } else {
-          toast({
-            variant: "success",
-            title: data?.data?.[0].user.fullname,
-            description: "✌ Đã đặt",
-          });
-          setFoodSelect([]);
-          const fullName = data?.data?.[0]?.user?.fullname;
-          const userLocal = localStorage.getItem("user");
-          if (fullName == JSON.parse(userLocal).fullname) {
-            setTimeout(() => {
-              location.reload();
-            }, 1500);
-          }
-          setOrderList((prevOrderList) => [...prevOrderList, ...data?.data]);
-        }
-      }
-    };
-  })();
   const onCreateUser = async () => {
     if (isAdmin) {
       goAdmin();
@@ -295,11 +303,7 @@ const OCRComponent = () => {
       }
     }
   };
-  const logOut = () => {
-    localStorage.removeItem("user");
-    setSelectUser({});
-    setUser("");
-  };
+
   const goAdmin = async () => {
     const res = await AxiosAPI.get("/items/user_84");
     const userGet = res.data?.data;
@@ -375,20 +379,19 @@ const OCRComponent = () => {
 
     return result;
   };
-  const finalList = orderList && processItems(orderList);
   function isTimeBetweenCurrent() {
     const currentTime = dayjs();
     const startTime = dayjs("13:00", "HH:mm");
     const endTime = dayjs("24:00", "HH:mm");
     return currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
   }
-  useEffect(() => {
-    setIsTimeout(isTimeBetweenCurrent());
-    const interval = setInterval(() => {
-      setIsTimeout(isTimeBetweenCurrent());
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   setIsTimeout(isTimeBetweenCurrent());
+  //   const interval = setInterval(() => {
+  //     setIsTimeout(isTimeBetweenCurrent());
+  //   }, 10000);
+  //   return () => clearInterval(interval);
+  // }, []);
   const getSelectRice = (e, item) => {
     setOptionRice({
       ...optionRice,
@@ -397,28 +400,41 @@ const OCRComponent = () => {
   };
   return (
     <div className="py-[20px] text-black" id="menu">
+      <ModalChoose
+        {...{
+          selectFood,
+          isTimeout,
+          isPopup,
+          getSelectRice,
+          setOrderNote,
+          orderNote,
+          loading,
+          onOrder,
+          setPopup,
+        }}
+      />
       <Dialog open={!user ? true : false}>
         <DialogContent className="sm:max-w-[425px] bg-white text-black">
           <DialogHeader>
             <DialogTitle className="text-black">
               Cho tui biết ai đang đặt vậy?
             </DialogTitle>
-            <DialogDescription className="text-black">
+            {/* <DialogDescription className="text-black">
               Không hiện lần sau nữa đâu nè
               <div className="mt-[20px]">
                 {selectFood?.map((elm) => {
                   let processed_text = elm.replace(pattern, "");
                   return (
-                    <p key={processed_text} className="text-black">
+                    <div key={processed_text} className="text-black">
                       - {processed_text}
-                    </p>
+                    </div>
                   );
                 })}
               </div>
-            </DialogDescription>
+            </DialogDescription> */}
           </DialogHeader>
           <div className="grid gap-2 py-4">
-            <p>{isAdmin ? "Mật khẩu" : "Họ tên"}</p>
+            <div>{isAdmin ? "Mật khẩu" : "Họ tên"}</div>
             {isAdmin ? (
               <div className="items-center gap-4">
                 <Input
@@ -461,7 +477,9 @@ const OCRComponent = () => {
               role="combobox"
               className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
             >
-              <p className="text-center mx-auto text-white">Vào đặt thôii</p>
+              <span className="text-center mx-auto text-white">
+                Vào đặt thôi
+              </span>
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -506,7 +524,8 @@ const OCRComponent = () => {
             <span className="text-red-500">D</span>A.
             <span className="text-red-500">D</span>AT
           </div> */}
-          <ListOrder groupedData={groupedData} onSelectFood={onSelectFood} />
+          <ListOrder groupedData={groupedData} deleteFood={deleteFood} />
+          <ListRemaining userNonOrderd={userNonOrderd} />
           {/* <div className={isTimeout && "p-[20px]"}>
             <Table
               className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${
@@ -641,95 +660,89 @@ const OCRComponent = () => {
 
 export default OCRComponent;
 
-// <div className="text-left mt-[20px]">
-// {loading && <p className="text-red-600">Đang xử lý AI ...</p>}
-// <p className="text-[14px]">
-//   {listFood?.length > 0
-//     ? "Chọn món bên dưới:"
-//     : "Chưa có đồ ăn, vui lòng đợi 1 xíu nhen"}
-// </p>
+const ModalChoose = ({
+  selectFood,
+  isPopup,
+  getSelectRice,
+  orderNote,
+  setPopup,
+  onOrder,
+}) => {
+  let pattern = /^\d+[.,]?\s*/;
+  const [text, setText] = useState("");
+  return (
+    <div className="text-left mt-[20px]">
+      {/* {loading && <p className="text-red-600">Đang xử lý AI ...</p>}
+      <p className="text-[14px]">
+        {listFood?.length > 0
+          ? "Chọn món bên dưới:"
+          : "Chưa có đồ ăn, vui lòng đợi 1 xíu nhen"}
+      </p> */}
 
-// <Dialog
-//   open={selectFood?.length > 0 && !isTimeout ? isPopup : false}
-//   onOpenChange={() => setPopup(!isPopup)}
-// >
-//   <DialogTrigger asChild>
-//     <Button
-//       variant="outline"
-//       role="combobox"
-//       className={`${
-//         selectFood?.length > 0 && !isTimeout
-//           ? "opacity-1"
-//           : "opacity-[0.6] cursor-not-allowed"
-//       } bg-black mt-[20px] w-[200px] text-center mx-auto hover:text-black hover:bg-black`}
-//     >
-//       <p className="text-center mx-auto text-white">Đặt đơn</p>
-//     </Button>
-//   </DialogTrigger>
-//   <DialogContent className="sm:max-w-[425px] bg-white text-black">
-//     <DialogHeader>
-//       <DialogTitle className="text-black">Chốt đơn</DialogTitle>
-//       <DialogDescription className="text-black">
-//         Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
-//         <div className="mt-[20px]">
-//           {selectFood?.map((elm) => {
-//             let processed_text = elm.replace(pattern, "");
-//             return (
-//               <div className="mb-[20px]">
-//                 <p
-//                   key={processed_text}
-//                   className="text-black font-bold mb-[6px]"
-//                 >
-//                   - {processed_text}
-//                 </p>
-//                 <RadioGroup
-//                   onValueChange={(e) => getSelectRice(e, elm)}
-//                   className="flex gap-[12px]"
-//                   defaultValue="full-rice"
-//                 >
-//                   <div className="flex items-center space-x-2">
-//                     <RadioGroupItem
-//                       value="full-rice"
-//                       id="full-rice"
-//                     />
-//                     <Label htmlFor="full-rice">Có cơm</Label>
-//                   </div>
-//                   <div className="flex items-center space-x-2">
-//                     <RadioGroupItem
-//                       value="no-rice"
-//                       id="no-rice"
-//                     />
-//                     <Label htmlFor="no-rice">Không lấy cơm</Label>
-//                   </div>
-//                 </RadioGroup>
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </DialogDescription>
-//     </DialogHeader>
-//     <div className="grid gap-4 py-4">
-//       <div className="items-center gap-4">
-//         <Textarea
-//           defaultValue={orderNote}
-//           onInput={(e) => setOrderNote(e.target.value)}
-//           placeholder="Note dô đây nhen"
-//         />
-//       </div>
-//     </div>
-//     <DialogFooter>
-//       {/* <Button type="submit">Save changes</Button> */}
-//       <Button
-//         onClick={onOrder}
-//         variant="outline"
-//         role="combobox"
-//         className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
-//       >
-//         <p className="text-center mx-auto text-white">
-//           Bút xa gà chết
-//         </p>
-//       </Button>
-//     </DialogFooter>
-//   </DialogContent>
-// </Dialog>
-// </div>
+      <Dialog open={isPopup} onOpenChange={() => setPopup(false)}>
+        <DialogContent className="sm:max-w-[425px] bg-white text-black">
+          <DialogHeader>
+            <DialogTitle className="text-black">Chốt đơn</DialogTitle>
+            <DialogDescription className="text-black">
+              Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
+              <div className="mt-[20px]">
+                {selectFood?.map((elm, index) => {
+                  let processed_text = elm.replace(pattern, "");
+                  return (
+                    <div className="mb-[20px]" key={index + "modal hihi"}>
+                      <div
+                        key={processed_text}
+                        className="text-black font-bold mb-[6px]"
+                      >
+                        - {processed_text}
+                      </div>
+                      <RadioGroup
+                        onValueChange={(e) => getSelectRice(e, elm)}
+                        className="flex gap-[12px]"
+                        defaultValue="full-rice"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="full-rice" id="full-rice" />
+                          <Label htmlFor="full-rice">Có cơm</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="no-rice" id="no-rice" />
+                          <Label htmlFor="no-rice">Không lấy cơm</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  );
+                })}
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="items-center gap-4">
+              <Textarea
+                value={text}
+                autoFocus={false}
+                onInput={(e) => setText(e.target.value)}
+                placeholder="Note dô đây nhen"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            {/* <Button type="submit">Save changes</Button> */}
+            <Button
+              onClick={() => {
+                onOrder(text), setText("");
+              }}
+              variant="outline"
+              role="combobox"
+              className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
+            >
+              <span className="text-center mx-auto text-white">
+                Bút xa gà chết
+              </span>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};

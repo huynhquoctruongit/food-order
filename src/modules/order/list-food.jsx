@@ -2,8 +2,8 @@ const enumFood = ["/food1.png", "/food2.png", "/food3.png", "/food4.png"];
 const ListFood = ({ listFood, onSelectFood }) => {
   return (
     <div className="flex items-center gap-10 relative">
-      <img className="absolute z-0 top-0 right-10 w-64" src="/bg-opacity.png" />
-      <div className="w-1/5">
+      <img className="absolute z-0 top-0 right-10 w-64 opacity-70" src="/bg-opacity.png" />
+      <div className="w-1/5 ">
         <img src="/book.png" alt="" />
       </div>
       <div className="w-4/5 flex flex-wrap gap-5 relative z-10">
@@ -18,7 +18,7 @@ const ListFood = ({ listFood, onSelectFood }) => {
               <div className="h-[100px] aspect-square bg-[#FFCFC8]/20 flex items-center justify-center">
                 <img className="" src={enumFood[index % 4]} alt="" />
               </div>
-              <div className="flex-1 text-left text-sm font-bold p-2 text-gray-700">
+              <div className="flex-1 text-left text-sm p-2 text-gray-700">
                 {text || elm}
               </div>
             </div>

@@ -1,6 +1,13 @@
 import dayjs from "dayjs";
+import { XIcon } from "lucide-react";
+import { useLocalStorage } from "usehooks-ts";
 
-const enumFood = ["/food1.png", "/food2.png", "/food3.png", "/food4.png"];
+export const enumFood = [
+  "/food1.png",
+  "/food2.png",
+  "/food3.png",
+  "/food4.png",
+];
 const ItemTable = ({ children, className }) => {
   return (
     <div
@@ -14,12 +21,13 @@ const ItemTable = ({ children, className }) => {
 };
 const options = [
   { title: "Đồng chí", value: "dongchi", className: "w-4/12" },
-  { title: "Món", value: "mon", className: "w-3/12" },
-  { title: "Ghi chú", value: "ghi-chu", className: "w-2/12" },
-  { title: "Đặt lúc", value: "date-luc", className: "w-4/12" },
+  { title: "Món", value: "mon", className: "w-4/12" },
+  { title: "Ghi chú", value: "ghi-chu", className: "w-3/12" },
+  { title: "Thời gian", value: "date-luc", className: "w-2/12" },
   { title: "Tổng", value: "tong", className: "w-2/12" },
 ];
-const ListOrder = ({ groupedData }) => {
+const ListOrder = ({ groupedData, deleteFood }) => {
+  const [user, _] = useLocalStorage("user", {});
   return (
     <div className="w-full border border-gray-300 rounded-md">
       <div className="flex items-center w-full">
@@ -42,7 +50,7 @@ const ListOrder = ({ groupedData }) => {
               className="flex items-stretch border-gray-300 border-t text-gray-500 text-md"
             >
               <ItemTable className={options[0].className}>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full">
                   <img
                     src={enumFood[index % enumFood.length]}
                     alt=""
@@ -51,24 +59,50 @@ const ListOrder = ({ groupedData }) => {
                   <span>{elm.user.fullname}</span>
                 </div>
               </ItemTable>
-              <ItemTable
-                className={options[1].className + " flex flex-col gap-2"}
-              >
-                {elm.items.map((el) => {
-                  return <div key={el.name + "name"}>{el.name}</div>;
-                })}
+              <ItemTable className={options[1].className}>
+                <div className="flex flex-col gap-2">
+                  {elm.items.map((el, index) => {
+                    return (
+                      <div
+                        key={el.name + index + "name"}
+                        className="flex items-center"
+                      >
+                        <span className="mr-3"> -{el.name} </span>
+                        {user.id == elm.user.id && (
+                          <div
+                            onClick={() => {
+                              deleteFood(el);
+                            }}
+                            className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"
+                          >
+                            <XIcon className="w-3 h-3 stroke-white " />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </ItemTable>
               <ItemTable className={options[2].className}>
-                {elm.items.reduce(
-                  (total, item) => total + parseInt(item.price),
-                  0
-                )}
-                .000 vnd
+                <div className="flex flex-col gap-2">
+                  {elm.items.map((el, index) => {
+                    return (
+                      <div key={el.note + "note" + index}>
+                        {el.note ? "-" : ""}
+                        {el.note || " "}
+                      </div>
+                    );
+                  })}
+                </div>
               </ItemTable>
               <ItemTable className={options[3].className}>
-                {elm.items.map((el) => {
-                  return <div  key={el.note + "note"}>{el.note}</div>;
-                })}
+                <div className="flex flex-col gap-2">
+                  {elm.items.map((el, index) => (
+                    <div key={el.date_created + "note" + index}>
+                      {dayjs(el.date_created).add(-7, "hour").format("HH:mm")}
+                    </div>
+                  ))}
+                </div>
               </ItemTable>
               <ItemTable className={options[4].className}>
                 {elm.items.reduce(

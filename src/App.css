@@ -7,11 +7,13 @@
   width: 100%;
 }
 
-.root-wrapper {
-  max-width: 1280px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 20px;
+@layer {
+  .root-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    text-align: center;
+    @apply px-20;
+  }
 }
 
 .logo {
