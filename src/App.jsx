@@ -109,6 +109,11 @@ const OCRComponent = () => {
   }, [orderToday]);
 
   const onSelectFood = (elm) => {
+    const now = dayjs();
+    // const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
+    // const valid = dayjs().unix() < time;
+    // console.log(valid);
+
     setPopup(true);
     setFoodSelect([elm]);
   };
