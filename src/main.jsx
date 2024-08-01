@@ -117,7 +117,7 @@ const GroupButtonHero = () => {
     return arr;
   };
   return (
-    <div className="flex items-center gap-6 mt-16">
+    <div className="flex flex-col md:flex-row items-center gap-6 mt-6 md:mt-16">
       <Button variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
@@ -153,15 +153,16 @@ const GroupButtonHero = () => {
   );
 };
 
+let isPlaying = false;
 const MainApp = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {
     const audio = new Audio("/audio.mp3");
     audio.volumn = 0.5;
-    let isPlaying = false;
 
     document.addEventListener("click", function () {
       if (isPlaying) return;
+      console.log(isPlaying);
       audio.play();
       setPlay(true);
       isPlaying = true;
@@ -187,7 +188,7 @@ const MainApp = () => {
             <BrowserRouter>
               <div>
                 <div className="flex items-center justify-between text-black root-wrapper py-3">
-                  <h1 className="font-bold text-xl" id="logo">
+                  <h1 className="font-bold text-sm md:text-xl" id="logo">
                     NƯỚC{" "}
                     <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
                       XẾ CHIỀU TÀ
@@ -196,18 +197,20 @@ const MainApp = () => {
                   <Profile />
                 </div>
               </div>
-              <div className="relative flex items-center justify-center pt-6 md:pt-0">
+              <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
                 <img
-                  className="w-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
+                  className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
                   src="/hero.png"
                   alt=""
                 />
-
-                <div className="absolute root-wrapper w-full ">
+                <div className="absolute root-wrapper w-full">
                   <div className="flex flex-col md:flex-row items-center justify-between relative">
                     <div className="text-left ">
-                      <h1 className="text-xl md:text-3xl font-bold text-black">
-                        APP ĐẶT CƠM TOP #1 Việt Nam
+                      <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
+                        APP ĐẶT CƠM
+                        <br className="md:hidden" />
+                        <br className="md:hidden" />
+                        TOP #1 Việt Nam
                       </h1>
                       <div className="mt-6 text-gray-700">
                         Một miếng khi đói bằng một gói khi no lòi họng. <br />

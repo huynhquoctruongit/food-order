@@ -338,7 +338,7 @@ const OCRComponent = () => {
     });
   };
   return (
-    <div className="py-[20px] text-black pb-40" id="menu">
+    <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
       <ModalChoose
         {...{
           selectFood,
@@ -451,7 +451,7 @@ const OCRComponent = () => {
             </div>
           </div> */}
         </div>
-        <div className="mt-20">
+        <div className="mt-10 md:mt-20">
           {/* <div
             className={
               isTimeout
@@ -463,11 +463,11 @@ const OCRComponent = () => {
             <span className="text-red-500">D</span>A.
             <span className="text-red-500">D</span>AT
           </div> */}
-          <div className="hidden md:block">
-            <ListOrder groupedData={groupedData} deleteFood={deleteFood} />
-          </div>
+          <ListOrder groupedData={groupedData} deleteFood={deleteFood} />
           <ListRemaining userNonOrderd={userNonOrderd} />
-          <ListFinal order={refOder.current} />
+          <div className="hidden md:block">
+            <ListFinal order={refOder.current} />
+          </div>
           {/* <div className={isTimeout && "p-[20px]"}>
             <Table
               className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${

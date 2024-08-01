@@ -29,12 +29,12 @@ const ListFinal = ({ order }) => {
     return options[index].className;
   };
   return (
-    <div className="w-full border border-gray-300 rounded-md mt-10">
+    <div className="w-full border border-pastel-pink rounded-md mt-10">
       <div className="flex items-center justify-center">
         {options.map((option, index) => {
           return (
             <ItemTable
-              className={option.className + " font-bold text-gray-600"}
+              className={option.className + " font-bold text-gray-600 border-pastel-pink"}
               key={index + "-option"}
             >
               {option.title}
@@ -47,14 +47,17 @@ const ListFinal = ({ order }) => {
           const items = groupedData[key];
           const group = groupBy(items, "price");
           return (
-            <div key={key} className="flex items-stretch border-gray-300 border-t text-gray-500 text-md">
-              <ItemTable className={getClass(0) + " gap-2"}>
+            <div
+              key={key}
+              className="flex items-stretch border-pastel-pink border-t text-gray-500 text-md"
+            >
+              <ItemTable className={getClass(0) + " gap-2 border-pastel-pink"}>
                 <div className="flex gap-2">
                   <NumberOval>{items.length}</NumberOval>
                   {key}
                 </div>
               </ItemTable>
-              <ItemTable className={getClass(1) + " gap-2 "}>
+              <ItemTable className={getClass(1) + " gap-2 border-pastel-pink"}>
                 <div className="flex flex-col gap-2">
                   {Object.keys(group).map((keyx, index) => {
                     const item = group[keyx];
@@ -69,7 +72,7 @@ const ListFinal = ({ order }) => {
                   })}
                 </div>
               </ItemTable>
-              <ItemTable className={getClass(2) + " gap-2 "}>
+              <ItemTable className={getClass(2) + " gap-2 border-pastel-pink"}>
                 <div className="flex flex-col gap-4">
                   {items.map((item, index) => {
                     if (!item.note) return null;
@@ -90,7 +93,7 @@ const ListFinal = ({ order }) => {
             </div>
           );
         })}
-        <div className="flex py-2 items-stretch border-gray-300 border-t text-gray-500 text-md">
+        <div className="flex py-2 items-stretch border-pastel-pink border-t text-gray-500 text-md bg-pastel-pink/20">
           <ItemTable>
             {order?.length > 0 && (
               <div className="flex items-center gap-3">
