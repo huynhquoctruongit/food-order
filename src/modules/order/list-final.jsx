@@ -2,8 +2,8 @@ import { ItemTable } from "./list-order";
 import groupBy from "lodash/groupBy";
 const options = [
   { title: "Món", value: "mon", className: "w-5/12" },
-  { title: "Món", value: "mon", className: "w-3/12" },
-  { title: "Lưu ý", value: "note", className: "w-4/12" },
+  { title: "Cơm", value: "ss", className: "w-2/12" },
+  { title: "Lưu ý", value: "note", className: "w-5/12" },
 ];
 
 const NumberOval = ({ children }) => {
@@ -46,7 +46,6 @@ const ListFinal = ({ order }) => {
         {Object.keys(groupedData).map((key, index) => {
           const items = groupedData[key];
           const group = groupBy(items, "price");
-          console.log(group);
           return (
             <div className="flex items-stretch border-gray-300 border-t text-gray-500 text-md">
               <ItemTable className={getClass(0) + " gap-2"}>
@@ -59,6 +58,7 @@ const ListFinal = ({ order }) => {
                 <div className="flex flex-col gap-2">
                   {Object.keys(group).map((keyx, index) => {
                     const item = group[keyx];
+                    if (keyx !== "25") return null;
                     return (
                       <Item
                         key={index + key}
@@ -70,16 +70,40 @@ const ListFinal = ({ order }) => {
                 </div>
               </ItemTable>
               <ItemTable className={getClass(2) + " gap-2 "}>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-4">
                   {items.map((item, index) => {
                     if (!item.note) return null;
-                    return <div key={index + key}>{item.note}</div>;
+                    return (
+                      <div
+                        key={index + key}
+                        className="flex items-center gap-3"
+                      >
+                        <div className="w-fit h-6 items-center flex px-2 text-sm rounded-full border border-dashed border-gray-700">
+                          1 phần
+                        </div>
+                        {item.note}
+                      </div>
+                    );
                   })}
                 </div>
               </ItemTable>
             </div>
           );
         })}
+        <div className="flex py-2 items-stretch border-gray-300 border-t text-gray-500 text-md">
+          <ItemTable>
+            {order?.length > 0 && (
+              <div className="flex items-center gap-3">
+                Tổng cộng:
+                <img src="/bird.png" className="w-10" alt="" />
+                <div className="w-fit px-4 h-8 items-center justify-center flex rounded-full border border-gray-200 border-dashed relative ">
+                  <span className="ml-2">{order?.length} Phần</span>
+                </div>
+                {/* <img src="/bird2.png" className="w-10" alt="" /> */}
+              </div>
+            )}
+          </ItemTable>
+        </div>
       </div>
     </div>
   );

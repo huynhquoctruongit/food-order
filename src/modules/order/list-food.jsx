@@ -1,13 +1,15 @@
+import useOrder from "@/hooks/use-order";
 import { enumFood } from "../../lib/utils";
 
 const ListFood = ({ listFood, onSelectFood }) => {
+  const { orders } = useOrder();
   return (
     <div className="flex flex-col md:flex-row gap-10 relative items-stretch">
       <img
         className="absolute z-0 top-0 right-10 w-64 opacity-70"
         src="/bg-opacity.png"
       />
-      <div className="w-full md:w-1/5 ">
+      <div className="w-full md:w-1/5 relative">
         <img src="/book.png" alt="" />
       </div>
       <div className="w-full md:w-4/5 flex flex-wrap gap-5 relative z-10">

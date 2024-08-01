@@ -110,9 +110,17 @@ const OCRComponent = () => {
 
   const onSelectFood = (elm) => {
     const now = dayjs();
-    // const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
-    // const valid = dayjs().unix() < time;
-    // console.log(valid);
+    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
+    const valid = dayjs().unix() < time;
+
+    if (!valid) {
+      toast({
+        variant: "destructive",
+        title: "Hết giờ rồi",
+        description: "Hết giờ đặt cơm rồi nha",
+      });
+      return;
+    }
 
     setPopup(true);
     setFoodSelect([elm]);
@@ -140,6 +148,19 @@ const OCRComponent = () => {
     });
   };
   const deleteFood = (item) => {
+    const now = dayjs();
+    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
+    const valid = dayjs().unix() < time;
+
+    if (!valid) {
+      toast({
+        variant: "destructive",
+        title: "Hết giờ rồi",
+        description: "Hết giờ đặt cơm rồi nha",
+      });
+      return;
+    }
+
     connection.sendMessage({
       type: "items",
       collection: "order_84",
