@@ -1,13 +1,9 @@
 import dayjs from "dayjs";
 import { XIcon } from "lucide-react";
 import { useLocalStorage } from "usehooks-ts";
+import { enumFood } from "../../lib/utils";
 
-export const enumFood = [
-  "/food1.png",
-  "/food2.png",
-  "/food3.png",
-  "/food4.png",
-];
+ 
 export const ItemTable = ({ children, className }) => {
   return (
     <div

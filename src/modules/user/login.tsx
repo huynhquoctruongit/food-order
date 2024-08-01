@@ -1,25 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-import Tesseract from "tesseract.js";
-import useSWR from "swr";
-import AxiosAPI from "@/libs/api/axios-client.ts";
+import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { staticToken, createDirectus, realtime } from "@directus/sdk";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc"; // Import plugin UTC để xử lý múi giờ UTC
-import { useToast } from "@/components/ui/use-toast";
 import { useLocalStorage } from "usehooks-ts";
 
 const UserLogin = () => {

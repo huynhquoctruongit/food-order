@@ -16,9 +16,11 @@ import { Loader2Icon } from "lucide-react";
 import Tesseract from "tesseract.js";
 import useMenu from "./hooks/use-menu";
 import dayjs from "dayjs";
+import { useLocalStorage } from "usehooks-ts";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
+  const [user, _] = useLocalStorage("user", {});
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
@@ -26,7 +28,8 @@ const GroupButtonHero = () => {
   const { mutate } = useMenu();
   const { toast } = useToast();
   const handleFileChange = async (event) => {
-    if (false) {
+    console.log(user.fullname);
+    if (user.fullname !== "Hồng Phạm") {
       toast({
         variant: "destructive",
         title: "Không có quyền !",
@@ -127,13 +130,17 @@ const GroupButtonHero = () => {
         onChange={handleFileChange}
       />
 
-      <Button
-        variant="secondary"
-        size="default"
-        className="flex items-center gap-2"
-      >
+      <Button variant="secondary" size="default" className="relative">
+        <span className="flex items-center gap-2 opacity-0 ">
+          Thêm menu{" "}
+          {loading ? (
+            <Loader2Icon className="w-4 h-4 animate-spin" />
+          ) : (
+            <SquaresPlusIcon className="w-4 h-4" />
+          )}
+        </span>
         <label
-          className="flex items-center gap-2 cursor-pointer"
+          className="absolute top-0 left-0 py-2 px-4 w-full flex items-center gap-2 cursor-pointer"
           htmlFor="files"
         >
           Thêm menu
@@ -148,77 +155,103 @@ const GroupButtonHero = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <SWRConfig
-      value={{
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-        fetcher: fetcherClient,
-      }}
-    >
-      <div className="bg-[url(/background.png)] bg-contain text-left">
-        <div className="bg-white/40">
-          <BrowserRouter>
-            <div>
-              <div className="flex items-center justify-between text-black root-wrapper py-3">
-                <h1 className="font-bold text-xl">
-                  ĐẶT CƠM{" "}
-                  <span className="hidden md:inline">VĂN PHÒNG LÒNG VÒNG</span>
-                </h1>
-                <Profile />
-              </div>
-            </div>
-            <div className="relative flex items-center justify-center pt-6 md:pt-0">
-              <img
-                className="w-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
-                src="/hero.png"
-                alt=""
-              />
-
-              <div className="absolute root-wrapper w-full flex flex-col md:flex-row items-center justify-between">
-                <div className="text-left">
-                  <h1 className="text-xl font-bold text-black">
-                    APP ĐẶT CƠM TOP #1 Việt Nam
+const MainApp = () => {
+  useEffect(() => {
+    let click = 0;
+    const audio = document.getElementById("audio");
+    audio.volumn = 0.5;
+    document.addEventListener("click", () => {
+      if (click === 0) audio.play();
+      click++;
+    });
+  }, []);
+  return (
+    <React.StrictMode>
+      <SWRConfig
+        value={{
+          revalidateIfStale: false,
+          revalidateOnFocus: false,
+          fetcher: fetcherClient,
+        }}
+      >
+        <div className="bg-[url(/background.png)] bg-contain text-left">
+          <div className="bg-white/40">
+            <BrowserRouter>
+              <div>
+                <div className="flex items-center justify-between text-black root-wrapper py-3">
+                  <h1 className="font-bold text-xl">
+                    ĐẶT CƠM{" "}
+                    <span className="hidden md:inline">
+                      VĂN PHÒNG LÒNG VÒNG
+                    </span>
                   </h1>
-                  <div className="mt-6 text-gray-700">
-                    Chúng tôi mang đến cho các bạn trải nghiệm 5 SAO <br /> như
-                    các nhà hàng cao cấp Á Âu Châu Phi...
-                  </div>
-                  <GroupButtonHero />
+                  <Profile />
                 </div>
+              </div>
+              <div className="relative flex items-center justify-center pt-6 md:pt-0">
                 <img
-                  className="w-[512px] aspect-[512/256]"
-                  src="/have-a-nice-day.png"
+                  className="w-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
+                  src="/hero.png"
                   alt=""
                 />
+
+                <div className="absolute root-wrapper w-full ">
+                  <div className="flex flex-col md:flex-row items-center justify-between relative">
+                    <div className="text-left ">
+                      <h1 className="text-xl md:text-3xl font-bold text-black">
+                        APP ĐẶT CƠM TOP #1 Việt Nam
+                      </h1>
+                      <div className="mt-6 text-gray-700">
+                        Một miếng khi đói bằng một gói khi no lòi họng. <br />
+                        Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
+                      </div>
+                      <GroupButtonHero />
+                    </div>
+                    <img
+                      className="w-[512px] aspect-[512/256]"
+                      src="/have-a-nice-day.png"
+                      alt=""
+                    />
+                    <img
+                      className="w-12 h-12 absolute top-0 right-0 animate-spin"
+                      src="/audio.png"
+                      alt=""
+                    />
+                    <audio autoPlay={true} loop id="audio">
+                      <source src="audio.mp3" type="audio/ogg" />
+                      <source src="audio.mp3" type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <Routes>
-              <Route
-                element={
-                  <>
-                    <App />
-                  </>
-                }
-                path="/"
-              />
-              <Route
-                element={
-                  <>
-                    <Report />
-                  </>
-                }
-                path="/report"
-              />
+              <Routes>
+                <Route
+                  element={
+                    <>
+                      <App />
+                    </>
+                  }
+                  path="/"
+                />
+                <Route
+                  element={
+                    <>
+                      <Report />
+                    </>
+                  }
+                  path="/report"
+                />
 
-              {/* <Route element={<PrivateRoute />} path="*" /> */}
-            </Routes>
-          </BrowserRouter>
-          <Toaster />
+                {/* <Route element={<PrivateRoute />} path="*" /> */}
+              </Routes>
+            </BrowserRouter>
+            <Toaster />
+          </div>
         </div>
-      </div>
-    </SWRConfig>
-  </React.StrictMode>
-);
+      </SWRConfig>
+    </React.StrictMode>
+  );
+};
+ReactDOM.createRoot(document.getElementById("root")).render(<MainApp />);

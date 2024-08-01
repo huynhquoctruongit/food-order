@@ -1,4 +1,4 @@
-import { enumFood } from "./list-order";
+import { enumFood } from "../../lib/utils";
 
 const ListRemaining = ({ userNonOrderd }) => {
   if (!userNonOrderd?.length) return null;

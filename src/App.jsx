@@ -88,6 +88,7 @@ const OCRComponent = () => {
   const [passwordAdmin, setPassWord] = useState("");
   const [isTimeout, setIsTimeout] = useState(false);
   const [optionRice, setOptionRice] = useState({});
+  const [loaded, setLoaded] = useState(false);
 
   let pattern = /^\d+[.,]?\s*/;
 
@@ -161,7 +162,7 @@ const OCRComponent = () => {
     toast({
       variant: "success",
       title: "... Đã xóa",
-      description: "Đã xóa món " + data,
+      description: " Đã xóa món " + data,
     });
   };
 
@@ -172,6 +173,7 @@ const OCRComponent = () => {
   };
   useEffect(() => {
     const userLocal = localStorage.getItem("user");
+    setLoaded(true);
     if (userLocal) {
       setSelectUser(JSON.parse(userLocal));
       setUser(JSON.parse(userLocal)?.fullname);
@@ -324,7 +326,7 @@ const OCRComponent = () => {
           setPopup,
         }}
       />
-      <Dialog open={!user ? true : false}>
+      <Dialog open={!user && loaded != false ? true : false}>
         <DialogContent className="sm:max-w-[425px] bg-white text-black">
           <DialogHeader>
             <DialogTitle className="text-black">
