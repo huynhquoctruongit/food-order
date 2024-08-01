@@ -156,7 +156,7 @@ const OCRComponent = () => {
       toast({
         variant: "destructive",
         title: "Hết giờ rồi",
-        description: "Hết giờ đặt cơm rồi nha",
+        description: "Thui ăn xong rồi ai lại hủy nữa :)))",
       });
       return;
     }

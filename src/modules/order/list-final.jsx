@@ -47,7 +47,7 @@ const ListFinal = ({ order }) => {
           const items = groupedData[key];
           const group = groupBy(items, "price");
           return (
-            <div className="flex items-stretch border-gray-300 border-t text-gray-500 text-md">
+            <div key={key} className="flex items-stretch border-gray-300 border-t text-gray-500 text-md">
               <ItemTable className={getClass(0) + " gap-2"}>
                 <div className="flex gap-2">
                   <NumberOval>{items.length}</NumberOval>

@@ -28,7 +28,6 @@ const GroupButtonHero = () => {
   const { mutate } = useMenu();
   const { toast } = useToast();
   const handleFileChange = async (event) => {
-    console.log(user.fullname);
     if (user.fullname !== "Hồng Phạm") {
       toast({
         variant: "destructive",
@@ -39,7 +38,6 @@ const GroupButtonHero = () => {
       const file = event.target.files[0];
       if (file) {
         const newFormData = new FormData();
-
         newFormData.append("file", file);
         const imageUpload = await AxiosAPI.post("/files", newFormData, {
           headers: {
@@ -158,15 +156,15 @@ const GroupButtonHero = () => {
 const MainApp = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {
-    let click = 0;
-    const audio = document.getElementById("audio");
+    const audio = new Audio("/audio.mp3");
     audio.volumn = 0.5;
-    document.addEventListener("click", () => {
-      if (click === 0) {
-        audio.play();
-        setPlay(true);
-      }
-      click++;
+    let isPlaying = false;
+
+    document.addEventListener("click", function () {
+      if (isPlaying) return;
+      audio.play();
+      setPlay(true);
+      isPlaying = true;
     });
   }, []);
   const onClick = () => {
@@ -189,7 +187,7 @@ const MainApp = () => {
             <BrowserRouter>
               <div>
                 <div className="flex items-center justify-between text-black root-wrapper py-3">
-                  <h1 className="font-bold text-xl">
+                  <h1 className="font-bold text-xl" id="logo">
                     NƯỚC{" "}
                     <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
                       XẾ CHIỀU TÀ
@@ -231,11 +229,6 @@ const MainApp = () => {
                       src="/audio.png"
                       alt=""
                     />
-                    <audio autoPlay={true} loop id="audio">
-                      <source src="audio.mp3" type="audio/ogg" />
-                      <source src="audio.mp3" type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
                   </div>
                 </div>
               </div>
