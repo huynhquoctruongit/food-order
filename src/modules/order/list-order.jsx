@@ -118,7 +118,7 @@ const ListOrder = ({ groupedData, deleteFood }) => {
     <div>
       <div className="text-xl text-left mb-4">Danh sách đặt món</div>
       <div className="border border-dashed border-gray-200 px-1 rounded-md">
-        {groupedData.map((elm, index) => {
+        {groupedData?.map((elm, index) => {
           return (
             <div
               key={index + "-elm"}
