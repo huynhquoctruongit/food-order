@@ -157,14 +157,13 @@ let isPlaying = false;
 const MainApp = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {
-    if (isPlaying) return;
-    const audio = new Audio("/audio.mp3");
+    const audio = document.getElementById("audio");
     audio.volumn = 0.5;
     document.addEventListener("click", function () {
       if (isPlaying) return;
+      isPlaying = true;
       setPlay(true);
       audio.play();
-      isPlaying = true;
     });
   }, []);
   const onClick = () => {
@@ -206,8 +205,7 @@ const MainApp = () => {
                   <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
                     <div className="text-left">
                       <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
-                        APP ĐẶT CƠM {" "}
-                        <br className="md:hidden" />
+                        APP ĐẶT CƠM <br className="md:hidden" />
                         <br className="md:hidden" />
                         TOP #1 Việt Nam
                       </h1>
@@ -231,6 +229,9 @@ const MainApp = () => {
                       src="/audio.png"
                       alt=""
                     />
+                    <audio id="audio">
+                      <source src="/audio.mp3" type="audio/mpeg" />
+                    </audio>
                   </div>
                 </div>
               </div>
