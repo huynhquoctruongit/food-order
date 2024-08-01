@@ -157,14 +157,13 @@ let isPlaying = false;
 const MainApp = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {
+    if (isPlaying) return;
     const audio = new Audio("/audio.mp3");
     audio.volumn = 0.5;
-
     document.addEventListener("click", function () {
       if (isPlaying) return;
-      console.log(isPlaying);
-      audio.play();
       setPlay(true);
+      audio.play();
       isPlaying = true;
     });
   }, []);
@@ -204,15 +203,15 @@ const MainApp = () => {
                   alt=""
                 />
                 <div className="absolute root-wrapper w-full">
-                  <div className="flex flex-col md:flex-row items-center justify-between relative">
-                    <div className="text-left ">
+                  <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
+                    <div className="text-left">
                       <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
                         APP ĐẶT CƠM
                         <br className="md:hidden" />
                         <br className="md:hidden" />
                         TOP #1 Việt Nam
                       </h1>
-                      <div className="mt-6 text-gray-700">
+                      <div className="mt-6 text-gray-700 hidden md:block">
                         Một miếng khi đói bằng một gói khi no lòi họng. <br />
                         Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
                       </div>

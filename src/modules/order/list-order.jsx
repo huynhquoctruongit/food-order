@@ -39,7 +39,7 @@ const ListOrder = ({ groupedData, deleteFood }) => {
             );
           })}
         </div>
-        <div clas>
+        <div>
           {groupedData?.map((elm, index) => {
             return (
               <div
