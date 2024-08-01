@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
 import { Button } from "./components/ui/button-hero.jsx";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
-import { access_token } from "./lib/utils";
+import { access_token, cn } from "./lib/utils";
 import { Loader2Icon } from "lucide-react";
 import Tesseract from "tesseract.js";
 import useMenu from "./hooks/use-menu";
@@ -156,15 +156,25 @@ const GroupButtonHero = () => {
 };
 
 const MainApp = () => {
+  const [play, setPlay] = useState(false);
   useEffect(() => {
     let click = 0;
     const audio = document.getElementById("audio");
     audio.volumn = 0.5;
     document.addEventListener("click", () => {
-      if (click === 0) audio.play();
+      if (click === 0) {
+        audio.play();
+        setPlay(true);
+      }
       click++;
     });
   }, []);
+  const onClick = () => {
+    const audio = document.getElementById("audio");
+    if (play) audio.pause();
+    else audio.play();
+    setPlay(!play);
+  };
   return (
     <React.StrictMode>
       <SWRConfig
@@ -213,7 +223,11 @@ const MainApp = () => {
                       alt=""
                     />
                     <img
-                      className="w-12 h-12 absolute top-0 right-0 animate-spin"
+                      onClick={onClick}
+                      className={cn(
+                        "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
+                        play ? "animate-spin" : ""
+                      )}
                       src="/audio.png"
                       alt=""
                     />
