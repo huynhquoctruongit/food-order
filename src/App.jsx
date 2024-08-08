@@ -341,8 +341,6 @@ const OCRComponent = () => {
     });
   };
 
-  console.log(user);
-
   return (
     <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
       <HappyHehe user={user} />
@@ -434,173 +432,13 @@ const OCRComponent = () => {
         <div className="flex flex-wrap mt-10">
           <ListFood listFood={listFood} onSelectFood={onSelectFood} />
         </div>
-        <div>
-          {/* <div>
-            <Input
-              className="text-black w-[180px]"
-              id="picture"
-              type="file"
-              onChange={handleFileChange}
-            />{" "}
-          </div> */}
-          {/* <div className="flex gap-[20px]">
-            <div className="mt-[20px]">
-              {(imageSrc || menu?.[0]?.image) && (
-                <img
-                  className="w-[200px] text-black"
-                  src={
-                    imageSrc ||
-                    `https://admin.qnsport.vn/assets/${menu?.[0]?.image}`
-                  }
-                  alt="Uploaded"
-                />
-              )}
-            </div>
-          </div> */}
-        </div>
+        <div></div>
         <div className="mt-10 md:mt-20">
-          {/* <div
-            className={
-              isTimeout
-                ? "bg-[#00000088] cursor-not-allowed select-none z-[1] absolute h-full w-full text-white text-[100px] font-bold flex justify-center items-center text-left"
-                : "absolute opacity-0"
-            }
-          >
-            <span className="text-red-500">D</span>ON.
-            <span className="text-red-500">D</span>A.
-            <span className="text-red-500">D</span>AT
-          </div> */}
           <ListOrder groupedData={groupedData} deleteFood={deleteFood} />
           <ListRemaining userNonOrderd={userNonOrderd} />
           <div className="hidden md:block">
             <ListFinal order={refOder.current} />
           </div>
-          {/* <div className={isTimeout && "p-[20px]"}>
-            <Table
-              className={`border-[1px] border-[#d9d8d8] md:mt-0 mt-[30px] pb-[20px] ${
-                !userSelect?.id
-                  ? "opacity-[0.5] cursor-not-allowed select-none"
-                  : "opacity-1"
-              }`}
-            >
-              <TableCaption className="text-left">
-                <p>
-                  Các đồng chí đã đặt:{" "}
-                  {groupedData?.map((orderd) => {
-                    return (
-                      <span key={orderd.user.fullname} className="font-bold">
-                        {orderd.user.fullname},{" "}
-                      </span>
-                    );
-                  })}
-                </p>
-                <p className="mt-[20px]">
-                  Các đồng chí mải làm chưa đặt:{" "}
-                  {userNonOrderd?.map((orderd) => {
-                    return (
-                      <span key={orderd.fullname} className="font-bold">
-                        {orderd.fullname},{" "}
-                      </span>
-                    );
-                  })}
-                </p>
-              </TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[100px]">Đồng chí</TableHead>
-                  <TableHead>Món</TableHead>
-                  <TableHead>Ghi chú</TableHead>
-                  <TableHead>Giá</TableHead>
-                  <TableHead className="text-right">Đặt lúc</TableHead>
-                  <TableHead className="text-right">Tổng</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {groupedData?.map((elm) => {
-                  const dateFormat = dayjs(elm?.items?.[0]?.date_created);
-                  return (
-                    <TableRow
-                      className={`${
-                        userSelect?.fullname == elm.user.fullname &&
-                        "bg-slate-200"
-                      } hover:bg-slate-100`}
-                      key={elm.user.fullname}
-                    >
-                      <TableCell className="p-2 font-medium whitespace-nowrap">
-                        {elm.user.fullname}
-                      </TableCell>
-                      <TableCell className="p-2 text-left min-w-[200px]">
-                        {elm.items?.map((item) => (
-                          <div key={elm.name} className="flex items-center">
-                            <p>
-                              {"(SL: 1) : " + item.name}
-                              {item.price == 25 && (
-                                <span className="text-red-600 ml-[12px]">
-                                  (Không cơm)
-                                </span>
-                              )}
-                            </p>
-                            {userSelect?.fullname == elm.user.fullname && (
-                              <span
-                                className="ml-[12px] text-white bg-red-500 text-[12px] font-bold py-[] px-[12px] cursor-pointer"
-                                onClick={() => deleteFood(item)}
-                              >
-                                Huỷ
-                              </span>
-                            )}
-                          </div>
-                        ))}
-                      </TableCell>
-                      <TableCell className="p-2 text-left">
-                        {elm.items?.[0].note}
-                      </TableCell>
-                      <TableCell className="p-2 text-left">35k/món</TableCell>
-                      <TableCell className="p-2 text-right">
-                        {dateFormat?.subtract(7, "hour").format("HH:mm")}
-                      </TableCell>
-                      <TableCell className="p-2 text-right h-full">
-                        {elm.items?.map((elm) => (
-                          <p>{elm.price}k</p>
-                        ))}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </div>
-          <div className={isTimeout && "p-[20px]"}>
-            <div className="text-left border-[1px] border-[#d1d0d0] p-[20px]">
-              <p className="font-bold">
-                Hoá đơn:{" "}
-                <span className="font-normal">{orderList?.length} phần</span>
-              </p>
-              <div>
-                {finalList?.map((elm, index) => {
-                  return (
-                    <div className={`${index % 2 && "bg-slate-200"} p-[10px]`}>
-                      <div className="">
-                        <span className="font-bold">SL: {elm.count}</span> -{" "}
-                        {elm.name}
-                        {elm.no_rice > 0 && (
-                          <span className="text-red-600 ml-[12px]">
-                            ({elm.no_rice} Phần không cơm)
-                          </span>
-                        )}
-                      </div>
-                      <div className="ml-[12px]">
-                        {elm.notes?.map((item, indexItem) => (
-                          <p>
-                            ✎ Món {indexItem + 1}: {item}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

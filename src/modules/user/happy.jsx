@@ -1,13 +1,9 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 const HappyHehe = ({ user }) => {
@@ -39,7 +35,7 @@ const HappyHehe = ({ user }) => {
           {listItem.map((item, index) => (
             <div
               key={item.label}
-              onClick={()=> setShow(false)}
+              onClick={() => setShow(false)}
               className="flex flex-col items-center justify-center group cursor-pointer"
             >
               <img

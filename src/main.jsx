@@ -202,7 +202,13 @@ const MainApp = () => {
                   src="/hero.png"
                   alt=""
                 />
+
                 <div className="absolute root-wrapper w-full">
+                  {play && (
+                    <div className="absolute top-12 left-full w-40 object-cover">
+                      <img src="/lak-lak.gif" alt="" />
+                    </div>
+                  )}
                   <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
                     <div className="text-left">
                       <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
@@ -216,11 +222,14 @@ const MainApp = () => {
                       </div>
                       <GroupButtonHero />
                     </div>
-                    <img
-                      className="w-[512px] aspect-[512/256]"
-                      src="/have-a-nice-day.png"
-                      alt=""
-                    />
+                    <div className="relative">
+                      <img
+                        className="w-[512px] aspect-[512/256]"
+                        src="/have-a-nice-day.png"
+                        alt=""
+                      />
+                    </div>
+
                     <img
                       onClick={onClick}
                       className={cn(
@@ -230,6 +239,7 @@ const MainApp = () => {
                       src="/audio.png"
                       alt=""
                     />
+
                     <audio id="audio">
                       <source src="/nhac-trung-thu.mp3" type="audio/mpeg" />
                     </audio>
