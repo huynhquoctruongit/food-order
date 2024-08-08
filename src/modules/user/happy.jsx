@@ -54,7 +54,7 @@ const HappyHehe = ({ user }) => {
         </div>
         <div className="text-xs text-gray-600 py-4 text-center">
           <img
-            className="h-20 w-20 mx-auto my-2"
+            className="h-20 w-20 mx-auto my-2 rounded-md"
             src="/ai-loading.gif"
             alt=""
           />
