@@ -26,6 +26,7 @@ import ListOrder from "./modules/order/list-order";
 import ListRemaining from "./modules/order/list-remaining";
 import _ from "lodash";
 import ListFinal from "./modules/order/list-final";
+import HappyHehe from "./modules/user/happy";
 dayjs.extend(customParseFormat);
 dayjs.extend(utc); // Kích hoạt plugin UTC
 
@@ -46,6 +47,9 @@ const subscribeCore = async (event, cb) => {
     query: {
       sort: "-date_created",
       fields: ["*", "user.*"],
+      filter: {
+        date_created: { _gte: dayjs().endOf("day").unix() },
+      },
     },
   });
   for await (const message of subscription) {
@@ -74,7 +78,6 @@ const OCRComponent = () => {
   const refFunc = useRef(null);
 
   const menu = menuToday?.data?.data;
-  const [imageSrc, setImageSrc] = useState("");
   const [arrayFood, setArrayFood] = useState([]);
   const [user, setUser] = React.useState("");
   const [userSelect, setSelectUser] = useState({});
@@ -337,8 +340,12 @@ const OCRComponent = () => {
       [item]: e,
     });
   };
+
+  console.log(user);
+
   return (
     <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
+      <HappyHehe user={user} />
       <ModalChoose
         {...{
           selectFood,

@@ -65,6 +65,7 @@ const GroupButtonHero = () => {
         setLoading(false);
       })
       .catch((error) => {
+        console.log("Error: ", error);
         console.error(error);
       });
   };
@@ -230,7 +231,7 @@ const MainApp = () => {
                       alt=""
                     />
                     <audio id="audio">
-                      <source src="/audio.mp3" type="audio/mpeg" />
+                      <source src="/nhac-trung-thu.mp3" type="audio/mpeg" />
                     </audio>
                   </div>
                 </div>
