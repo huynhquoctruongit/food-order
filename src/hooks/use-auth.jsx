@@ -11,7 +11,7 @@ export function useAuth(options) {
     mutate,
   } = useSWR("/users/me?fields=*,role.*", {
     revalidateOnFocus: false,
-    revalidateOnMount: false,
+    // revalidateOnMount: false,
     shouldRetryOnError: false,
     ...options,
   });
@@ -35,7 +35,7 @@ export function useAuth(options) {
     directus.logout();
   }
   const firstLoading = profile === undefined && error === undefined;
-  const profileObj = profile?.data?.data || {};
+  const profileObj = profile?.data || {};
 
   useEffect(() => {
     if (!userInfo.id || (userInfo.id && userInfo.id !== profileObj.id)) {
