@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Tesseract from "tesseract.js";
 import useSWR from "swr";
 import AxiosAPI from "@/libs/api/axios-client.ts";
 import { Checkbox } from "@/components/ui/checkbox";
