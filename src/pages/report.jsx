@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table"
 import useSWR from "swr";
 import dayjs from 'dayjs';
-import AxiosAPI from "@/libs/api/axios-client.ts"
+import AxiosAPI from "@/lib/api/axios-client.js"
 import { useState } from "react"
 import isoWeek from 'dayjs/plugin/isoWeek';
 import { useToast } from "@/components/ui/use-toast"

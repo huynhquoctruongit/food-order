@@ -7,7 +7,7 @@ export const AxiosClient = axios.create({
     "Content-Type": "application/json",
   },
 });
-AxiosClient.interceptors.response.use(function (response: any) {
+AxiosClient.interceptors.response.use(function (response) {
   return response;
 });
 
@@ -18,11 +18,11 @@ export const AxiosAPI = axios.create({
     "Content-Type": "application/json",
   },
 });
-AxiosAPI.interceptors.response.use(function (response: any) {
+AxiosAPI.interceptors.response.use(function (response) {
   return response;
 });
 
-export const fetcherClient = (url: any, params: any) => {
+export const fetcherClient = (url, params) => {
   if (url) {
     return AxiosClient.get(url, { params });
   }

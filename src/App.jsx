@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import useSWR from "swr";
-import AxiosAPI from "@/libs/api/axios-client.ts";
-import { Checkbox } from "@/components/ui/checkbox";
+import AxiosAPI from "@/lib/api/axios-client.js";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { staticToken, createDirectus, realtime } from "@directus/sdk";
 import { Label } from "@/components/ui/label";
@@ -27,6 +26,7 @@ import _ from "lodash";
 import ListFinal from "./modules/order/list-final";
 import HappyHehe from "./modules/user/happy";
 import AddFood from "./modules/user/add-food";
+import ModalLogin from "./modules/auth/screen/login";
 dayjs.extend(customParseFormat);
 dayjs.extend(utc); // Kích hoạt plugin UTC
 
@@ -289,7 +289,6 @@ const OCRComponent = () => {
   const bIds = groupedData?.map((item) => item.user.id);
   const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
-
   function isTimeBetweenCurrent() {
     const currentTime = dayjs();
     const startTime = dayjs("13:00", "HH:mm");
@@ -312,8 +311,6 @@ const OCRComponent = () => {
 
   return (
     <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
-      {/* <HappyHehe user={user} /> */}
-      {/* <AddFood open={isAddFood}></AddFood> */}
       <ModalChoose
         {...{
           selectFood,
@@ -327,77 +324,7 @@ const OCRComponent = () => {
           setPopup,
         }}
       />
-      <Dialog open={!user && loaded != false ? true : false}>
-        <DialogContent className="sm:max-w-[425px] bg-white text-black">
-          <DialogHeader>
-            <DialogTitle className="text-black">
-              Cho tui biết ai đang đặt vậy?
-            </DialogTitle>
-            {/* <DialogDescription className="text-black">
-              Không hiện lần sau nữa đâu nè
-              <div className="mt-[20px]">
-                {selectFood?.map((elm) => {
-                  let processed_text = elm.replace(pattern, "");
-                  return (
-                    <div key={processed_text} className="text-black">
-                      - {processed_text}
-                    </div>
-                  );
-                })}
-              </div>
-            </DialogDescription> */}
-          </DialogHeader>
-          <div className="grid gap-2 py-4">
-            <div>{isAdmin ? "Mật khẩu" : "Họ tên"}</div>
-            {isAdmin ? (
-              <div className="items-center gap-4">
-                <Input
-                  value={passwordAdmin}
-                  onInput={(e) => setPassWord(e.target.value)}
-                  placeholder="Nhập mật khẩu"
-                />
-              </div>
-            ) : (
-              <div className="items-center gap-4">
-                <Input
-                  value={valueUser}
-                  onInput={(e) => setCreateUser(e.target.value)}
-                  placeholder="Nhập họ tên nhen"
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="items-top flex space-x-2 pb-[20px]">
-            <Checkbox
-              onCheckedChange={() => setIsAdmin(!isAdmin)}
-              className="checked-order"
-              id="admin"
-            />
-            <div className="grid gap-1.5 leading-none">
-              <label
-                htmlFor="admin"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Admin ?
-              </label>
-            </div>
-          </div>
-          <DialogFooter>
-            {/* <Button type="submit">Save changes</Button> */}
-            <Button
-              onClick={onCreateUser}
-              variant="outline"
-              role="combobox"
-              className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
-            >
-              <span className="text-center mx-auto text-white">
-                Vào đặt thôi
-              </span>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ModalLogin />
       <div className="root-wrapper">
         <div className="flex flex-wrap mt-10">
           <ListFood listFood={listFood} onSelectFood={onSelectFood} />
