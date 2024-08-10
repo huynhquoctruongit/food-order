@@ -17,6 +17,7 @@ import Tesseract from "tesseract.js";
 import useMenu from "./hooks/use-menu";
 import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
+import { motion, useDragControls } from "framer-motion";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -65,6 +66,7 @@ const GroupButtonHero = () => {
         setLoading(false);
       })
       .catch((error) => {
+        console.log("Error: ", error);
         console.error(error);
       });
   };
@@ -201,7 +203,9 @@ const MainApp = () => {
                   src="/hero.png"
                   alt=""
                 />
+
                 <div className="absolute root-wrapper w-full">
+                  {play && <KhaBanh />}
                   <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
                     <div className="text-left">
                       <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
@@ -215,11 +219,14 @@ const MainApp = () => {
                       </div>
                       <GroupButtonHero />
                     </div>
-                    <img
-                      className="w-[512px] aspect-[512/256]"
-                      src="/have-a-nice-day.png"
-                      alt=""
-                    />
+                    <div className="relative">
+                      <img
+                        className="w-[512px] aspect-[512/256]"
+                        src="/have-a-nice-day.png"
+                        alt=""
+                      />
+                    </div>
+
                     <img
                       onClick={onClick}
                       className={cn(
@@ -229,8 +236,9 @@ const MainApp = () => {
                       src="/audio.png"
                       alt=""
                     />
+
                     <audio id="audio">
-                      <source src="/audio.mp3" type="audio/mpeg" />
+                      <source src="/nhac-trung-thu.mp3" type="audio/mpeg" />
                     </audio>
                   </div>
                 </div>
@@ -265,3 +273,38 @@ const MainApp = () => {
   );
 };
 ReactDOM.createRoot(document.getElementById("root")).render(<MainApp />);
+
+const KhaBanh = () => {
+  return (
+    <>
+      <motion.img
+        alt="draggable"
+        style={{ cursor: "grab" }}
+        drag
+        dragConstraints={{
+          top: -window.innerHeight,
+          bottom: window.innerHeight,
+          left: -window.innerWidth,
+          right: window.innerWidth,
+        }}
+        whileDrag={{ scale: 1.1 }}
+        src="/lak-lak.gif"
+        className="touch-none z-[1000] fixed bottom-0 right-0 w-32 md:w-32 rounded-md"
+      />
+      <motion.img
+        alt="draggable"
+        style={{ cursor: "grab" }}
+        drag
+        dragConstraints={{
+          top: -window.innerHeight,
+          bottom: window.innerHeight,
+          left: -window.innerWidth,
+          right: window.innerWidth,
+        }}
+        whileDrag={{ scale: 1.1 }}
+        className="fixed bottom-0 left-0 w-40 z-[100]"
+        src="/lan.gif"
+      />
+    </>
+  );
+};
