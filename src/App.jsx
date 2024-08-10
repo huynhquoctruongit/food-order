@@ -286,38 +286,7 @@ const OCRComponent = () => {
   const bIds = groupedData?.map((item) => item.user.id);
   const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
-  const processItems = (items) => {
-    if (!items) return;
-    const result = [];
 
-    items.forEach((item) => {
-      const existingItem = result.find((r) => r.name === item.name);
-      if (existingItem) {
-        var countNoRice = 0;
-        const match = items?.filter((elm) => elm.name == existingItem.name);
-        match?.map((elm) => {
-          if (elm.price == 25) {
-            countNoRice++;
-            existingItem["no_rice"] = countNoRice;
-          }
-        });
-        existingItem.count++;
-        if (item.note) {
-          existingItem.notes.push(item.note);
-        }
-      } else {
-        result.push({
-          name: item.name,
-          count: 1,
-          notes: item.note ? [item.note] : [],
-          price: item.price,
-          no_rice: item.price == 25 ? 1 : 0,
-        });
-      }
-    });
-
-    return result;
-  };
   function isTimeBetweenCurrent() {
     const currentTime = dayjs();
     const startTime = dayjs("13:00", "HH:mm");
