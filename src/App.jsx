@@ -48,7 +48,7 @@ const subscribeCore = async (event, cb) => {
       sort: "-date_created",
       fields: ["*", "user.*"],
       filter: {
-        date_created: { _gte: dayjs().endOf("day").unix() },
+        date_created: { _gte: dayjs().endOf("day").toISOString() },
       },
     },
   });
