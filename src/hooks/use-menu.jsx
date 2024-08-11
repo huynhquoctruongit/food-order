@@ -2,10 +2,8 @@ import dayjs from "dayjs";
 import useSWR from "swr";
 
 const useMenu = () => {
-  const todayFormatted = dayjs().format("YYYY-MM-DD");
-  const { data, mutate, isLoading } = useSWR(
-    `/items/menus?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`
-  );
+  const today = dayjs().startOf("day").toISOString();
+  const { data, mutate, isLoading } = useSWR(`/items/menu?fields=*&sort=-date_created&filter[date_created][_gte]=${today}`);
   return { data, mutate, isLoading };
 };
 

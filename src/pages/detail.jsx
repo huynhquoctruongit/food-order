@@ -84,7 +84,7 @@ const GroupButtonHero = () => {
       image: imageUpload.data.data.id,
       date_created: utcTime,
     };
-    await AxiosAPI.post("/items/menus", params);
+    await AxiosAPI.post("/items/menu", params);
     mutate();
   };
   const generateText = (text) => {

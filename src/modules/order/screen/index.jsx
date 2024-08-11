@@ -76,14 +76,11 @@ const GroupButtonHero = () => {
       text = text.substring(startIndex + 2);
     }
     const arr = generateText(text);
-    const now = dayjs().add(7, "hour");
-    const utcTime = now.utc().format();
     const params = {
-      extract_menus: arr,
-      image: imageUpload.data.data.id,
-      date_created: utcTime,
+      detail: arr,
+      image: imageUpload.data.id,
     };
-    await AxiosAPI.post("/items/menus", params);
+    await AxiosAPI.post("/items/menu", params);
     mutate();
   };
   const generateText = (text) => {

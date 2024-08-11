@@ -27,7 +27,7 @@ const subscribeDelete = _.debounce((cb) => subscribeCore("delete", cb), 100);
 const subscribeCreate = _.debounce((cb) => subscribeCore("create", cb), 100);
 
 const subscribeCore = async (event, cb) => {
-  const { subscription, unsubscribe } = await connection.subscribe("order_84", {
+  const { subscription, unsubscribe } = await connection.subscribe("order", {
     event: event,
     query: {
       sort: "-date_created",
@@ -46,23 +46,22 @@ const OCRComponent = () => {
   const { toast } = useToast();
   const refOder = useRef(null);
 
-  const { data, mutate: mutateUser } = useSWR("/items/user_84");
+  const { data, mutate: mutateUser } = useSWR("/users");
   const now = dayjs().add(7, "hour");
   const utcTime = now.utc().format();
 
-  const todayFormatted = dayjs().format("YYYY-MM-DD");
-  // &filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z
+  const todayFormatted = dayjs().startOf("day").toISOString();
   const { data: orderToday, mutate: mutateOrder } = useSWR(
-    `/items/order_84?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`,
+    `/items/order?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}`,
   );
-  const { data: menuToday } = useSWR(
-    `/items/menus?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`,
-  );
-  const dataUser = data?.data?.data;
-  refOder.current = orderToday?.data?.data;
+  const { data: menuToday } = useSWR(`/items/menu?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}`);
+  const dataUser = data?.data;
+  refOder.current = orderToday?.data;
   const refFunc = useRef(null);
 
-  const menu = menuToday?.data?.data;
+  console.log(menuToday);
+  
+  const menu = menuToday?.data || [];
   const [arrayFood, setArrayFood] = useState([]);
   const [user, setUser] = React.useState("");
   const [userSelect, setSelectUser] = useState({});
@@ -127,7 +126,7 @@ const OCRComponent = () => {
       };
       connection.sendMessage({
         type: "items",
-        collection: "order_84",
+        collection: "order",
         action: "create",
         data: params,
       });
@@ -149,7 +148,7 @@ const OCRComponent = () => {
 
     connection.sendMessage({
       type: "items",
-      collection: "order_84",
+      collection: "order",
       action: "delete",
       id: item.id,
     });
@@ -208,7 +207,7 @@ const OCRComponent = () => {
         const params = {
           fullname: valueUser,
         };
-        const res = await AxiosAPI.post("/items/user_84", params);
+        const res = await AxiosAPI.post("/users", params);
         if (res) {
           const userGet = res.data?.data;
           localStorage.setItem("user", JSON.stringify(userGet));
@@ -221,7 +220,7 @@ const OCRComponent = () => {
   };
 
   const goAdmin = async () => {
-    const res = await AxiosAPI.get("/items/user_84");
+    const res = await AxiosAPI.get("/users");
     const userGet = res.data?.data;
     const adminUser = userGet?.find((elm) => elm.fullname === "Hồng Phạm");
     if (adminUser?.password == passwordAdmin) {
@@ -256,7 +255,7 @@ const OCRComponent = () => {
     return acc;
   }, []);
 
-  const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.extract_menus;
+  const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.detail || [];  
   const bIds = groupedData?.map((item) => item.user.id);
   const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
