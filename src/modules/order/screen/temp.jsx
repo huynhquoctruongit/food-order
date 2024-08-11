@@ -5,37 +5,22 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { staticToken, createDirectus, realtime } from "@directus/sdk";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc"; // Import plugin UTC để xử lý múi giờ UTC
 import { useToast } from "@/components/ui/use-toast";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import ListFood from "./modules/order/list-food";
-import ListOrder from "./modules/order/list-order";
-import ListRemaining from "./modules/order/list-remaining";
+import ListOrder from "@/modules/order/components/list-order";
+import ListFood from "@/modules/order/components/list-food";
+import ListRemaining from "@/modules/order/components/list-remaining";
+import ListFinal from "@/modules/order/components/list-final";
 import _ from "lodash";
-import ListFinal from "./modules/order/list-final";
-import HappyHehe from "./modules/user/happy";
-import AddFood from "./modules/user/add-food";
-import ModalLogin from "./modules/auth/screen/login";
-dayjs.extend(customParseFormat);
-dayjs.extend(utc); // Kích hoạt plugin UTC
+import ModalLogin from "@/modules/auth/screen/login";
+// Kích hoạt plugin UTC
 
 const url = "https://admin.qnsport.vn/websocket";
 const access_token = "6rYHvFJ2LRtR3Qg7DrhJK-_MTQGsBYnr";
 
-const connection = createDirectus(url)
-  .with(staticToken(access_token))
-  .with(realtime());
+const connection = createDirectus(url).with(staticToken(access_token)).with(realtime());
 connection.connect();
 
 const subscribeDelete = _.debounce((cb) => subscribeCore("delete", cb), 100);
@@ -68,10 +53,10 @@ const OCRComponent = () => {
   const todayFormatted = dayjs().format("YYYY-MM-DD");
   // &filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z
   const { data: orderToday, mutate: mutateOrder } = useSWR(
-    `/items/order_84?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`
+    `/items/order_84?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`,
   );
   const { data: menuToday } = useSWR(
-    `/items/menus?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`
+    `/items/menus?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`,
   );
   const dataUser = data?.data?.data;
   refOder.current = orderToday?.data?.data;
@@ -105,9 +90,7 @@ const OCRComponent = () => {
 
   useEffect(() => {
     const orderMembers = orderToday?.data?.data;
-    const filterOther = orderMembers?.filter(
-      (elm) => elm.name !== "orther-food"
-    );
+    const filterOther = orderMembers?.filter((elm) => elm.name !== "orther-food");
     setOrderList(filterOther);
   }, [orderToday]);
 
@@ -177,11 +160,7 @@ const OCRComponent = () => {
       title: data.user.fullname,
       description: (
         <span className="">
-          <img
-            className="w-5 h-5 shadow-button rounded-full inline mr-2"
-            src="/menu2.png"
-            alt=""
-          />
+          <img className="w-5 h-5 shadow-button rounded-full inline mr-2" src="/menu2.png" alt="" />
           Đã đặt cơm <span className="font-bold"> {data.name} </span>
         </span>
       ),
@@ -209,16 +188,11 @@ const OCRComponent = () => {
     }
     subscribeCreate((message) => {
       const newData = [...refOder.current, ...message.data];
-      refFunc.current.mutate(
-        { data: { data: newData } },
-        { revalidate: false }
-      );
+      refFunc.current.mutate({ data: { data: newData } }, { revalidate: false });
       refFunc.current.create(message.data[0] || {});
     });
     subscribeDelete((message) => {
-      const newData = refOder.current.filter(
-        (item) => item.id !== message.data[0]
-      );
+      const newData = refOder.current.filter((item) => item.id !== message.data[0]);
       const data = refOder.current.find((item) => item.id === message.data[0]);
       mutateOrder({ data: { data: newData } }, { revalidate: false });
       deleteOrderSuccess(data?.name);
@@ -266,24 +240,21 @@ const OCRComponent = () => {
     setPassWord("");
   }, [isAdmin]);
 
-  const groupedData = orderList?.reduce(
-    (acc, { user, name, note, id, date_created, price }) => {
-      let group = acc.find((group) => group.user.id === user?.id);
-      if (!group) {
-        group = { user: { id: user?.id, fullname: user?.fullname }, items: [] };
-        acc.push(group);
-      }
-      group.items.push({
-        name: name,
-        note: note,
-        id: id,
-        date_created: date_created,
-        price: price,
-      });
-      return acc;
-    },
-    []
-  );
+  const groupedData = orderList?.reduce((acc, { user, name, note, id, date_created, price }) => {
+    let group = acc.find((group) => group.user.id === user?.id);
+    if (!group) {
+      group = { user: { id: user?.id, fullname: user?.fullname }, items: [] };
+      acc.push(group);
+    }
+    group.items.push({
+      name: name,
+      note: note,
+      id: id,
+      date_created: date_created,
+      price: price,
+    });
+    return acc;
+  }, []);
 
   const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.extract_menus;
   const bIds = groupedData?.map((item) => item.user.id);
@@ -344,14 +315,7 @@ const OCRComponent = () => {
 
 export default OCRComponent;
 
-const ModalChoose = ({
-  selectFood,
-  isPopup,
-  getSelectRice,
-  orderNote,
-  setPopup,
-  onOrder,
-}) => {
+const ModalChoose = ({ selectFood, isPopup, getSelectRice, orderNote, setPopup, onOrder }) => {
   let pattern = /^\d+[.,]?\s*/;
   const [text, setText] = useState("");
   return (
@@ -367,10 +331,7 @@ const ModalChoose = ({
                   let processed_text = elm.replace(pattern, "");
                   return (
                     <div className="mb-[20px]" key={index + "modal hihi"}>
-                      <div
-                        key={processed_text}
-                        className="text-black font-bold mb-[6px]"
-                      >
+                      <div key={processed_text} className="text-black font-bold mb-[6px]">
                         - {processed_text}
                       </div>
                       <RadioGroup
@@ -395,12 +356,7 @@ const ModalChoose = ({
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="items-center gap-4">
-              <Textarea
-                value={text}
-                autoFocus={false}
-                onInput={(e) => setText(e.target.value)}
-                placeholder="Note dô đây nhen"
-              />
+              <Textarea value={text} autoFocus={false} onInput={(e) => setText(e.target.value)} placeholder="Note dô đây nhen" />
             </div>
           </div>
           <DialogFooter>
@@ -413,9 +369,7 @@ const ModalChoose = ({
               role="combobox"
               className="bg-black mt-[20px] w-[200px] justify-between flex items-center text-center mx-auto hover:text-black hover:bg-black"
             >
-              <span className="text-center mx-auto text-white">
-                Bút sa gà chết
-              </span>
+              <span className="text-center mx-auto text-white">Bút sa gà chết</span>
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,5 +1,5 @@
 import useOrder from "@/hooks/use-order";
-import { enumFood } from "../../lib/utils";
+import { enumFood } from "@/lib/utils";
 import { useMemo } from "react";
 
 const ListFood = ({ listFood, onSelectFood }) => {

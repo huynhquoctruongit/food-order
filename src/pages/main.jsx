@@ -1,23 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SWRConfig } from "swr";
-import { AxiosAPI, fetcherClient } from "./lib/api/axios-client";
-import Report from "@/pages/report";
-import { Toaster } from "@/components/ui/toaster";
+import { AxiosAPI } from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
-import { Button } from "./components/ui/button-hero.jsx";
+import { Button } from "@/components/ui/button-hero.jsx";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
-import { access_token, cn } from "./lib/utils";
+import { access_token, cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import Tesseract from "tesseract.js";
-import useMenu from "./hooks/use-menu";
+import useMenu from "@/hooks/use-menu";
 import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
-import { motion, useDragControls } from "framer-motion";
+import OCRComponent from "@/modules/order/screen/temp";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -138,7 +132,7 @@ const GroupButtonHero = () => {
 
 let isPlaying = false;
 
-const MainApp = () => {
+const Order = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {
     const audio = document.getElementById("audio");
@@ -157,96 +151,61 @@ const MainApp = () => {
     setPlay(!play);
   };
   return (
-    <React.StrictMode>
-      <SWRConfig
-        value={{
-          revalidateIfStale: false,
-          revalidateOnFocus: false,
-          fetcher: fetcherClient,
-        }}
-      >
-        <div className="bg-[url(/background.png)] bg-contain text-left">
-          <div className="bg-white/40">
-            <BrowserRouter>
-              <div>
-                <div className="flex items-center justify-between text-black root-wrapper py-3">
-                  <h1 className="font-bold text-sm md:text-xl" id="logo">
-                    NƯỚC{" "}
-                    <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
-                      XẾ CHIỀU TÀ
-                    </span>
-                  </h1>
-                  <Profile />
-                </div>
+    <div>
+      <div>
+        <div className="flex items-center justify-between text-black root-wrapper py-3">
+          <h1 className="font-bold text-sm md:text-xl" id="logo">
+            NƯỚC{" "}
+            <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
+              XẾ CHIỀU TÀ
+            </span>
+          </h1>
+          <Profile />
+        </div>
+      </div>
+      <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
+        <img
+          className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
+          src="/hero.png"
+          alt=""
+        />
+
+        <div className="absolute root-wrapper w-full">
+          <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
+            <div className="text-left">
+              <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
+                APP ĐẶT CƠM <br className="md:hidden" />
+                <br className="md:hidden" />
+                TOP #1 VIỆT NAM
+              </h1>
+              <div className="mt-6 text-gray-700 hidden md:block">
+                Một miếng khi đói bằng một gói khi no lòi họng. <br />
+                Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
               </div>
-              <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
-                <img
-                  className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
-                  src="/hero.png"
-                  alt=""
-                />
+              <GroupButtonHero />
+            </div>
+            <div className="relative">
+              <img className="w-[512px] aspect-[512/256]" src="/have-a-nice-day.png" alt="" />
+            </div>
 
-                <div className="absolute root-wrapper w-full">
-                  <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
-                    <div className="text-left">
-                      <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
-                        APP ĐẶT CƠM <br className="md:hidden" />
-                        <br className="md:hidden" />
-                        TOP #1 Việt Nam
-                      </h1>
-                      <div className="mt-6 text-gray-700 hidden md:block">
-                        Một miếng khi đói bằng một gói khi no lòi họng. <br />
-                        Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
-                      </div>
-                      <GroupButtonHero />
-                    </div>
-                    <div className="relative">
-                      <img className="w-[512px] aspect-[512/256]" src="/have-a-nice-day.png" alt="" />
-                    </div>
+            <img
+              onClick={onClick}
+              className={cn(
+                "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
+                play ? "animate-spin" : "",
+              )}
+              src="/audio.png"
+              alt=""
+            />
 
-                    <img
-                      onClick={onClick}
-                      className={cn(
-                        "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
-                        play ? "animate-spin" : "",
-                      )}
-                      src="/audio.png"
-                      alt=""
-                    />
-
-                    <audio id="audio">
-                      <source src="/nhac-trung-thu.mp3" type="audio/mpeg" />
-                    </audio>
-                  </div>
-                </div>
-              </div>
-
-              <Routes>
-                <Route
-                  element={
-                    <>
-                      <App />
-                    </>
-                  }
-                  path="/"
-                />
-                <Route
-                  element={
-                    <>
-                      <Report />
-                    </>
-                  }
-                  path="/report"
-                />
-
-                {/* <Route element={<PrivateRoute />} path="*" /> */}
-              </Routes>
-            </BrowserRouter>
-            <Toaster />
+            <audio id="audio">
+              <source src="/audio.mp3" type="audio/mpeg" />
+            </audio>
           </div>
         </div>
-      </SWRConfig>
-    </React.StrictMode>
+      </div>
+      <OCRComponent />
+    </div>
   );
 };
-ReactDOM.createRoot(document.getElementById("root")).render(<MainApp />);
+export default Order;

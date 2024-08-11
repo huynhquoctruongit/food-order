@@ -11,7 +11,7 @@ const ModalLogin = () => {
   const { data } = useSWR("/items/collection_image?filter[name][_eq]=avatar&fields=*,images.*");
   const listAvatar = data?.data[0]?.images || [];
 
-  const { profile, isLogin } = useAuth();
+  const { profile, isLogin, mutate } = useAuth();
   const [openLogin, setOpenLogin] = useState(false);
   const [openOnboarding, setOpenOnboarding] = useState(false);
   const [active, setActive] = useState(0);
@@ -42,6 +42,7 @@ const ModalLogin = () => {
 
     const data = { first_name, last_name, avatar: listAvatar[active]?.directus_files_id };
     await AxiosClient.patch("/users/me", data);
+    mutate();
     success("Cập nhật thông tin thành công");
     setOpenOnboarding(false);
   };
@@ -90,12 +91,13 @@ const ModalLogin = () => {
           </DialogHeader>
           <div className="py-6">
             <div className="text-sm mb-2">Họ và tên</div>
-            <div className="rounded-md border border-gray-300 bg-white py-2 px-4 w-full">
+            <div className="rounded-md border border-gray-300 bg-white py-2 px-4 w-full focus:border-pastel-pink">
               <input
                 value={text}
+                autoFocus={false}
                 onChange={(e) => setText(e.target.value)}
                 type="text"
-                className=" focus:outline-none text-sm w-full"
+                className=" focus:outline-none text-sm w-full "
                 placeholder="Nhập họ và tên"
               />
             </div>

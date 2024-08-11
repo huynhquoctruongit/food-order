@@ -2,6 +2,7 @@ import axios from "axios";
 import { setCookie } from "react-use-cookie";
 import { directus } from "../directus";
 import { refresh } from "@directus/sdk";
+import { mode } from "../config";
 
 export let isRefreshing = false;
 export let refreshSubscribers = [];
@@ -28,12 +29,17 @@ const removeCookie = () => {
 };
 
 export const refreshAccessToken = async () => {
-  // const res = await directus.refresh().catch((_error) => {
-  //   // removeCookie();
-  //   return null;
-  // });
-  const res = await directus.request(refresh("json", "sPT-3fSduLeYRd4jxsfw0_U3NpRqEYAfg0PDNb0HlTbA_g2o7mk6CTMQTsyqWByP"));
+  let res = {};
+  if (mode !== "development") {
+    res = await directus.refresh().catch((_error) => {
+      removeCookie();
+      return null;
+    });
+  } else {
+    res = await directus.request(refresh("json", "sPT-3fSduLeYRd4jxsfw0_U3NpRqEYAfg0PDNb0HlTbA_g2o7mk6CTMQTsyqWByP"));
+  }
 
+  // const res = await directus.request(refresh("json", "sPT-3fSduLeYRd4jxsfw0_U3NpRqEYAfg0PDNb0HlTbA_g2o7mk6CTMQTsyqWByP"));
   const { access_token, expires } = res;
   setCookie("expires", expires);
   setCookie("auth_token", access_token);

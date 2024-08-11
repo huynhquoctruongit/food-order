@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { XIcon } from "lucide-react";
 import { useLocalStorage, useMediaQuery } from "usehooks-ts";
-import { enumFood } from "../../lib/utils";
+import { enumFood } from "@/lib/utils";
 
 export const ItemTable = ({ children, className }) => {
   return (

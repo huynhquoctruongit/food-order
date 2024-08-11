@@ -17,7 +17,6 @@ import Tesseract from "tesseract.js";
 import useMenu from "@/hooks/use-menu";
 import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
-import { motion, useDragControls } from "framer-motion";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -137,6 +136,7 @@ const GroupButtonHero = () => {
 };
 
 let isPlaying = false;
+
 const MainApp = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {

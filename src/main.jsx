@@ -1,14 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SWRConfig } from "swr";
-import { fetcherClient } from "./lib/api/axios-client";
+import { fetcherClient } from "@/lib/api/axios-client";
 import Report from "@/pages/report";
 import { Toaster } from "@/components/ui/toaster";
-
-import MainPage from "./pages";
+import Order from "./pages/main";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import "./index.css";
+dayjs.extend(utc);
 
 const MainApp = () => {
   return (
@@ -24,7 +26,7 @@ const MainApp = () => {
           <div className="bg-white/40">
             <BrowserRouter>
               <Routes>
-                <Route element={<MainPage />} path="/" />
+                <Route element={<Order />} path="/" />
                 <Route element={<Report />} path="/report" />
               </Routes>
             </BrowserRouter>
