@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -21,50 +15,23 @@ const UserLogin = () => {
     <Dialog open={!user ? true : false}>
       <DialogContent className="sm:max-w-[425px] bg-white text-black">
         <DialogHeader>
-          <DialogTitle className="text-black">
-            Cho tui biết ai đang đặt vậy?
-          </DialogTitle>
-          {/* <DialogDescription className="text-black">
-          Không hiện lần sau nữa đâu nè
-          <div className="mt-[20px]">
-            {selectFood?.map((elm) => {
-              let processed_text = elm.replace(pattern, "");
-              return (
-                <div key={processed_text} className="text-black">
-                  - {processed_text}
-                </div>
-              );
-            })}
-          </div>
-        </DialogDescription> */}
+          <DialogTitle className="text-black">Cho tui biết ai đang đặt vậy?</DialogTitle>
         </DialogHeader>
         <div className="grid gap-2 py-4">
           <div>{isAdmin ? "Mật khẩu" : "Họ tên"}</div>
           {isAdmin ? (
             <div className="items-center gap-4">
-              <Input
-                value={passwordAdmin}
-                onInput={(e) => setPassWord(e.target.value)}
-                placeholder="Nhập mật khẩu"
-              />
+              <Input value={passwordAdmin} onInput={(e) => setPassWord(e.target.value)} placeholder="Nhập mật khẩu" />
             </div>
           ) : (
             <div className="items-center gap-4">
-              <Input
-                value={valueUser}
-                onInput={(e) => setCreateUser(e.target.value)}
-                placeholder="Nhập họ tên nhen"
-              />
+              <Input value={valueUser} onInput={(e) => setCreateUser(e.target.value)} placeholder="Nhập họ tên nhen" />
             </div>
           )}
         </div>
 
         <div className="items-top flex space-x-2 pb-[20px]">
-          <Checkbox
-            onCheckedChange={() => setIsAdmin(!isAdmin)}
-            className="checked-order"
-            id="admin"
-          />
+          <Checkbox onCheckedChange={() => setIsAdmin(!isAdmin)} className="checked-order" id="admin" />
           <div className="grid gap-1.5 leading-none">
             <label
               htmlFor="admin"

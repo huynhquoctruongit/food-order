@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import useSWR from "swr";
 import AxiosAPI from "@/lib/api/axios-client.js";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { staticToken, createDirectus, realtime } from "@directus/sdk";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -15,13 +14,11 @@ import ListRemaining from "@/modules/order/components/list-remaining";
 import ListFinal from "@/modules/order/components/list-final";
 import _ from "lodash";
 import ModalLogin from "@/modules/auth/screen/login";
+import { connection } from "@/lib/directus";
+import { getCookie } from "react-use-cookie";
+import useConnection from "@/hooks/use-connection";
+import { useParams } from "react-router-dom";
 // Kích hoạt plugin UTC
-
-const url = "https://admin.qnsport.vn/websocket";
-const access_token = "6rYHvFJ2LRtR3Qg7DrhJK-_MTQGsBYnr";
-
-const connection = createDirectus(url).with(staticToken(access_token)).with(realtime());
-connection.connect();
 
 const subscribeDelete = _.debounce((cb) => subscribeCore("delete", cb), 100);
 const subscribeCreate = _.debounce((cb) => subscribeCore("create", cb), 100);
@@ -47,9 +44,6 @@ const OCRComponent = () => {
   const refOder = useRef(null);
 
   const { data, mutate: mutateUser } = useSWR("/users");
-  const now = dayjs().add(7, "hour");
-  const utcTime = now.utc().format();
-
   const todayFormatted = dayjs().startOf("day").toISOString();
   const { data: orderToday, mutate: mutateOrder } = useSWR(
     `/items/order?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}`,
@@ -59,8 +53,6 @@ const OCRComponent = () => {
   refOder.current = orderToday?.data;
   const refFunc = useRef(null);
 
-  console.log(menuToday);
-  
   const menu = menuToday?.data || [];
   const [arrayFood, setArrayFood] = useState([]);
   const [user, setUser] = React.useState("");
@@ -75,9 +67,9 @@ const OCRComponent = () => {
   const [passwordAdmin, setPassWord] = useState("");
   const [isTimeout, setIsTimeout] = useState(false);
   const [optionRice, setOptionRice] = useState({});
-  const [loaded, setLoaded] = useState(false);
 
-  let pattern = /^\d+[.,]?\s*/;
+  const { connection } = useConnection();
+  const { companyId, providerId } = useParams();
 
   // useEffect(() => {
   //   const userLocal = localStorage.getItem("user");
@@ -94,42 +86,38 @@ const OCRComponent = () => {
   }, [orderToday]);
 
   const onSelectFood = (elm) => {
-    const now = dayjs();
-    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
-    const valid = dayjs().unix() < time;
-
-    if (!valid) {
-      toast({
-        variant: "destructive",
-        title: "Hết giờ rồi",
-        description: "Hết giờ đặt cơm rồi nha",
-      });
-      return;
-    }
+    // if (!valid) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Hết giờ rồi",
+    //     description: "Hết giờ đặt cơm rồi nha",
+    //   });
+    //   return;
+    // }
 
     setPopup(true);
-    setFoodSelect([elm]);
+
+    setFoodSelect(elm);
   };
 
-  const onOrder = (message) => {
+  const onOrder = async (message) => {
     setPopup(!isPopup);
     if (!userSelect?.id) return;
-    selectFood?.map((elm) => {
-      const price = optionRice[elm] == "no-rice" ? 25 : 35;
-      let processed_text = elm.replace(pattern, "");
-      const params = {
-        name: processed_text,
-        price: price,
-        note: message,
-        user: userSelect.id,
-        date_created: utcTime,
-      };
-      connection.sendMessage({
-        type: "items",
-        collection: "order",
-        action: "create",
-        data: params,
-      });
+
+    const price = false == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
+    const params = {
+      name: selectFood.name,
+      price: price,
+      note: message,
+      bulk_food_provider: providerId,
+      company: companyId,
+    };
+
+    connection.sendMessage({
+      type: "items",
+      collection: "order",
+      action: "create",
+      data: params,
     });
   };
   const deleteFood = (item) => {
@@ -146,12 +134,12 @@ const OCRComponent = () => {
       return;
     }
 
-    connection.sendMessage({
-      type: "items",
-      collection: "order",
-      action: "delete",
-      id: item.id,
-    });
+    // connection.sendMessage({
+    //   type: "items",
+    //   collection: "order",
+    //   action: "delete",
+    //   id: item.id,
+    // });
   };
   const createOrderSuccess = (data) => {
     toast({
@@ -180,7 +168,7 @@ const OCRComponent = () => {
   };
   useEffect(() => {
     const userLocal = localStorage.getItem("user");
-    setLoaded(true);
+
     if (userLocal) {
       setSelectUser(JSON.parse(userLocal));
       setUser(JSON.parse(userLocal)?.fullname);
@@ -255,7 +243,7 @@ const OCRComponent = () => {
     return acc;
   }, []);
 
-  const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.detail || [];  
+  const listFood = (arrayFood?.length && arrayFood) || menu?.[0]?.detail || [];
   const bIds = groupedData?.map((item) => item.user.id);
   const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
@@ -265,13 +253,7 @@ const OCRComponent = () => {
     const endTime = dayjs("24:00", "HH:mm");
     return currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
   }
-  // useEffect(() => {
-  //   setIsTimeout(isTimeBetweenCurrent());
-  //   const interval = setInterval(() => {
-  //     setIsTimeout(isTimeBetweenCurrent());
-  //   }, 10000);
-  //   return () => clearInterval(interval);
-  // }, []);
+ 
   const getSelectRice = (e, item) => {
     setOptionRice({
       ...optionRice,
@@ -326,8 +308,8 @@ const ModalChoose = ({ selectFood, isPopup, getSelectRice, orderNote, setPopup, 
             <DialogDescription className="text-black">
               Có thêm bớt cơm gì đồ note dô để tui làm cho nè :3
               <div className="mt-[20px]">
-                {selectFood?.map((elm, index) => {
-                  let processed_text = elm.replace(pattern, "");
+                {[selectFood]?.map((elm, index) => {
+                  let processed_text = elm.name;
                   return (
                     <div className="mb-[20px]" key={index + "modal hihi"}>
                       <div key={processed_text} className="text-black font-bold mb-[6px]">

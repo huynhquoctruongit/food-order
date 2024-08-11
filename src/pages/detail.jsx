@@ -4,7 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SWRConfig } from "swr";
-import { AxiosAPI, fetcherClient } from "@/lib/api/axios-client";
+import AxiosClient, { AxiosAPI, fetcherClient } from "@/lib/api/axios-client";
 import Report from "@/pages/report";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
@@ -20,6 +20,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { motion, useDragControls } from "framer-motion";
 
 const GroupButtonHero = () => {
+  const { providerId } = useParams();
   const [loading, setLoading] = useState();
   const [user, _] = useLocalStorage("user", {});
   const onScroll = () => {
@@ -77,14 +78,11 @@ const GroupButtonHero = () => {
       text = text.substring(startIndex + 2);
     }
     const arr = generateText(text);
-    const now = dayjs().add(7, "hour");
-    const utcTime = now.utc().format();
     const params = {
-      extract_menus: arr,
-      image: imageUpload.data.data.id,
-      date_created: utcTime,
+      detail: arr.map((item) => ({ name: item, dish_price: 40, side_dish_price: 35 })),
+      bulk_food_provider: providerId,
     };
-    await AxiosAPI.post("/items/menu", params);
+    await AxiosClient.post("/items/menu", params);
     mutate();
   };
   const generateText = (text) => {

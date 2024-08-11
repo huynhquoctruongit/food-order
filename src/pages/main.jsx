@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { AxiosAPI } from "@/lib/api/axios-client";
+import AxiosClient, { AxiosAPI } from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
 import { Button } from "@/components/ui/button-hero.jsx";
@@ -13,6 +13,9 @@ import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
 import OCRComponent from "@/modules/order/screen/temp";
 import { mode } from "@/lib/config";
+import useSWR from "swr";
+import { useParams } from "react-router-dom";
+import Loading, { LoadingPage } from "@/components/widget/loading";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -35,7 +38,7 @@ const GroupButtonHero = () => {
       if (file) {
         const newFormData = new FormData();
         newFormData.append("file", file);
-        const imageUpload = await AxiosAPI.post("/files", newFormData, {
+        const imageUpload = await AxiosClient.post("/files", newFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: "Bearer " + access_token,
@@ -72,14 +75,11 @@ const GroupButtonHero = () => {
       text = text.substring(startIndex + 2);
     }
     const arr = generateText(text);
-    const now = dayjs().add(7, "hour");
-    const utcTime = now.utc().format();
     const params = {
-      extract_menus: arr,
-      image: imageUpload.data.data.id,
-      date_created: utcTime,
+      detail: arr.map((item) => ({ name: item, dish_price: 40, side_dish_price: 35 })),
+      bulk_food_provider: 1, // default
     };
-    await AxiosAPI.post("/items/menu", params);
+    await AxiosClient.post("/items/menu", params);
     mutate();
   };
   const generateText = (text) => {
@@ -132,7 +132,6 @@ const GroupButtonHero = () => {
 };
 
 let isPlaying = false;
-
 const Order = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {
@@ -198,7 +197,6 @@ const Order = () => {
               src="/audio.png"
               alt=""
             />
-
             <audio id="audio">
               <source src="/audio.mp3" type="audio/mpeg" />
             </audio>
@@ -209,4 +207,21 @@ const Order = () => {
     </div>
   );
 };
-export default Order;
+
+const Wrap = () => {
+  const { providerId, companyId } = useParams();
+  const { data: provider, isLoading: isLoadingProvider } = useSWR("/items/bulk_food_provider/" + providerId);
+  const { data: company, isLoading: isLoadingCompany } = useSWR("/items/company/" + companyId);
+  const existProvider = provider?.data;
+  const existCompany = company?.data;
+  if (isLoadingCompany || isLoadingProvider) return <LoadingPage />;
+  if (!existProvider || !existCompany)
+    return (
+      <div className="text-center h-screen flex items-center justify-center text-3xl">
+        Không tồn tại nhà hàng hoặc nhà cung cấp
+      </div>
+    );
+  return <Order />;
+};
+
+export default Wrap;

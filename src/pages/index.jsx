@@ -1,11 +1,10 @@
-import ModalLogin from "@/modules/auth/screen/login";
-
 const MainPage = () => {
   return (
-    <div>
-      <ModalLogin />
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolore perferendis culpa deleniti corporis hic placeat ab atque
-      eaque, officiis reprehenderit illo unde veritatis quam assumenda, modi dolor? Deserunt, esse ea!
+    <div className="w-screen h-screen bg-pastel-pink/40 flex items-center justify-center">
+      <div>
+        <div className="font-bold text-4xl text-center">HIHI</div>
+        <div className="text-center mt-4">COMMING SOON</div>
+      </div>
     </div>
   );
 };

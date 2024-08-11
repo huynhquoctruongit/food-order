@@ -6,7 +6,7 @@ export function cn(...inputs) {
 }
 
 export const url = "https://admin.qnsport.vn/websocket";
-export const access_token = "6rYHvFJ2LRtR3Qg7DrhJK-_MTQGsBYnr";
+export const access_token = "DudCvrFf8z2MYcSVfmr4WdzJfK7uHtjZ";
 
 export const enumFood = [
   "/food1.png",

@@ -10,6 +10,7 @@ import Order from "./pages/main";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import "./index.css";
+import MainPage from "./pages";
 dayjs.extend(utc);
 
 const MainApp = () => {
@@ -26,8 +27,9 @@ const MainApp = () => {
           <div className="bg-white/40">
             <BrowserRouter>
               <Routes>
-                <Route element={<Order />} path="/" />
+                <Route element={<Order />} path="/company/:companyId/provider/:providerId" />
                 <Route element={<Report />} path="/report" />
+                <Route element={<MainPage />} path="/" e />
               </Routes>
             </BrowserRouter>
             <Toaster />
