@@ -31,7 +31,7 @@ const removeCookie = () => {
 export const refreshAccessToken = async () => {
   let res = {};
   if (mode !== "developments") {
-    res = await directus.request(refresh("cookie")).catch((_error) => {
+    res = await directus.refresh().catch(() => {
       removeCookie();
       return null;
     });

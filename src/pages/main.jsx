@@ -12,6 +12,7 @@ import useMenu from "@/hooks/use-menu";
 import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
 import OCRComponent from "@/modules/order/screen/temp";
+import { mode } from "@/lib/config";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -138,7 +139,7 @@ const Order = () => {
     const audio = document.getElementById("audio");
     audio.volumn = 0.5;
     document.addEventListener("click", function () {
-      if (isPlaying) return;
+      if (isPlaying || mode === "development") return;
       isPlaying = true;
       setPlay(true);
       audio.play();
