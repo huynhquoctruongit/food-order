@@ -47,14 +47,14 @@ const subscribeCore = async (event, cb) => {
     query: {
       sort: "-date_created",
       fields: ["*", "user.*"],
-      // filter: {
-      //   date_created: { _gte: dayjs().endOf("day").toISOString() },
-      // },
+      filter: {
+        date_created: { _gte: dayjs().startOf("day").toISOString() },
+      },
     },
   });
   for await (const message of subscription) {
-    console.log('ádsd');
-    
+    console.log("ádsd");
+
     if (message.event === event) cb(message);
   }
 };
