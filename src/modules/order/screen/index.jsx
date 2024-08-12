@@ -100,7 +100,8 @@ const OCRComponent = () => {
 
   const onOrder = async (message) => {
     setPopup(!isPopup);
-    if (!userSelect?.id) return;
+
+    console.log("hhi");
 
     const price = false == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
     const params = {

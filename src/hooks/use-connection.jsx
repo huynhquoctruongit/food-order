@@ -15,6 +15,7 @@ const useConnection = () => {
       if (data.type == "auth" && data.status == "ok") {
         statusConnected = "connected";
         setStatus("connected");
+        subscribe("create");
       }
       if (data.type == "auth" && data.status == "error") {
         statusConnected = "disconnected";
@@ -44,7 +45,7 @@ const useConnection = () => {
       query: {
         fields: ["*"],
         filter: {
-          provider: { _eq: 1 },
+          bulk_food_provider: { _eq: 1 },
           company: { _eq: 1 },
         },
       },
