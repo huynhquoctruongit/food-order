@@ -196,7 +196,6 @@ const OCRComponent = () => {
           setPopup,
         }}
       />
-      <ModalLogin />
       <div className="root-wrapper">
         <div className="flex flex-wrap mt-10">
           <ListFood listFood={listFood} onSelectFood={onSelectFood} />

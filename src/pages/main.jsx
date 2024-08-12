@@ -16,6 +16,8 @@ import { mode } from "@/lib/config";
 import useSWR from "swr";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading, { LoadingPage } from "@/components/widget/loading";
+import ModalLogin from "@/modules/auth/screen/login";
+import { useAuth } from "@/hooks/use-auth";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -221,7 +223,6 @@ const Wrap = () => {
   const { data: provider, isLoading: isLoadingProvider } = useSWR("/items/bulk_food_provider/" + providerId);
   const { data: company, isLoading: isLoadingCompany } = useSWR("/items/company/" + companyId);
   const existProvider = provider?.data;
-
   const existCompany = company?.data;
   if (isLoadingCompany || isLoadingProvider) return <LoadingPage />;
   if (!existProvider || !existCompany)

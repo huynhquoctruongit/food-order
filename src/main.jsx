@@ -9,9 +9,10 @@ import { Toaster } from "@/components/ui/toaster";
 import Order from "./pages/main";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import "./index.css";
 import MainPage from "./pages";
+import ModalLogin from "./modules/auth/screen/login";
 dayjs.extend(utc);
+import "./index.css";
 
 const MainApp = () => {
   return (
@@ -33,6 +34,7 @@ const MainApp = () => {
             </Routes>
           </BrowserRouter>
           <Toaster />
+          <ModalLogin />;
         </div>
       </div>
     </SWRConfig>
