@@ -39,6 +39,7 @@ const ModalLogin = () => {
     const names = text.trim().split(" ");
     const first_name = names[0];
     const last_name = names.slice(1, 100).join(" ");
+    console.log(active, listAvatar);
 
     const data = { first_name, last_name, avatar: listAvatar[active]?.directus_files_id };
     await AxiosClient.patch("/users/me", data);
