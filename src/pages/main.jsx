@@ -11,7 +11,7 @@ import Tesseract from "tesseract.js";
 import useMenu from "@/hooks/use-menu";
 import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
-import OCRComponent from "@/modules/order/screen/temp";
+import OCRComponent from "@/modules/order/screen";
 import { mode } from "@/lib/config";
 import useSWR from "swr";
 import { useParams } from "react-router-dom";

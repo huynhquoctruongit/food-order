@@ -15,8 +15,8 @@ const useConnection = () => {
       .connect()
       .then(() => {
         setStatus("connected");
-        statusConnected = "connected";
         connection.sendMessage({ type: "auth", access_token: getCookie("auth_token") });
+        statusConnected = "connected";
       })
       .catch((error) => {
         console.log("Error: ", error);
