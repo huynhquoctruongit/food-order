@@ -53,15 +53,14 @@ export function useAuth(options) {
     profile: {
       ...profileObj,
       roleName: profileObj.role?.name || "",
-      fullname:
-        profileObj.fullname ||
-        profileObj.first_name + " " + profileObj.last_name,
+      fullname: profileObj.fullname || profileObj.first_name + " " + profileObj.last_name,
     },
     error,
     login,
     logout,
     getProfile: mutate,
     firstLoading,
+    mutate,
     data: profile?.data,
   };
 }

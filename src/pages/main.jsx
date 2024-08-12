@@ -213,6 +213,7 @@ const Wrap = () => {
   const { data: provider, isLoading: isLoadingProvider } = useSWR("/items/bulk_food_provider/" + providerId);
   const { data: company, isLoading: isLoadingCompany } = useSWR("/items/company/" + companyId);
   const existProvider = provider?.data;
+  
   const existCompany = company?.data;
   if (isLoadingCompany || isLoadingProvider) return <LoadingPage />;
   if (!existProvider || !existCompany)

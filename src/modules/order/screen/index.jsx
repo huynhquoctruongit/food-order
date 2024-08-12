@@ -65,15 +65,15 @@ const OCRComponent = () => {
     delete: deleteOrderSuccess,
     mutate: mutateOrder,
   };
-  const callback = useCallback((message) => {
-    console.log(message);
-    const newData = [...refOder.current, ...message.data];
-    mutate({ data: { data: newData } }, { revalidate: false });
-    refFunc.current.create(message.data[0] || {});
-  }, []);
+  // const callback = useCallback((message) => {
+  //   console.log(message);
+  //   const newData = [...refOder.current, ...message.data];
+  //   mutate({ data: { data: newData } }, { revalidate: false });
+  //   refFunc.current.create(message.data[0] || {});
+  // }, []);
 
-  const filter = { company: 1, bulk_food_provider: 1 };
-  useSubscribe("create", filter, callback);
+  // const filter = { company: { _eq: 1 }, bulk_food_provider: { _eq: 1 } };
+  // useSubscribe("create", filter, callback);
 
   const { companyId, providerId } = useParams();
 
