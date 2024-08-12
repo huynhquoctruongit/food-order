@@ -13,9 +13,9 @@ import ListRemaining from "@/modules/order/components/list-remaining";
 import ListFinal from "@/modules/order/components/list-final";
 import _ from "lodash";
 import ModalLogin from "@/modules/auth/screen/login";
-import useConnection from "@/hooks/use-connection";
+import useConnection, { useSubscribe } from "@/hooks/use-connection";
 import { useParams } from "react-router-dom";
-import useSubscribe from "../helper/use-subscrible";
+import { connection } from "@/lib/directus";
 
 const OCRComponent = () => {
   const { toast } = useToast();
@@ -39,7 +39,7 @@ const OCRComponent = () => {
   const [isPopup, setPopup] = useState("");
   const [optionRice, setOptionRice] = useState({});
 
-  const { connection } = useConnection();
+  const refCallback = useRef(null);
 
   const createOrderSuccess = (data) => {
     toast({
@@ -60,6 +60,11 @@ const OCRComponent = () => {
       description: " Đã xóa món " + data,
     });
   };
+  refCallback.current = (message) => {
+    console.log("message11", message);
+  };
+  useSubscribe("create", "order", { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, refCallback);
+
   refFunc.current = {
     create: createOrderSuccess,
     delete: deleteOrderSuccess,
@@ -100,8 +105,6 @@ const OCRComponent = () => {
 
   const onOrder = async (message) => {
     setPopup(!isPopup);
-
-    console.log("hhi");
 
     const price = false == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
     const params = {

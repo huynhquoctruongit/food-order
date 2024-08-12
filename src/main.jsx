@@ -15,28 +15,28 @@ dayjs.extend(utc);
 
 const MainApp = () => {
   return (
-    <React.StrictMode>
-      <SWRConfig
-        value={{
-          revalidateIfStale: false,
-          revalidateOnFocus: false,
-          fetcher: fetcherClient,
-        }}
-      >
-        <div className="bg-[url(/background.png)] bg-contain text-left">
-          <div className="bg-white/40">
-            <BrowserRouter>
-              <Routes>
-                <Route element={<Order />} path="/company/:companyId/provider/:providerId" />
-                <Route element={<Report />} path="/report" />
-                <Route element={<MainPage />} path="/" e />
-              </Routes>
-            </BrowserRouter>
-            <Toaster />
-          </div>
+    // <React.StrictMode>
+    <SWRConfig
+      value={{
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        fetcher: fetcherClient,
+      }}
+    >
+      <div className="bg-[url(/background.png)] bg-contain text-left">
+        <div className="bg-white/40">
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Order />} path="/company/:companyId/provider/:providerId" />
+              <Route element={<Report />} path="/report" />
+              <Route element={<MainPage />} path="/" />
+            </Routes>
+          </BrowserRouter>
+          <Toaster />
         </div>
-      </SWRConfig>
-    </React.StrictMode>
+      </div>
+    </SWRConfig>
+    // </React.StrictMode>
   );
 };
 ReactDOM.createRoot(document.getElementById("root")).render(<MainApp />);
