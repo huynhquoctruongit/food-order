@@ -30,30 +30,22 @@ const GroupButtonHero = () => {
   const { mutate } = useMenu();
   const { toast } = useToast();
   const handleFileChange = async (event) => {
-    if (user.fullname !== "Hồng Phạm") {
-      toast({
-        variant: "destructive",
-        title: "Không có quyền !",
-        description: "Có phải chị Hồng đó không ta :)))",
+    const file = event.target.files[0];
+    if (file) {
+      const newFormData = new FormData();
+      newFormData.append("file", file);
+      const imageUpload = await AxiosAPI.post("/files", newFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + access_token,
+        },
       });
-    } else {
-      const file = event.target.files[0];
-      if (file) {
-        const newFormData = new FormData();
-        newFormData.append("file", file);
-        const imageUpload = await AxiosAPI.post("/files", newFormData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + access_token,
-          },
-        });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          recognizeText(reader.result, imageUpload);
-        };
-        setLoading(true);
-        reader.readAsDataURL(file);
-      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        recognizeText(reader.result, imageUpload);
+      };
+      setLoading(true);
+      reader.readAsDataURL(file);
     }
   };
 

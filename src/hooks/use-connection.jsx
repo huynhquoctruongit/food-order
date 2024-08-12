@@ -2,16 +2,22 @@ import { connection } from "@/lib/directus";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "./use-auth";
 import { getCookie } from "react-use-cookie";
+import { create } from "zustand";
 import _ from "lodash";
 let statusConnected = "disconnected";
+
+const useStatusConnection = create((set) => ({
+  status: "disconnected",
+  setStatus: (status) => set({ status }),
+}));
+
 const useConnection = () => {
   const { isLogin } = useAuth();
-  const [status, setStatus] = useState(statusConnected);
-  console.log(statusConnected);
+  const { status, setStatus } = useStatusConnection();
 
   useEffect(() => {
     if (!isLogin) return;
-    if (status === "connected" || statusConnected === "connected") return;
+    if (status === "connected" || statusConnected !== "disconnected") return;
     const cleanup = connection.onWebSocket("message", function (data) {
       if (data.type == "auth" && data.status == "ok") {
         statusConnected = "connected";
@@ -22,6 +28,7 @@ const useConnection = () => {
         setStatus("disconnected");
       }
     });
+    statusConnected = "connecting";
     connection
       .connect()
       .then((data) => {
@@ -42,25 +49,23 @@ const cache = {
   keys: {},
 };
 
-const createSubscribe = _.debounce(async (event, collection, filter, callback) => {
+const createSubscribe = async (event, collection, fields, filter, callback) => {
   const key = event + collection + JSON.stringify(filter);
   const { subscription, unsubscribe } = await connection.subscribe(collection, {
     event,
     query: {
-      fields: ["*"],
+      fields: fields || ["*"],
       filter,
     },
   });
   cache.keys[key] = { subscription, unsubscribe };
-  console.log(cache.keys);
-
   for await (const message of subscription) {
     callback.current(message);
   }
   return unsubscribe;
-}, 100);
+};
 
-export const useSubscribe = (event, collection, filter, callback) => {
+export const useSubscribe = (event, collection, fields, filter, callback) => {
   const key = event + collection + JSON.stringify(filter);
   const { connection, status } = useConnection();
 
@@ -70,7 +75,7 @@ export const useSubscribe = (event, collection, filter, callback) => {
     if (!event || !collection || !filter || !callback) return;
     if (!connection || status !== "connected" || handler) return;
 
-    createSubscribe(event, collection, filter, callback);
+    createSubscribe(event, collection, fields, filter, callback);
     return () => {
       cache.keys[key]?.unsubscribe();
       cache.keys[key] = null;

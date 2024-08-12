@@ -13,62 +13,89 @@ import ListRemaining from "@/modules/order/components/list-remaining";
 import ListFinal from "@/modules/order/components/list-final";
 import _ from "lodash";
 import ModalLogin from "@/modules/auth/screen/login";
-import useConnection, { useSubscribe } from "@/hooks/use-connection";
+import { useSubscribe } from "@/hooks/use-connection";
 import { useParams } from "react-router-dom";
 import { connection } from "@/lib/directus";
+import useOrder from "../helper/use-menu";
 
 const OCRComponent = () => {
   const { toast } = useToast();
   const refOder = useRef(null);
 
-  const { data, mutate: mutateUser } = useSWR("/users");
+  const { data } = useSWR("/users");
   const todayFormatted = dayjs().startOf("day").toISOString();
-  const { data: orderToday, mutate: mutateOrder } = useSWR(
-    `/items/order?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}`,
-  );
+  const { mutate: mutateOrder } = useOrder();
   const { data: menuToday } = useSWR(`/items/menu?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}`);
   const dataUser = data?.data;
-  refOder.current = orderToday?.data;
   const refFunc = useRef(null);
 
   const menu = menuToday?.data || [];
-  const [userSelect, setSelectUser] = useState({});
   const [selectFood, setFoodSelect] = useState([]);
-  const [orderList, setOrderList] = useState([]);
   const [orderNote, setOrderNote] = useState("");
   const [isPopup, setPopup] = useState("");
   const [optionRice, setOptionRice] = useState({});
 
   const refCallback = useRef(null);
+  const deleteCallback = useRef(null);
 
   const createOrderSuccess = (data) => {
+    const fullname = data?.user_created.first_name + " " + data?.user_created.last_name;
     toast({
       variant: "success",
-      title: data.user.fullname,
+      title: fullname,
       description: (
         <span className="">
           <img className="w-5 h-5 shadow-button rounded-full inline mr-2" src="/menu2.png" alt="" />
-          Đã đặt cơm <span className="font-bold"> {data.name} </span>
+          Đã đặt cơm <span className="font-bold"> {fullname} </span>
         </span>
       ),
     });
   };
   const deleteOrderSuccess = (data) => {
+    const fullname = data?.user_created.first_name + " " + data?.user_created.last_name;
+    console.log(data, fullname);
     toast({
       variant: "success",
-      title: "... Đã xóa",
-      description: " Đã xóa món " + data,
+      title: fullname + " Đã xóa",
+      description: " Đã xóa món " + data.name,
     });
   };
   refCallback.current = (message) => {
-    console.log("message11", message);
+    if (message.event !== "create") return;
+    mutateOrder(
+      (data) => {
+        data.data = [...data.data, ...message?.data];
+        return data;
+      },
+      { revalidate: false },
+    );
+    const data = message.data[0];
+    if (!data) return;
+
+    createOrderSuccess(data);
   };
-  useSubscribe("create", "order", { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, refCallback);
+
+  deleteCallback.current = (message) => {
+    if (message.event !== "update") return;
+    const data = message.data[0];
+
+    mutateOrder(
+      (dataSWR) => {
+        const newData = { ...dataSWR };
+        newData.data = newData.data.filter((item) => item.id != data.id);
+        return newData;
+      },
+      { revalidate: false },
+    );
+    deleteOrderSuccess(data);
+  };
+
+  useSubscribe("create", "order", ["*,user_created.*"], { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, refCallback);
+  useSubscribe("update", "order", ["*,user_created.*"], { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, deleteCallback);
 
   refFunc.current = {
     create: createOrderSuccess,
     delete: deleteOrderSuccess,
-    mutate: mutateOrder,
   };
   // const callback = useCallback((message) => {
   //   console.log(message);
@@ -81,13 +108,6 @@ const OCRComponent = () => {
   // useSubscribe("create", filter, callback);
 
   const { companyId, providerId } = useParams();
-
-  useEffect(() => {
-    const orderMembers = orderToday?.data?.data;
-    const filterOther = orderMembers?.filter((elm) => elm.name !== "orther-food");
-    setOrderList(filterOther);
-  }, [orderToday]);
-
   const onSelectFood = (elm) => {
     // if (!valid) {
     //   toast({
@@ -127,61 +147,26 @@ const OCRComponent = () => {
     const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
     const valid = dayjs().unix() < time;
 
-    if (!valid) {
-      toast({
-        variant: "destructive",
-        title: "Hết giờ rồi",
-        description: "Thui ăn xong rồi ai lại hủy nữa :)))",
-      });
-      return;
-    }
+    // if (!valid) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Hết giờ rồi",
+    //     description: "Thui ăn xong rồi ai lại hủy nữa :)))",
+    //   });
+    //   return;
+    // }
 
     connection.sendMessage({
       type: "items",
       collection: "order",
-      action: "delete",
+      action: "update",
+      data: { status: "draft" },
       id: item.id,
     });
   };
 
-  useEffect(() => {
-    const userLocal = localStorage.getItem("user");
-
-    if (userLocal) {
-      setSelectUser(JSON.parse(userLocal));
-    }
-    // subscribeCreate((message) => {
-    //   console.log(message);
-    //   const newData = [...refOder.current, ...message.data];
-    //   refFunc.current.mutate({ data: { data: newData } }, { revalidate: false });
-    //   refFunc.current.create(message.data[0] || {});
-    // });
-    // subscribeDelete((message) => {
-    //   const newData = refOder.current.filter((item) => item.id !== message.data[0]);
-    //   const data = refOder.current.find((item) => item.id === message.data[0]);
-    //   mutateOrder({ data: { data: newData } }, { revalidate: false });
-    //   deleteOrderSuccess(data?.name);
-    // });
-  }, []);
-
-  const groupedData = orderList?.reduce((acc, { user, name, note, id, date_created, price }) => {
-    let group = acc.find((group) => group.user.id === user?.id);
-    if (!group) {
-      group = { user: { id: user?.id, fullname: user?.fullname }, items: [] };
-      acc.push(group);
-    }
-    group.items.push({
-      name: name,
-      note: note,
-      id: id,
-      date_created: date_created,
-      price: price,
-    });
-    return acc;
-  }, []);
-
   const listFood = menu?.[0]?.detail || [];
-  const bIds = groupedData?.map((item) => item.user.id);
+  const bIds = [];
   const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
   function isTimeBetweenCurrent() {
@@ -218,7 +203,7 @@ const OCRComponent = () => {
         </div>
         <div></div>
         <div className="mt-10 md:mt-20">
-          <ListOrder groupedData={groupedData} deleteFood={deleteFood} />
+          <ListOrder deleteFood={deleteFood} />
           <ListRemaining userNonOrderd={userNonOrderd} />
           <div className="hidden md:block">
             <ListFinal order={refOder.current} />

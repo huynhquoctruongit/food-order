@@ -27,30 +27,31 @@ const GroupButtonHero = () => {
   const { mutate } = useMenu();
   const { toast } = useToast();
   const handleFileChange = async (event) => {
-    if (user.fullname !== "Hồng Phạm") {
-      toast({
-        variant: "destructive",
-        title: "Không có quyền !",
-        description: "Có phải chị Hồng đó không ta :)))",
+    // if (user.fullname !== "Hồng Phạm") {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Không có quyền !",
+    //     description: "Có phải chị Hồng đó không ta :)))",
+    //   });
+    // } else {
+
+    // }
+    const file = event.target.files[0];
+    if (file) {
+      const newFormData = new FormData();
+      newFormData.append("file", file);
+      const imageUpload = await AxiosClient.post("/files", newFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + access_token,
+        },
       });
-    } else {
-      const file = event.target.files[0];
-      if (file) {
-        const newFormData = new FormData();
-        newFormData.append("file", file);
-        const imageUpload = await AxiosClient.post("/files", newFormData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + access_token,
-          },
-        });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          recognizeText(reader.result, imageUpload);
-        };
-        setLoading(true);
-        reader.readAsDataURL(file);
-      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        recognizeText(reader.result, imageUpload);
+      };
+      setLoading(true);
+      reader.readAsDataURL(file);
     }
   };
 
@@ -76,7 +77,10 @@ const GroupButtonHero = () => {
     }
     const arr = generateText(text);
     const params = {
-      detail: arr.map((item) => ({ name: item, dish_price: 40, side_dish_price: 35 })),
+      detail: arr.map((item) => {
+        const name = item.split(" ").splice(1).join(" ");
+        return { name: name, dish_price: 40, side_dish_price: 35 };
+      }),
       bulk_food_provider: 1, // default
     };
     await AxiosClient.post("/items/menu", params);

@@ -28,7 +28,8 @@ AxiosAPI.interceptors.response.use(function (response) {
 
 export const fetcherClient = (url, params) => {
   if (url) {
-    return AxiosClient.get(url, { params });
+    if (typeof url === "string") return AxiosClient.get(url, { params });
+    else if (typeof url === "object") return AxiosClient.get(url[0], { params: url[1] });
   }
 };
 export const optionsFetch = {
