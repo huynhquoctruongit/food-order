@@ -37,20 +37,19 @@ const ListOrder = () => {
   });
 
   const deleteFood = (item) => {
-    console.log(item);
-
+    
     const now = dayjs();
     const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
     const valid = dayjs().unix() < time;
 
-    if (!valid) {
-      toast({
-        variant: "destructive",
-        title: "Hết giờ rồi",
-        description: "Thui ăn xong rồi ai lại hủy nữa :)))",
-      });
-      return;
-    }
+    // if (!valid) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Hết giờ rồi",
+    //     description: "Thui ăn xong rồi ai lại hủy nữa :)))",
+    //   });
+    //   return;
+    // }
 
     connection.sendMessage({
       type: "items",

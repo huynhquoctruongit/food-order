@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import AxiosClient from "@/lib/api/axios-client";
+import { createImage } from "@/lib/helper";
 import { cn, enumFood } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -78,7 +79,7 @@ const ModalLogin = () => {
                   key={item.directus_files_id}
                   className="rounded-full w-12 h-12 bg-pastel-pink/50 flex items-center justify-center"
                 >
-                  <img src={item.directus_files_id} className="w-10 h-10" alt="" />
+                  <img src={createImage(item.directus_files_id, 200)} className="w-10 h-10" alt="" />
                 </div>
               );
             })}

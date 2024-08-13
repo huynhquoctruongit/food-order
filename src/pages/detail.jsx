@@ -1,12 +1,5 @@
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SWRConfig } from "swr";
-import AxiosClient, { AxiosAPI, fetcherClient } from "@/lib/api/axios-client";
-import Report from "@/pages/report";
-import { Toaster } from "@/components/ui/toaster";
+import { useEffect, useState } from "react";
+import AxiosClient from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
 import { Button } from "@/components/ui/button-hero.jsx";
@@ -14,26 +7,28 @@ import { SquaresPlusIcon } from "@heroicons/react/24/outline";
 import { access_token, cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import Tesseract from "tesseract.js";
-import useMenu from "@/hooks/use-menu";
-import dayjs from "dayjs";
-import { useLocalStorage } from "usehooks-ts";
-import { motion, useDragControls } from "framer-motion";
+import { useMenuToday } from "@/hooks/use-menu";
+import OCRComponent from "@/modules/order/screen";
+import { mode } from "@/lib/config";
+import useSWR from "swr";
+import { useNavigate, useParams } from "react-router-dom";
+import { LoadingPage } from "@/components/widget/loading";
+import CreateMenu from "@/modules/order/screen/create-menu";
 
 const GroupButtonHero = () => {
-  const { providerId } = useParams();
   const [loading, setLoading] = useState();
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
   };
-  const { mutate } = useMenu();
+  const { mutate } = useMenuToday();
   const { toast } = useToast();
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const newFormData = new FormData();
       newFormData.append("file", file);
-      const imageUpload = await AxiosAPI.post("/files", newFormData, {
+      const imageUpload = await AxiosClient.post("/files", newFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: "Bearer " + access_token,
@@ -70,8 +65,11 @@ const GroupButtonHero = () => {
     }
     const arr = generateText(text);
     const params = {
-      detail: arr.map((item) => ({ name: item, dish_price: 40, side_dish_price: 35 })),
-      bulk_food_provider: providerId,
+      detail: arr.map((item) => {
+        const name = item.split(" ").splice(1).join(" ");
+        return { name: name, dish_price: 40, side_dish_price: 35 };
+      }),
+      bulk_food_provider: 1, // default
     };
     await AxiosClient.post("/items/menu", params);
     mutate();
@@ -121,18 +119,19 @@ const GroupButtonHero = () => {
           {loading ? <Loader2Icon className="w-4 h-4 animate-spin" /> : <SquaresPlusIcon className="w-4 h-4" />}
         </label>
       </Button>
+      <CreateMenu />
     </div>
   );
 };
 
 let isPlaying = false;
-const MainApp = () => {
+const Order = () => {
   const [play, setPlay] = useState(false);
   useEffect(() => {
     const audio = document.getElementById("audio");
     audio.volumn = 0.5;
     document.addEventListener("click", function () {
-      if (isPlaying) return;
+      if (isPlaying || mode === "development") return;
       isPlaying = true;
       setPlay(true);
       audio.play();
@@ -144,97 +143,82 @@ const MainApp = () => {
     else audio.play();
     setPlay(!play);
   };
+  const navigate = useNavigate();
+  const onGoHome = () => {
+    navigate("/");
+  };
   return (
-    <React.StrictMode>
-      <SWRConfig
-        value={{
-          revalidateIfStale: false,
-          revalidateOnFocus: false,
-          fetcher: fetcherClient,
-        }}
-      >
-        <div className="bg-[url(/background.png)] bg-contain text-left">
-          <div className="bg-white/40">
-            <BrowserRouter>
-              <div>
-                <div className="flex items-center justify-between text-black root-wrapper py-3">
-                  <h1 className="font-bold text-sm md:text-xl" id="logo">
-                    NƯỚC{" "}
-                    <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
-                      XẾ CHIỀU TÀ
-                    </span>
-                  </h1>
-                  <Profile />
-                </div>
+    <div>
+      <div>
+        <div className="flex items-center justify-between text-black root-wrapper py-3">
+          <h1 onClick={onGoHome} className="font-bold text-sm md:text-xl" id="logo">
+            NƯỚC{" "}
+            <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
+              XẾ CHIỀU TÀ
+            </span>
+          </h1>
+          <Profile />
+        </div>
+      </div>
+      <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
+        <img
+          className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
+          src="/hero.png"
+          alt=""
+        />
+
+        <div className="absolute root-wrapper w-full">
+          <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
+            <div className="text-left">
+              <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
+                APP ĐẶT CƠM <br className="md:hidden" />
+                <br className="md:hidden" />
+                TOP #1 VIỆT NAM
+              </h1>
+              <div className="mt-6 text-gray-700 hidden md:block">
+                Một miếng khi đói bằng một gói khi no lòi họng. <br />
+                Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
               </div>
-              <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
-                <img
-                  className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
-                  src="/hero.png"
-                  alt=""
-                />
+              <GroupButtonHero />
+            </div>
+            <div className="relative">
+              <img className="w-[512px] aspect-[512/256]" src="/have-a-nice-day.png" alt="" />
+            </div>
 
-                <div className="absolute root-wrapper w-full">
-                  <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
-                    <div className="text-left">
-                      <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
-                        APP ĐẶT CƠM <br className="md:hidden" />
-                        <br className="md:hidden" />
-                        TOP #1 Việt Nam
-                      </h1>
-                      <div className="mt-6 text-gray-700 hidden md:block">
-                        Một miếng khi đói bằng một gói khi no lòi họng. <br />
-                        Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
-                      </div>
-                      <GroupButtonHero />
-                    </div>
-                    <div className="relative">
-                      <img className="w-[512px] aspect-[512/256]" src="/have-a-nice-day.png" alt="" />
-                    </div>
-
-                    <img
-                      onClick={onClick}
-                      className={cn(
-                        "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
-                        play ? "animate-spin" : "",
-                      )}
-                      src="/audio.png"
-                      alt=""
-                    />
-
-                    <audio id="audio">
-                      <source src="/nhac-trung-thu.mp3" type="audio/mpeg" />
-                    </audio>
-                  </div>
-                </div>
-              </div>
-
-              <Routes>
-                <Route
-                  element={
-                    <>
-                      <App />
-                    </>
-                  }
-                  path="/"
-                />
-                <Route
-                  element={
-                    <>
-                      <Report />
-                    </>
-                  }
-                  path="/report"
-                />
-
-                {/* <Route element={<PrivateRoute />} path="*" /> */}
-              </Routes>
-            </BrowserRouter>
-            <Toaster />
+            <img
+              onClick={onClick}
+              className={cn(
+                "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
+                play ? "animate-spin" : "",
+              )}
+              src="/audio.png"
+              alt=""
+            />
+            <audio id="audio">
+              <source src="/audio.mp3" type="audio/mpeg" />
+            </audio>
           </div>
         </div>
-      </SWRConfig>
-    </React.StrictMode>
+      </div>
+      <OCRComponent />
+    </div>
   );
 };
-ReactDOM.createRoot(document.getElementById("root")).render(<MainApp />);
+
+const Wrap = () => {
+  const { providerId, companyId } = useParams();
+  const { data: provider, isLoading: isLoadingProvider } = useSWR("/items/bulk_food_provider/" + providerId);
+  const { data: company, isLoading: isLoadingCompany } = useSWR("/items/company/" + companyId);
+  const existProvider = provider?.data;
+  const existCompany = company?.data;
+  if (isLoadingCompany || isLoadingProvider) return <LoadingPage />;
+  if (!existProvider || !existCompany)
+    return (
+      <div className="text-center h-screen flex items-center justify-center text-3xl">
+        Không tồn tại nhà hàng hoặc nhà cung cấp
+      </div>
+    );
+  return <Order />;
+};
+
+export default Wrap;

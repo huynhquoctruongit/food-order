@@ -1,10 +1,23 @@
 import dayjs from "dayjs";
+import { useParams } from "react-router-dom";
 import useSWR from "swr";
 
-const useMenu = () => {
+export const useMenuToday = () => {
   const today = dayjs().startOf("day").toISOString();
-  const { data, mutate, isLoading } = useSWR(`/items/menu?fields=*&sort=-date_created&filter[date_created][_gte]=${today}`);
-  return { data, mutate, isLoading };
+  const { providerId } = useParams();
+  const payload = {
+    filter: {
+      date_created: { _gte: today },
+      status: "published",
+      bulk_food_provider: providerId,
+    },
+    limit: 1,
+    sort: "date_created",
+    fields: "*,user_created.*",
+  };
+  const { data, mutate, isLoading } = useSWR([`/items/menu`, payload]);
+  const menu = data?.data[0] || {};
+  return { menu, mutate, isLoading };
 };
 
-export default useMenu;
+export default useMenuToday;

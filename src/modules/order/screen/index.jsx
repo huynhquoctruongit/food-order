@@ -16,19 +16,18 @@ import { useSubscribe } from "@/hooks/use-connection";
 import { useParams } from "react-router-dom";
 import { connection } from "@/lib/directus";
 import useOrder from "../helper/use-menu";
+import useMenuToday from "@/hooks/use-menu";
 
 const OCRComponent = () => {
   const { toast } = useToast();
   const refOder = useRef(null);
 
   const { data } = useSWR("/users");
-  const todayFormatted = dayjs().startOf("day").toISOString();
   const { mutate: mutateOrder } = useOrder();
-  const { data: menuToday } = useSWR(`/items/menu?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}`);
+  const { menu } = useMenuToday();
   const dataUser = data?.data;
   const refFunc = useRef(null);
 
-  const menu = menuToday?.data || [];
   const [selectFood, setFoodSelect] = useState([]);
   const [orderNote, setOrderNote] = useState("");
   const [isPopup, setPopup] = useState("");
@@ -142,7 +141,7 @@ const OCRComponent = () => {
     });
   };
 
-  const listFood = menu?.[0]?.detail || [];
+  const listFood = menu.detail || [];
   const bIds = [];
   const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
