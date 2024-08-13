@@ -47,7 +47,6 @@ const Report = () => {
 
     const onUpdateOrder = (e, item, ortherList, date, type) => {
         var priceInput = e.target.value
-
         if (e.key === 'Enter' || e.keyCode === 13) {
             priceInput = eval(priceInput)
         }
@@ -145,6 +144,7 @@ const Report = () => {
     useEffect(() => {
         setCurrentSelect(weekList[weekUrl])
     }, [weekUrl])
+  
     return (
         <div className="bg-[url(/background.png)] bg-contain py-[23px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
             <div className="px-[20px] md:px-[100px]">
@@ -199,11 +199,10 @@ const Report = () => {
                                         const date = dayjs(elm + "T12:00:00+07:00").format("YYYY-MM-DD")
                                         const valueInput = userItem.user.id + "-" + date
                                         const valueWater = dataReport?.[valueInput]?.price
-                                        console.log(valueWater, 'valueWater');
                                         return (
                                             <TableCell key={userItem.user.id + date + index + "-elm-wrapper"} className="text-left p-2">
                                                 <input key={userItem.user.id + date + index + "-elm-input1"} disabled className="rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 select-none" value={riceList?.length ? riceList?.length * 35 : ""}></input>
-                                                <input key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? ortherList?.price : ""}  onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
+                                                <input key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
                                             </TableCell>
                                         )
                                     })}

@@ -205,7 +205,7 @@ const MainApp = () => {
                 />
 
                 <div className="absolute root-wrapper w-full">
-                  {play && <KhaBanh />}
+                  {/* {play && <KhaBanh />} */}
                   <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
                     <div className="text-left">
                       <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
