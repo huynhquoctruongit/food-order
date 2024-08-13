@@ -1,12 +1,9 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useState } from "react";
 
-const AddFood = ({ user }) => {
+const AddFood = ({}) => {
+  const { isLogin } = useAuth();
   const listItem = [
     { label: "Vui", image: "/vui.png" },
     { label: "Vui vãi", image: "/vui-vai.png" },
@@ -15,22 +12,18 @@ const AddFood = ({ user }) => {
   ];
   const [show, setShow] = useState(false);
   useEffect(() => {
-    if (user) {
+    if (isLogin) {
       setShow(true);
     }
-  }, [user]);
+  }, [isLogin]);
 
   return (
     <Dialog open={show}>
       <DialogContent className="sm:max-w-[425px] bg-white text-black">
         <DialogHeader>
-          <DialogTitle className="text-primary">
-            Bảng đánh giá tâm trạng
-          </DialogTitle>
+          <DialogTitle className="text-primary">Bảng đánh giá tâm trạng</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-2 py-4 text-center">
-          Tâm trạng của bạn hôm nay như thế nào?
-        </div>
+        <div className="grid gap-2 py-4 text-center">Tâm trạng của bạn hôm nay như thế nào?</div>
         <div className="flex items-center justify-between">
           {listItem.map((item, index) => (
             <div
@@ -49,11 +42,7 @@ const AddFood = ({ user }) => {
           ))}
         </div>
         <div className="text-xs text-gray-600 py-4 text-center">
-          <img
-            className="h-20 w-20 mx-auto my-2 rounded-md"
-            src="/ai-loading.gif"
-            alt=""
-          />
+          <img className="h-20 w-20 mx-auto my-2 rounded-md" src="/ai-loading.gif" alt="" />
           AI của chúng tôi đang lựa món <br /> dựa trên tâm trạng của bạn
         </div>
       </DialogContent>

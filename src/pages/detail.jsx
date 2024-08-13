@@ -22,7 +22,6 @@ import { motion, useDragControls } from "framer-motion";
 const GroupButtonHero = () => {
   const { providerId } = useParams();
   const [loading, setLoading] = useState();
-  const [user, _] = useLocalStorage("user", {});
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });

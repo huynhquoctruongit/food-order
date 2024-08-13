@@ -12,7 +12,6 @@ import ListFood from "@/modules/order/components/list-food";
 import ListRemaining from "@/modules/order/components/list-remaining";
 import ListFinal from "@/modules/order/components/list-final";
 import _ from "lodash";
-import ModalLogin from "@/modules/auth/screen/login";
 import { useSubscribe } from "@/hooks/use-connection";
 import { useParams } from "react-router-dom";
 import { connection } from "@/lib/directus";
@@ -142,28 +141,6 @@ const OCRComponent = () => {
       data: params,
     });
   };
-  const deleteFood = (item) => {
-    const now = dayjs();
-    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
-    const valid = dayjs().unix() < time;
-
-    // if (!valid) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Hết giờ rồi",
-    //     description: "Thui ăn xong rồi ai lại hủy nữa :)))",
-    //   });
-    //   return;
-    // }
-
-    connection.sendMessage({
-      type: "items",
-      collection: "order",
-      action: "update",
-      data: { status: "draft" },
-      id: item.id,
-    });
-  };
 
   const listFood = menu?.[0]?.detail || [];
   const bIds = [];
@@ -202,7 +179,7 @@ const OCRComponent = () => {
         </div>
         <div></div>
         <div className="mt-10 md:mt-20">
-          <ListOrder deleteFood={deleteFood} />
+          <ListOrder />
           <ListRemaining userNonOrderd={userNonOrderd} />
           <div className="hidden md:block">
             <ListFinal order={refOder.current} />

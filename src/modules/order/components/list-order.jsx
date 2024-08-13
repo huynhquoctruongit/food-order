@@ -5,6 +5,8 @@ import { enumFood } from "@/lib/utils";
 import groupBy from "lodash/groupBy";
 import { useAuth } from "@/hooks/use-auth";
 import useOrder from "../helper/use-menu";
+import { useToast } from "@/components/ui/use-toast";
+import { connection } from "@/lib/directus";
 
 export const ItemTable = ({ children, className }) => {
   return (
@@ -20,8 +22,11 @@ const options = [
   { title: "Thời gian", value: "date-luc", className: "w-2/12" },
   { title: "Tổng", value: "tong", className: "w-2/12" },
 ];
-const ListOrder = ({ deleteFood }) => {
+const ListOrder = () => {
   const { orders } = useOrder();
+  const { profile } = useAuth();
+
+  const { toast } = useToast();
   const groups = groupBy(orders, "user_created.id");
   const list = Object.keys(groups).map((key) => {
     const items = groups[key];
@@ -31,8 +36,32 @@ const ListOrder = ({ deleteFood }) => {
     };
   });
 
+  const deleteFood = (item) => {
+    console.log(item);
+
+    const now = dayjs();
+    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
+    const valid = dayjs().unix() < time;
+
+    if (!valid) {
+      toast({
+        variant: "destructive",
+        title: "Hết giờ rồi",
+        description: "Thui ăn xong rồi ai lại hủy nữa :)))",
+      });
+      return;
+    }
+
+    connection.sendMessage({
+      type: "items",
+      collection: "order",
+      action: "update",
+      data: { status: "draft" },
+      id: item.id,
+    });
+  };
+
   const md = useMediaQuery("(min-width: 768px)");
-  const { profile } = useAuth();
   if (md)
     return (
       <div className="w-full border border-gray-300 rounded-md">
@@ -111,16 +140,17 @@ const ListOrder = ({ deleteFood }) => {
       <div className="text-xl text-left mb-4">Danh sách đặt món</div>
       <div className="border border-dashed border-gray-200 px-1 rounded-md">
         {list?.map((elm, index) => {
-          const fullname = elm.user.fisrt_name + " " + elm.user.last_name;
+          const fullname = elm.user.first_name + " " + elm.user.last_name;
+
           return (
             <div key={index + "-elm"} className="flex flex-col gap-2 border-b border-gray-200 last:border-b-0 pb-4 mb-2">
               <div className="flex items-center gap-2 w-full">
                 <img src={enumFood[index % enumFood.length]} alt="" className="w-10 h-10 rounded-md border-2 border-white" />
                 <span>{fullname}</span>
-                {user.id == elm.user.id && (
+                {profile.id == elm.user.id && (
                   <div
                     onClick={() => {
-                      deleteFood(el);
+                      deleteFood(elm);
                     }}
                     className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"
                   >

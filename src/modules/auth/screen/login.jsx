@@ -18,7 +18,7 @@ const ModalLogin = () => {
   const [text, setText] = useState("");
   const { destructive, success } = useToast();
   const loginByGoogle = () => {
-    location.replace("https://cms.toidot.com/auth/login/google?redirect=" + location.href);
+    location.replace("https://cms.toidot.com/auth/login/google?redirect=" + location.origin);
   };
   const loginByFacebook = () => {
     alert("Đang đợi facebook duyệt nha má :3");

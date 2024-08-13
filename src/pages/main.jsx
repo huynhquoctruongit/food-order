@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import ReactDOM from "react-dom/client";
-import AxiosClient, { AxiosAPI } from "@/lib/api/axios-client";
+import AxiosClient from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
 import { Button } from "@/components/ui/button-hero.jsx";
@@ -9,19 +8,14 @@ import { access_token, cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import Tesseract from "tesseract.js";
 import useMenu from "@/hooks/use-menu";
-import dayjs from "dayjs";
-import { useLocalStorage } from "usehooks-ts";
 import OCRComponent from "@/modules/order/screen";
 import { mode } from "@/lib/config";
 import useSWR from "swr";
 import { useNavigate, useParams } from "react-router-dom";
-import Loading, { LoadingPage } from "@/components/widget/loading";
-import ModalLogin from "@/modules/auth/screen/login";
-import { useAuth } from "@/hooks/use-auth";
+import { LoadingPage } from "@/components/widget/loading";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
-  const [user, _] = useLocalStorage("user", {});
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
