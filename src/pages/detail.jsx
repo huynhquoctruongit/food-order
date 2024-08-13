@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AxiosClient from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
@@ -17,109 +17,23 @@ import CreateMenu from "@/modules/order/screen/create-menu";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
+  const refMenu = useRef();
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
-  };
-  const { mutate } = useMenuToday();
-  const { toast } = useToast();
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const newFormData = new FormData();
-      newFormData.append("file", file);
-      const imageUpload = await AxiosClient.post("/files", newFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + access_token,
-        },
-      });
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        recognizeText(reader.result, imageUpload);
-      };
-      setLoading(true);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const recognizeText = (imageBase64, imageUpload) => {
-    Tesseract.recognize(
-      imageBase64,
-      "vie+eng", // Chỉ định mã ngôn ngữ là 'vie+eng' cho tiếng Việt và tiếng Anh
-    )
-      .then(({ data: { text } }) => {
-        processText(text, imageUpload);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log("Error: ", error);
-        console.error(error);
-      });
-  };
-
-  const processText = async (text, imageUpload) => {
-    const startIndex = text.toLowerCase().indexOf("có");
-    if (startIndex !== -1) {
-      text = text.substring(startIndex + 2);
-    }
-    const arr = generateText(text);
-    const params = {
-      detail: arr.map((item) => {
-        const name = item.split(" ").splice(1).join(" ");
-        return { name: name, dish_price: 40, side_dish_price: 35 };
-      }),
-      bulk_food_provider: 1, // default
-    };
-    await AxiosClient.post("/items/menu", params);
-    mutate();
-  };
-  const generateText = (text) => {
-    text = text.replaceAll("#", "");
-    text = text.replaceAll("14", "4");
-    text = text.replaceAll(",", ".");
-    text = text.replaceAll("CƠM CHAY", "(CƠM CHAY) - ");
-    text = text.replaceAll("Cơm chay", "(CƠM CHAY) - ");
-    text = text.replaceAll("cơm chay", "(CƠM CHAY) - ");
-
-    let lines = text.split("\n");
-    let arr = [];
-    let currentMeal = "";
-    let filteredArr = lines.filter((item) => item !== "" && item !== "." && !/^\d+$/.test(item));
-    for (let line of filteredArr) {
-      if (/^\d+[.,]?\s*(.*)$/.test(line.trim())) {
-        if (currentMeal !== "") {
-          arr.push(currentMeal.trim());
-        }
-        currentMeal = line.trim();
-      } else {
-        currentMeal += " " + line.trim();
-      }
-    }
-
-    if (currentMeal !== "") {
-      arr.push(currentMeal.trim());
-    }
-
-    return arr;
   };
   return (
     <div className="flex flex-col md:flex-row items-center gap-6 mt-6 md:mt-16">
       <Button variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
-      <input type="file" id="files" className="hidden" onChange={handleFileChange} />
 
-      <Button variant="secondary" size="default" className="relative">
-        <span className="flex items-center gap-2 opacity-0 ">
+      <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
+        <span className="flex items-center gap-2 ">
           Thêm menu {loading ? <Loader2Icon className="w-4 h-4 animate-spin" /> : <SquaresPlusIcon className="w-4 h-4" />}
         </span>
-        <label className="absolute top-0 left-0 py-2 px-4 w-full flex items-center gap-2 cursor-pointer" htmlFor="files">
-          Thêm menu
-          {loading ? <Loader2Icon className="w-4 h-4 animate-spin" /> : <SquaresPlusIcon className="w-4 h-4" />}
-        </label>
       </Button>
-      <CreateMenu />
+      <CreateMenu refMenu={refMenu} />
     </div>
   );
 };
