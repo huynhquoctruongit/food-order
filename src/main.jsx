@@ -18,6 +18,7 @@ import useMenu from "./hooks/use-menu";
 import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
 import { motion, useDragControls } from "framer-motion";
+import { Link } from "react-router-dom"
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -151,6 +152,11 @@ const GroupButtonHero = () => {
           )}
         </label>
       </Button>
+      <Link to="/report?week=this_week">
+        <Button variant="secondary" size="default">
+          Báo cáo
+        </Button>
+      </Link>
     </div>
   );
 };
@@ -188,12 +194,14 @@ const MainApp = () => {
             <BrowserRouter>
               <div>
                 <div className="flex items-center justify-between text-black root-wrapper py-3">
-                  <h1 className="font-bold text-sm md:text-xl" id="logo">
-                    NƯỚC{" "}
-                    <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
-                      XẾ CHIỀU TÀ
-                    </span>
-                  </h1>
+                  <Link to="/">
+                    <h1 className="text-black font-bold text-sm md:text-xl" id="logo">
+                      NƯỚC{" "}
+                      <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
+                        XẾ CHIỀU TÀ
+                      </span>
+                    </h1>
+                  </Link>
                   <Profile />
                 </div>
               </div>

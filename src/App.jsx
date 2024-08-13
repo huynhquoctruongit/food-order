@@ -345,7 +345,7 @@ const OCRComponent = () => {
 
   return (
     <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
-      <HappyHehe user={user} />
+      {/* <HappyHehe user={user} /> */}
       <ModalChoose
         {...{
           selectFood,
