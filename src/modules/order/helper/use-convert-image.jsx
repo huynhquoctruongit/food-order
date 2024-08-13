@@ -4,8 +4,11 @@ import Tesseract from "tesseract.js";
 import { v4 as uuidv4 } from "uuid";
 import useImage from "./use-image";
 import { useParams } from "react-router-dom";
+import useMenuToday from "@/hooks/use-menu";
 
 const useConvertImage = () => {
+  const { provider } = useMenuToday();
+
   const [loading, setLoading] = useState();
   const { companyId } = useParams();
   const { getRandImage } = useImage("avatar");
@@ -51,11 +54,9 @@ const useConvertImage = () => {
       const name = item.split(" ").splice(1).join(" ");
       const obj = { name: name, uuid: uuidv4(), image: getRandImage() };
       if (companyId === "1") {
-        obj.dish_price = 35;
-        obj.side_dish_price = 25;
+        obj.dish_price = provider.dish_price;
+        obj.side_dish_price = provider.side_dish_price;
       }
-      console.log(obj);
-
       return obj;
     });
     setLoading(false);

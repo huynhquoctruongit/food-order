@@ -13,7 +13,7 @@ import useConvertImage from "../helper/use-convert-image";
 
 const CreateMenu = ({ refMenu }) => {
   const { providerId, companyId } = useParams();
-  const { menu, mutate } = useMenuToday();
+  const { menu, mutate, provider } = useMenuToday();
   const { success } = useToast();
 
   const { getRandImage } = useImage("avatar");
@@ -32,6 +32,8 @@ const CreateMenu = ({ refMenu }) => {
       name: "",
       image: getRandImage(),
       uuid: uuidv4(),
+      dish_price: provider?.dish_price,
+      side_dish_price: provider?.side_dish_price,
     };
     setFoods([...foods, newFood]);
     await sleep(100);
@@ -90,7 +92,7 @@ const CreateMenu = ({ refMenu }) => {
             htmlFor="files"
             className="w-fit flex ml-3 items-center rounded-full border border-dashed border-gray-500 py-2 px-4"
           >
-            <img src="/upload.gif" className="w-6 object-cover h-6 rounded-md mx-auto text-gray-400 mr-2" />
+            <img src="/meo-hut-sua.png" className="w-6 object-cover h-6 rounded-md mx-auto text-gray-400 mr-2" />
             <span className="text-gray-500 text-sm">Thêm danh sách bằng hình</span>
           </label>
         </div>

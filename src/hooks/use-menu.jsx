@@ -13,11 +13,13 @@ export const useMenuToday = () => {
     },
     limit: 1,
     sort: "date_created",
-    fields: "*,user_created.*",
+    fields: "*,user_created.*,bulk_food_provider.*",
   };
   const { data, mutate, isLoading } = useSWR([`/items/menu`, payload]);
+  const { data: dataaProvider } = useSWR(`/items/bulk_food_provider/${providerId}`);
+
   const menu = data?.data[0] || {};
-  return { menu, mutate, isLoading };
+  return { menu, mutate, isLoading, provider: dataaProvider?.data };
 };
 
 export default useMenuToday;
