@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import {
     Table,
     TableBody,
@@ -14,7 +14,8 @@ import AxiosAPI from "@/libs/api/axios-client.ts"
 import { useState } from "react"
 import isoWeek from 'dayjs/plugin/isoWeek';
 import { useToast } from "@/components/ui/use-toast"
-import { Button } from "@/components/ui/button-hero.jsx";
+import { enumWeek } from "./enum"
+import { formattedAmount } from "./helpers/index"
 
 const Report = () => {
     const { toast } = useToast()
@@ -24,7 +25,6 @@ const Report = () => {
     const [dataReport, setDataReport] = useState()
     const [currentSelect, setCurrentSelect] = useState()
     const [userSelect, setSelectUser] = useState({})
-    const [valueChange, setChange] = useState("")
     const dateCurrent = currentSelect?.[0] + "T05:00:00.000Z"
     const { data: orderToday, mutate: mutateOrder } = useSWR(currentSelect?.[0] &&
         `/items/order_84?fields=*,user.*&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z`
@@ -56,7 +56,7 @@ const Report = () => {
             note: "Nước",
             name: type,
             user: item.user.id,
-            price: price || 0,
+            price: price,
             date_created: date + "T12:00:00+07:00"
         }
         setDataReport({
@@ -70,6 +70,17 @@ const Report = () => {
             setSelectUser(JSON.parse(userLocal))
         }
     }, [])
+    const debounceTimeout = useRef()
+    useEffect(() => {
+        if (debounceTimeout.current) {
+            clearTimeout(debounceTimeout.current);
+        }
+        debounceTimeout.current = setTimeout(() => {
+            onSave()
+        }, 1000);
+    }, [dataReport])
+
+
     const onSave = () => {
         if (dataReport) {
             toast({
@@ -116,14 +127,14 @@ const Report = () => {
     const getMount = (orderUser) => {
         var total = 0
         orderUser?.items?.map((elm) => {
-            total = total + parseInt(elm.price)
+            total = total + elm.price
         })
         reciptList?.map((elm) => {
             if (orderUser.user.id == elm?.user?.id) {
-                total = total - Math.ceil(elm?.amount)
+                total = total - elm?.amount
             }
         })
-        return total
+        return parseFloat(Math.ceil(total.toFixed(1)));
     }
 
     const getDatesForWeek = (week) => {
@@ -132,9 +143,13 @@ const Report = () => {
     };
     const current = dayjs().isoWeek();
     const weekList = {
-        weekBeforeLast: getDatesForWeek(current - 2),
-        lastWeek: getDatesForWeek(current - 1),
-        thisWeek: getDatesForWeek(current),
+        week_old_4: getDatesForWeek(current - 6),
+        week_old_3: getDatesForWeek(current - 5),
+        week_old_2: getDatesForWeek(current - 4),
+        week_old_1: getDatesForWeek(current - 3),
+        week_before_last: getDatesForWeek(current - 2),
+        last_week: getDatesForWeek(current - 1),
+        this_week: getDatesForWeek(current),
     }
 
     const selectWeek = (e) => {
@@ -144,29 +159,24 @@ const Report = () => {
     useEffect(() => {
         setCurrentSelect(weekList[weekUrl])
     }, [weekUrl])
-  
+    if (!reciptList) return
     return (
-        <div className="bg-[url(/background.png)] bg-contain py-[23px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
+        <div className="bg-[url(/background.png)] bg-contain pt-[23px] pb-[100px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
             <div className="px-[20px] md:px-[100px]">
-                <div className="flex justify-start">
-                    <select defaultValue={weekUrl} onChange={(e) => selectWeek(e)} className="rounded-md p-[10px] bg-white text-gray-600 border-[1px] border-pastel-pink">
+                <div className="flex justify-between items-center my-[20px]">
+                    <h1 className="text-[20px] md:text-3xl font-bold text-gray-600 text-center">Báo cáo</h1>
+                </div>
+                <div className="flex justify-start mb-10">
+                    <select defaultValue={weekUrl} onChange={(e) => selectWeek(e)} className="rounded-md p-[10px] bg-pastel-pink text-gray-600 border-[1px] border-pastel-pink">
                         <option disabled selected>Chọn tuần</option>
                         {Object.keys(weekList).map(function (key, index) {
-                            const title = weekList[key][0]?.slice(-2) + "-" + weekList[key][4]?.slice(-2)
+                            const title = `Ngày ${dayjs(weekList[key][0]).format("DD/MM")}` + " đến " + `${dayjs(weekList[key][4]).format("DD/MM")}`
                             return (
-                                <option value={key}>{`[${title}] ` + key}</option>
+                                <option value={key}>{enumWeek[key] + ` (${title})`}</option>
                             )
                         })}
 
                     </select>
-                </div>
-                <div className="flex justify-between items-center my-[20px]">
-                    <h1 className="text-[20px] md:text-3xl font-bold text-gray-600 text-center">Báo cáo</h1>
-                    <div>
-                        {admin && <Button variant="default" size="default" onClick={onSave}>
-                            Lưu lại
-                        </Button>}
-                    </div>
                 </div>
                 <Table>
                     <TableHeader className="border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
@@ -188,9 +198,12 @@ const Report = () => {
                     </TableHeader>
                     <TableBody className="border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
                         {groupedData?.map((userItem, index) => {
+                            const date = dayjs(currentSelect[0] + "T12:00:00+07:00").format("YYYY-MM-DD")
+                            const valueInput = userItem.user.id + "-" + date
                             const recipt = reciptList?.find((elm) => elm?.user?.fullname === userItem?.user?.fullname && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
+                            const valueRecipt = dataReport?.[valueInput]?.name === "recipt" && dataReport?.[valueInput]?.price || undefined
                             return (
-                                <TableRow className={`${index % 2 == 0 ? "bg-pastel-pink/30" : "bg-white"} hover:bg-unset`} key={userItem.user.id + index + "group"}>
+                                <TableRow className={`${index % 2 == 0 ? "bg-pastel-pink/30" : "bg-white"} hover:bg-unset`} key={userItem.user.id + date + "group"}>
                                     <TableCell className="font-medium text-left p-2"><div className="p-[6px]">{userItem.user.fullname}</div></TableCell>
                                     {currentSelect?.map((elm, index) => {
                                         const ortherList = userItem?.items?.find((ortherItem) => ortherItem.name === "orther-food" && dayjs(ortherItem.date_created).format("YYYY-MM-DD") == elm)
@@ -198,16 +211,22 @@ const Report = () => {
                                         const match = ortherList && dayjs(ortherList.date_created).format("YYYY-MM-DD") == elm
                                         const date = dayjs(elm + "T12:00:00+07:00").format("YYYY-MM-DD")
                                         const valueInput = userItem.user.id + "-" + date
-                                        const valueWater = dataReport?.[valueInput]?.price
+                                        const valueWater = dataReport?.[valueInput]?.name !== "recipt" && dataReport?.[valueInput]?.price || undefined
+
                                         return (
                                             <TableCell key={userItem.user.id + date + index + "-elm-wrapper"} className="text-left p-2">
                                                 <input key={userItem.user.id + date + index + "-elm-input1"} disabled className="rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 select-none" value={riceList?.length ? riceList?.length * 35 : ""}></input>
-                                                <input key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
+                                                <input id={date} key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? (ortherList?.price == 0 ? "" : ortherList?.price) : ""} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
                                             </TableCell>
                                         )
                                     })}
                                     <TableCell className="text-left p-2">
-                                        <input disabled={!admin} className={`rounded-md p-[6px] w-[100%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} defaultValue={recipt?.amount && Math.ceil(recipt?.amount)} onKeyUp={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}></input>
+                                        <input disabled={!admin} className={`rounded-md p-[6px] w-[100%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`}
+                                            defaultValue={formattedAmount(recipt?.amount) || ""}
+                                            value={valueRecipt}
+                                            onKeyUp={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
+                                            onChange={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
+                                        ></input>
                                     </TableCell>
                                     <TableCell className="text-right font-bold p-2">{getMount(userItem)}k</TableCell>
                                 </TableRow>
@@ -215,15 +234,15 @@ const Report = () => {
                         })}
                     </TableBody>
                     <TableFooter>
-                        <TableRow className="bg-pastel-pink hover:bg-pastel-pink hover:text-white text-white">
+                        <TableRow className="bg-pastel-pink hover:bg-pastel-pink">
                             <TableCell className="font-bold text-left" colSpan={5}>Tổng</TableCell>
-                            <TableCell className="text-right font-bold" colSpan={5}>Tự tính dùm cái i</TableCell>
+                            <TableCell className="text-right font-bold" colSpan={5}></TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
             </div>
 
-        </div>
+        </div >
 
     )
 }
