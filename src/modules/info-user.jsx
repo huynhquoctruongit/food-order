@@ -24,13 +24,14 @@ const Profile = () => {
             className=" flex px-2 py-1.5 hover:bg-pastel-pink/50 duration-200 gap-4 items-center cursor-pointer whitespace-nowrap"
             onClick={() => setOpenOnboarding(true)}
           >
-            Thay đổi <Cog6ToothIcon className="w-4 h-4" />
+            <Cog6ToothIcon className="w-4 h-4" /> Thay đổi
           </div>
           <div
             className="mt-1 px-2 py-1.5 hover:bg-pastel-pink/50 duration-200 gap-4 whitespace-nowrap flex items-center cursor-pointer"
             onClick={() => logout()}
           >
-            Đăng xuất <LogOutIcon className="w-4 h-4" />
+            <LogOutIcon className="w-4 h-4" />
+            Đăng xuất
           </div>
         </div>
       )}
