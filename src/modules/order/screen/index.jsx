@@ -91,6 +91,9 @@ const OCRComponent = () => {
 
   const { companyId, providerId } = useParams();
   const onSelectFood = (elm) => {
+    const now = dayjs();
+    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
+    const valid = dayjs().unix() < time;
     if (!valid) {
       toast({
         variant: "destructive",
