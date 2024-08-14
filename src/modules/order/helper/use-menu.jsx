@@ -6,7 +6,6 @@ const useOrder = () => {
   const { providerId, companyId } = useParams();
   const today = dayjs().startOf("day").toISOString();
   const payload = {
-    limit: 1,
     filter: {
       date_created: {
         _gte: today,
