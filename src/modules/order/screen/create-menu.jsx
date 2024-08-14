@@ -10,11 +10,14 @@ import AxiosClient from "@/lib/api/axios-client";
 import { useMenuToday } from "@/hooks/use-menu";
 import { useToast } from "@/components/ui/use-toast";
 import useConvertImage from "../helper/use-convert-image";
+import { useAuth } from "@/hooks/use-auth";
 
 const CreateMenu = ({ refMenu }) => {
   const { providerId, companyId } = useParams();
+
+  const { profile } = useAuth();
   const { menu, mutate, provider } = useMenuToday();
-  const { success } = useToast();
+  const { destructive, success } = useToast();
 
   const { getRandImage } = useImage("avatar");
   const [open, setOpen] = useState(false);
@@ -24,7 +27,13 @@ const CreateMenu = ({ refMenu }) => {
   const { handleFileChange, isLoading, listFood } = useConvertImage();
 
   useImperativeHandle(refMenu, () => ({
-    setOpen,
+    setOpen: (value) => {
+      if (profile.permission_to_create_menu !== true) {
+        destructive("Bạn không có quyền tạo menu");
+        return;
+      }
+      setOpen(value);
+    },
   }));
 
   const createFood = async () => {

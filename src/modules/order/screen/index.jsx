@@ -26,7 +26,6 @@ const OCRComponent = () => {
   const { mutate: mutateOrder } = useOrder();
   const { menu } = useMenuToday();
   const dataUser = data?.data;
-  const refFunc = useRef(null);
 
   const [selectFood, setFoodSelect] = useState([]);
   const [orderNote, setOrderNote] = useState("");
@@ -51,7 +50,6 @@ const OCRComponent = () => {
   };
   const deleteOrderSuccess = (data) => {
     const fullname = data?.user_created.first_name + " " + data?.user_created.last_name;
-    console.log(data, fullname);
     toast({
       variant: "success",
       title: fullname + " Đã xóa",
@@ -91,30 +89,16 @@ const OCRComponent = () => {
   useSubscribe("create", "order", ["*,user_created.*"], { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, refCallback);
   useSubscribe("update", "order", ["*,user_created.*"], { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, deleteCallback);
 
-  refFunc.current = {
-    create: createOrderSuccess,
-    delete: deleteOrderSuccess,
-  };
-  // const callback = useCallback((message) => {
-  //   console.log(message);
-  //   const newData = [...refOder.current, ...message.data];
-  //   mutate({ data: { data: newData } }, { revalidate: false });
-  //   refFunc.current.create(message.data[0] || {});
-  // }, []);
-
-  // const filter = { company: { _eq: 1 }, bulk_food_provider: { _eq: 1 } };
-  // useSubscribe("create", filter, callback);
-
   const { companyId, providerId } = useParams();
   const onSelectFood = (elm) => {
-    // if (!valid) {
-    //   toast({
-    //     variant: "destructive",
-    //     title: "Hết giờ rồi",
-    //     description: "Hết giờ đặt cơm rồi nha",
-    //   });
-    //   return;
-    // }
+    if (!valid) {
+      toast({
+        variant: "destructive",
+        title: "Hết giờ rồi",
+        description: "Hết giờ đặt cơm rồi nha",
+      });
+      return;
+    }
 
     setPopup(true);
 
@@ -123,7 +107,6 @@ const OCRComponent = () => {
 
   const onOrder = async (message) => {
     setPopup(!isPopup);
-
     const price = false == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
     const params = {
       name: selectFood.name,
