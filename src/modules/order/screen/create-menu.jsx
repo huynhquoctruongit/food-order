@@ -77,13 +77,15 @@ const CreateMenu = ({ refMenu }) => {
 
   useEffect(() => {
     if (isLoading === false && listFood.length > 0) {
-      console.log(listFood);
       setFoods(listFood);
     }
   }, [listFood, isLoading]);
   return (
     <Dialog open={open} className="" onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[1000px] bg-white text-black bg-[url(/background-auth.png)] bg-cover">
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="sm:max-w-[1000px] bg-white text-black bg-[url(/background-auth.png)] bg-cover"
+      >
         <div className="flex flex-col lg:flex-row gap-4 items-center">
           <div className="hidden lg:block">Tạo danh sách món</div>
           <input type="file" id="files" className="hidden" onChange={handleFileChange} />

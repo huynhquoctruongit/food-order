@@ -19,7 +19,7 @@ const HappyHehe = ({ user }) => {
 
   return (
     <Dialog open={show}>
-      <DialogContent className="sm:max-w-[425px] bg-white text-black">
+      <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="sm:max-w-[425px] bg-white text-black">
         <DialogHeader>
           <DialogTitle className="text-primary">Bảng đánh giá tâm trạng</DialogTitle>
         </DialogHeader>

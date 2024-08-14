@@ -197,7 +197,7 @@ const ModalChoose = ({ selectFood, isPopup, getSelectRice, orderNote, setPopup, 
   return (
     <div className="text-left mt-[20px]">
       <Dialog open={isPopup} onOpenChange={() => setPopup(false)}>
-        <DialogContent className="sm:max-w-[425px] bg-white text-black">
+        <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="sm:max-w-[425px] bg-white text-black">
           <DialogHeader>
             <DialogTitle className="text-black">Chốt đơn</DialogTitle>
             <DialogDescription className="text-black">

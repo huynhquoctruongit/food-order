@@ -93,7 +93,7 @@ const ModalLogin = () => {
         </DialogContent>
       </Dialog>
       <Dialog open={openOnboarding} className="">
-        <DialogContent className="sm:max-w-[425px] bg-white text-black bg-[url(/background-auth.png)] bg-cover">
+        <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="sm:max-w-[425px] bg-white text-black bg-[url(/background-auth.png)] bg-cover">
           <DialogHeader>
             <DialogTitle className="text-black">Điền thông tin đi mấy ní</DialogTitle>
           </DialogHeader>
