@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 import { useLocalStorage } from "usehooks-ts";
 import { motion, useDragControls } from "framer-motion";
 import { Link } from "react-router-dom"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -189,93 +190,95 @@ const MainApp = () => {
           fetcher: fetcherClient,
         }}
       >
-        <div className="bg-[url(/background.png)] bg-contain text-left">
-          <div className="bg-white/40">
-            <BrowserRouter>
-              <div>
-                <div className="flex items-center justify-between text-black root-wrapper py-3">
-                  <Link to="/">
-                    <h1 className="text-black font-bold text-sm md:text-xl" id="logo">
-                      NƯỚC{" "}
-                      <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
-                        XẾ CHIỀU TÀ
-                      </span>
-                    </h1>
-                  </Link>
-                  <Profile />
-                </div>
-              </div>
-              <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
-                <img
-                  className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
-                  src="/hero.png"
-                  alt=""
-                />
-
-                <div className="absolute root-wrapper w-full">
-                  {/* {play && <KhaBanh />} */}
-                  <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
-                    <div className="text-left">
-                      <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
-                        APP ĐẶT CƠM <br className="md:hidden" />
-                        <br className="md:hidden" />
-                        TOP #1 Việt Nam
+        <TooltipProvider>
+          <div className="bg-[url(/background.png)] bg-contain text-left">
+            <div className="bg-white/40">
+              <BrowserRouter>
+                <div>
+                  <div className="flex items-center justify-between text-black root-wrapper py-3">
+                    <Link to="/">
+                      <h1 className="text-black font-bold text-sm md:text-xl" id="logo">
+                        NƯỚC{" "}
+                        <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
+                          XẾ CHIỀU TÀ
+                        </span>
                       </h1>
-                      <div className="mt-6 text-gray-700 hidden md:block">
-                        Một miếng khi đói bằng một gói khi no lòi họng. <br />
-                        Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
-                      </div>
-                      <GroupButtonHero />
-                    </div>
-                    <div className="relative">
-                      <img
-                        className="w-[512px] aspect-[512/256]"
-                        src="/have-a-nice-day.png"
-                        alt=""
-                      />
-                    </div>
-
-                    <img
-                      onClick={onClick}
-                      className={cn(
-                        "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
-                        play ? "animate-spin" : ""
-                      )}
-                      src="/audio.png"
-                      alt=""
-                    />
-
-                    <audio id="audio">
-                      <source src="/nhac-trung-thu.mp3" type="audio/mpeg" />
-                    </audio>
+                    </Link>
+                    <Profile />
                   </div>
                 </div>
-              </div>
+                <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
+                  <img
+                    className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
+                    src="/hero.png"
+                    alt=""
+                  />
 
-              <Routes>
-                <Route
-                  element={
-                    <>
-                      <App />
-                    </>
-                  }
-                  path="/"
-                />
-                <Route
-                  element={
-                    <>
-                      <Report />
-                    </>
-                  }
-                  path="/report"
-                />
+                  <div className="absolute root-wrapper w-full">
+                    {/* {play && <KhaBanh />} */}
+                    <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
+                      <div className="text-left">
+                        <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
+                          APP ĐẶT CƠM <br className="md:hidden" />
+                          <br className="md:hidden" />
+                          TOP #1 Việt Nam
+                        </h1>
+                        <div className="mt-6 text-gray-700 hidden md:block">
+                          Một miếng khi đói bằng một gói khi no lòi họng. <br />
+                          Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
+                        </div>
+                        <GroupButtonHero />
+                      </div>
+                      <div className="relative">
+                        <img
+                          className="w-[512px] aspect-[512/256]"
+                          src="/have-a-nice-day.png"
+                          alt=""
+                        />
+                      </div>
 
-                {/* <Route element={<PrivateRoute />} path="*" /> */}
-              </Routes>
-            </BrowserRouter>
-            <Toaster />
+                      <img
+                        onClick={onClick}
+                        className={cn(
+                          "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
+                          play ? "animate-spin" : ""
+                        )}
+                        src="/audio.png"
+                        alt=""
+                      />
+
+                      <audio id="audio">
+                        <source src="/nhac-trung-thu.mp3" type="audio/mpeg" />
+                      </audio>
+                    </div>
+                  </div>
+                </div>
+
+                <Routes>
+                  <Route
+                    element={
+                      <>
+                        <App />
+                      </>
+                    }
+                    path="/"
+                  />
+                  <Route
+                    element={
+                      <>
+                        <Report />
+                      </>
+                    }
+                    path="/report"
+                  />
+
+                  {/* <Route element={<PrivateRoute />} path="*" /> */}
+                </Routes>
+              </BrowserRouter>
+              <Toaster />
+            </div>
           </div>
-        </div>
+        </TooltipProvider>
       </SWRConfig>
     </React.StrictMode>
   );

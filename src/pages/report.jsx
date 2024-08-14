@@ -16,6 +16,11 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 import { useToast } from "@/components/ui/use-toast"
 import { enumWeek } from "./enum"
 import { formattedAmount } from "./helpers/index"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const Report = () => {
     const { toast } = useToast()
@@ -33,6 +38,7 @@ const Report = () => {
         `/items/recipt_84?fields=*,user.*&filter[date_start][_eq]=${dateCurrent}`
     )
     const orderMembers = orderToday?.data?.data
+    console.log(orderMembers,'orderMembers');
     const reciptList = reciptData?.data?.data
     const groupedData = orderMembers?.reduce((acc, { user, name, price, date_created, id }) => {
         let group = acc.find(group => (group.user.id == user?.id || group.user.fullname === user?.fullname));
@@ -124,12 +130,12 @@ const Report = () => {
 
     }
 
-    const getMount = (orderUser) => {
+    const getMount = (orderUser, type) => {
         var total = 0
         orderUser?.items?.map((elm) => {
             total = total + elm.price
         })
-        reciptList?.map((elm) => {
+        type == "total-left" && reciptList?.map((elm) => {
             if (orderUser.user.id == elm?.user?.id) {
                 total = total - elm?.amount
             }
@@ -159,7 +165,15 @@ const Report = () => {
     useEffect(() => {
         setCurrentSelect(weekList[weekUrl])
     }, [weekUrl])
+
+    var totalNumber = groupedData?.reduce((total, { items }) =>
+        total + items.reduce((sum, { date_created, price, name }) =>
+            sum + (price ? price : 0), 0), 0);
+
     if (!reciptList) return
+    const reciptNumber = reciptList?.reduce((acc, { amount }) => acc + parseFloat(amount), 0);
+    const totalLeftNumber = totalNumber - reciptNumber
+
     return (
         <div className="bg-[url(/background.png)] bg-contain pt-[23px] pb-[100px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
             <div className="px-[20px] md:px-[100px]">
@@ -179,7 +193,7 @@ const Report = () => {
                     </select>
                 </div>
                 <Table>
-                    <TableHeader className="border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
+                    <TableHeader className="sticky top-0 z-50 shadow-sm border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
                         <TableRow className="rounded-md border-t-[1px] border-t-pastel-pink border-b-pastel-pink">
                             <TableHead className="bg-white rounded-md w-[200px] px-0 font-bold border-r-[1px] border-r-pastel-pink text-center">Tên</TableHead>
                             {currentSelect?.map((elm, index) => {
@@ -190,10 +204,11 @@ const Report = () => {
                                     </TableHead>
                                 )
                             })}
-                            <TableHead className="bg-white rounded-md font-bold px-0 items-center mx-auto border-r-[1px] border-r-pastel-pink">
+                            <TableHead className="bg-white text-right font-bold">Tổng</TableHead>
+                            <TableHead className="bg-white rounded-md font-bold px-0 items-center mx-auto border-x-[1px] border-x-pastel-pink">
                                 <p className="text-center p-[10px]">Đã chuyển</p>
                             </TableHead>
-                            <TableHead className="bg-white text-right font-bold">Amount</TableHead>
+                            <TableHead className="bg-white text-right font-bold">Còn lại</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody className="border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
@@ -212,14 +227,25 @@ const Report = () => {
                                         const date = dayjs(elm + "T12:00:00+07:00").format("YYYY-MM-DD")
                                         const valueInput = userItem.user.id + "-" + date
                                         const valueWater = dataReport?.[valueInput]?.name !== "recipt" && dataReport?.[valueInput]?.price || undefined
-
+                                        const finalPrice = riceList.reduce((acc, item) => acc + item.price, 0);
                                         return (
                                             <TableCell key={userItem.user.id + date + index + "-elm-wrapper"} className="text-left p-2">
-                                                <input key={userItem.user.id + date + index + "-elm-input1"} disabled className="rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 select-none" value={riceList?.length ? riceList?.length * 35 : ""}></input>
+                                                <Tooltip>
+                                                    <TooltipTrigger className="w-[50%] text-center">
+                                                        {riceList?.length && <input key={userItem.user.id + date + index + "-elm-input1"} disabled className="w-[50%] rounded-md p-[6px] text-center bg-transparent text-gray-600 select-none" value={finalPrice}></input> || ""}
+                                                    </TooltipTrigger>
+                                                    <TooltipContent className="bg-white">
+                                                        {riceList?.length && <div className="flex flex-col gap-2">{riceList?.map((item) => (
+                                                            <div className="flex gap-2 items-center"><img className="w-5 h-5" src="/food9.png"></img><p>{item.name} - <span className="font-bold">{item.price}k</span></p></div>
+                                                        ))}</div>}
+                                                    </TooltipContent>
+                                                </Tooltip>
+
                                                 <input id={date} key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? (ortherList?.price == 0 ? "" : ortherList?.price) : ""} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
                                             </TableCell>
                                         )
                                     })}
+                                    <TableCell className="text-right p-2">{getMount(userItem, 'total')}</TableCell>
                                     <TableCell className="text-left p-2">
                                         <input disabled={!admin} className={`rounded-md p-[6px] w-[100%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`}
                                             defaultValue={formattedAmount(recipt?.amount) || ""}
@@ -228,15 +254,31 @@ const Report = () => {
                                             onChange={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
                                         ></input>
                                     </TableCell>
-                                    <TableCell className="text-right font-bold p-2">{getMount(userItem)}k</TableCell>
+                                    <TableCell className="text-right font-bold p-2">{getMount(userItem, 'total-left')}k</TableCell>
                                 </TableRow>
                             )
                         })}
                     </TableBody>
                     <TableFooter>
                         <TableRow className="bg-pastel-pink hover:bg-pastel-pink">
-                            <TableCell className="font-bold text-left" colSpan={5}>Tổng</TableCell>
-                            <TableCell className="text-right font-bold" colSpan={5}></TableCell>
+                            <TableCell className="font-bold text-left">Tổng</TableCell>
+                            {currentSelect?.map((elm, index) => {
+                                const totalPrice = groupedData?.reduce((total, { items }) =>
+                                    total + items?.reduce((sum, { date_created, price, name }) =>
+                                        sum + (date_created.startsWith(elm) && price && name !== "orther-food" ? price : 0), 0), 0);
+                                const totalOther = groupedData?.reduce((total, { items }) =>
+                                    total + items?.reduce((sum, { date_created, price, name }) =>
+                                        sum + (date_created.startsWith(elm) && price && name === "orther-food" ? price : 0), 0), 0);
+                                return (
+                                    <TableCell className="text-left p-2">
+                                        <input className="w-[50%] text-center bg-transparent font-bold" disabled value={totalPrice}></input>
+                                        <input className="w-[50%] text-center bg-transparent font-bold" disabled value={totalOther}></input>
+                                    </TableCell>
+                                )
+                            })}
+                            <TableCell className="text-right p-2 font-bold">{totalNumber}</TableCell>
+                            <TableCell className="p-2 text-center font-bold">{Math.ceil(reciptNumber)}</TableCell>
+                            <TableCell className="text-right p-2 font-bold">{totalLeftNumber}k</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>

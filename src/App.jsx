@@ -139,7 +139,7 @@ const OCRComponent = () => {
       let processed_text = elm.replace(pattern, "");
       const params = {
         name: processed_text,
-        price: price,
+        price: price || 35,
         note: message,
         user: userSelect.id,
         date_created: utcTime,
