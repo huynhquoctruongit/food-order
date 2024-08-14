@@ -119,7 +119,7 @@ const ListOrder = () => {
                 <ItemTable className={options[3].className}>
                   <div className="flex flex-col gap-2">
                     {elm.items.map((el, index) => (
-                      <div key={el.date_created + "note" + index}>{dayjs(el.date_created).add(-7, "hour").format("HH:mm")}</div>
+                      <div key={el.date_created + "note" + index}>{dayjs(el.date_created).format("HH:mm")}</div>
                     ))}
                   </div>
                 </ItemTable>
