@@ -24,8 +24,9 @@ const ModalLogin = () => {
   const [active, setActive] = useState(0);
   const [text, setText] = useState("");
   const { destructive, success } = useToast();
+
   const loginByGoogle = () => {
-    location.replace("https://cms.toidot.com/auth/login/google?redirect=" + location.origin);
+    location.replace("https://cms.toidot.com/auth/login/google?redirect=" + location.origin + "?callback=" + location.pathname);
   };
   const loginByFacebook = () => {
     alert("Đang đợi facebook duyệt nha má :3");
@@ -93,7 +94,10 @@ const ModalLogin = () => {
         </DialogContent>
       </Dialog>
       <Dialog open={openOnboarding} className="">
-        <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="sm:max-w-[425px] bg-white text-black bg-[url(/background-auth.png)] bg-cover">
+        <DialogContent
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          className="sm:max-w-[425px] bg-white text-black bg-[url(/background-auth.png)] bg-cover"
+        >
           <DialogHeader>
             <DialogTitle className="text-black">Điền thông tin đi mấy ní</DialogTitle>
           </DialogHeader>

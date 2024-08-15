@@ -2,13 +2,23 @@ import { Button } from "@/components/ui/button-hero";
 import { useAuth } from "@/hooks/use-auth";
 import useCompanyManager from "@/hooks/use-company";
 import { createLinkOrder, enumFood } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const { company } = useCompanyManager();
   const { isLogin, profile } = useAuth();
   const { bulk_food_provider } = company || {};
+  const [searchParams, _] = useSearchParams();
+
+  const callback = searchParams.get("callback");
+  console.log(callback);
+  
+  useEffect(() => {
+    if (isLogin === false || !callback) return;
+    navigate(callback);
+  }, [isLogin]);
 
   const onClick = () => {
     navigate(createLinkOrder(company.id, bulk_food_provider));
