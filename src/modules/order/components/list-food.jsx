@@ -1,7 +1,10 @@
+import useMenuToday from "@/hooks/use-menu";
 import { enumFood } from "@/lib/utils";
 import { useMemo } from "react";
 
-const ListFood = ({ listFood, onSelectFood }) => {
+const ListFood = ({ onSelectFood }) => {
+  const { menu, isLoading } = useMenuToday();
+  const listFood = menu?.detail;
   const suffule = (arr) => {
     return arr.sort(() => Math.random() - 0.5);
   };
@@ -14,7 +17,7 @@ const ListFood = ({ listFood, onSelectFood }) => {
       </div>
       <div className="md:w-4/5">
         <div className="w-full  flex flex-wrap gap-5 relative z-10">
-          {listFood?.length === 0 && (
+          {listFood?.length === 0 && !isLoading && (
             <div className="rounded-2xl bg-pastel-pink/10 h-full w-full p-10">
               <div className="text-lg">Đợi Idol Hồng Phạm thêm menu cái nhóa</div>
               <div className="mx-auto w-fit flex flex-items-center gap-2 mt-10">
