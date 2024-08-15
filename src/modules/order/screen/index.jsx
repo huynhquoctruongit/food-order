@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useSWR from "swr";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -46,7 +46,7 @@ const OCRComponent = () => {
       description: (
         <span className="">
           <img className="w-5 h-5 shadow-button rounded-full inline mr-2" src="/menu2.png" alt="" />
-          Đã đặt cơm <span className="font-bold"> {fullname} </span>
+          Đã đặt cơm <span className="font-bold"> {data.name} </span>
         </span>
       ),
     });
