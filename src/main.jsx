@@ -25,7 +25,7 @@ const MainApp = () => {
       }}
     >
       <BrowserRouter>
-        <div className="bg-[url(/background.png)] bg-contain text-left overflow-hidden min-h-[100vh] flex flex-col">
+        <div className="text-primary bg-[url(/background.png)] bg-contain text-left overflow-hidden min-h-[100vh] flex flex-col">
           <Header />
           <div className="bg-white/40 flex-1 relative">
             <Routes>

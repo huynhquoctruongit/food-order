@@ -13,8 +13,7 @@ const MainPage = () => {
   const [searchParams, _] = useSearchParams();
 
   const callback = searchParams.get("callback");
-  console.log(callback);
-  
+
   useEffect(() => {
     if (isLogin === false || !callback) return;
     navigate(callback);
