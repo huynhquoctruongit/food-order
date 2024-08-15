@@ -13,17 +13,16 @@ import dayjs from 'dayjs';
 import AxiosAPI from "@/libs/api/axios-client.ts"
 import { useState } from "react"
 import isoWeek from 'dayjs/plugin/isoWeek';
-import { useToast } from "@/components/ui/use-toast"
 import { enumWeek } from "./enum"
-import { formattedAmount } from "./helpers/index"
+import { formattedAmount, totalWater } from "../helpers/index"
 import {
     Tooltip,
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { isNumber, totalRice } from "../helpers/index";
 
 const Report = () => {
-    const { toast } = useToast()
     dayjs.extend(isoWeek);
     let urlParams = new URLSearchParams(window.location.search);
     const weekUrl = urlParams.get("week")
@@ -32,13 +31,12 @@ const Report = () => {
     const [userSelect, setSelectUser] = useState({})
     const dateCurrent = currentSelect?.[0] + "T05:00:00.000Z"
     const { data: orderToday, mutate: mutateOrder } = useSWR(currentSelect?.[0] &&
-        `/items/order_84?fields=*,user.*&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z`
+        `/items/order_84?fields=*,user.*&sort=user&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z&filter[price][_neq]=0`
     )
     const { data: reciptData, mutate: mutateRecipt } = useSWR(currentSelect?.[0] &&
-        `/items/recipt_84?fields=*,user.*&filter[date_start][_eq]=${dateCurrent}`
+        `/items/recipt_84?fields=*,user.*&sort=-user&filter[date_start][_eq]=${dateCurrent}&filter[amount][_neq]=0`
     )
     const orderMembers = orderToday?.data?.data
-    console.log(orderMembers,'orderMembers');
     const reciptList = reciptData?.data?.data
     const groupedData = orderMembers?.reduce((acc, { user, name, price, date_created, id }) => {
         let group = acc.find(group => (group.user.id == user?.id || group.user.fullname === user?.fullname));
@@ -46,7 +44,7 @@ const Report = () => {
             group = { user: { id: user?.id, fullname: user?.fullname }, items: [] };
             acc.push(group);
         }
-        group.items.push({ name: name, date_created: date_created, orderId: id, price: price });
+        group.items.push({ name: name, date_created: date_created, id: id, price: price });
         return acc;
     }, []);
     const admin = userSelect?.fullname == "Hồng Phạm"
@@ -58,7 +56,7 @@ const Report = () => {
         }
         const price = priceInput
         const params = {
-            order_id: ortherList?.id || ortherList?.orderId,
+            order_id: ortherList?.id,
             note: "Nước",
             name: type,
             user: item.user.id,
@@ -66,7 +64,6 @@ const Report = () => {
             date_created: date + "T12:00:00+07:00"
         }
         setDataReport({
-            ...dataReport,
             [item.user.id + "-" + date]: params
         })
     }
@@ -83,47 +80,42 @@ const Report = () => {
         }
         debounceTimeout.current = setTimeout(() => {
             onSave()
-        }, 1000);
+        }, 200);
+        return () => {
+            clearTimeout(debounceTimeout.current);
+        }
+
     }, [dataReport])
 
 
     const onSave = () => {
         if (dataReport) {
-            toast({
-                title: "Lưu thành công",
-                description: "Yeahh yeahh !!!",
-            })
             Object.fromEntries(
                 Object.entries(dataReport).filter(async ([key, value]) => {
-                    const params = {
-                        note: value.note,
-                        name: value.name,
-                        user: value.user,
-                        price: value.price || 0,
-                        date_created: value.date_created
+                    if (isNumber(value.price || 0)) {
+                        const params = {
+                            note: value.note,
+                            name: value.name,
+                            user: value.user,
+                            price: value.price || 0,
+                            date_created: value.date_created
+                        }
+                        const paramsRecipt = {
+                            user: value.user,
+                            amount: value.price || 0,
+                            date_start: value.date_created
+                        }
+                        if (value.name == "recipt") {
+                            if (value.order_id) await AxiosAPI.patch("/items/recipt_84/" + value.order_id, paramsRecipt)
+                            else if (value.price) await AxiosAPI.post("/items/recipt_84", paramsRecipt)
+                            mutateRecipt()
+                        } else {
+                            if (value.order_id) await AxiosAPI.patch("/items/order_84/" + value.order_id, params)
+                            else if (value.price) await AxiosAPI.post("/items/order_84", params)
+                            mutateOrder()
+                        }
                     }
-                    const paramsRecipt = {
-                        user: value.user,
-                        amount: value.price || 0,
-                        date_start: value.date_created
-                    }
-                    if (value.name == "recipt") {
-                        if (value.order_id) await AxiosAPI.patch("/items/recipt_84/" + value.order_id, paramsRecipt)
-                        else if (value.price) await AxiosAPI.post("/items/recipt_84", paramsRecipt)
-                        mutateRecipt()
-                        toast({
-                            title: "Lưu thành công",
-                            description: "Yeahh yeahh !!!",
-                        })
-                    } else {
-                        if (value.order_id) await AxiosAPI.patch("/items/order_84/" + value.order_id, params)
-                        else if (value.price) await AxiosAPI.post("/items/order_84", params)
-                        mutateOrder()
-                        toast({
-                            title: "Lưu thành công",
-                            description: "Yeahh yeahh !!!",
-                        })
-                    }
+
                 })
             );
         }
@@ -174,23 +166,33 @@ const Report = () => {
     const reciptNumber = reciptList?.reduce((acc, { amount }) => acc + parseFloat(amount), 0);
     const totalLeftNumber = totalNumber - reciptNumber
 
+    // console.log(totalRice(groupedData), 'groupedData');
     return (
         <div className="bg-[url(/background.png)] bg-contain pt-[23px] pb-[100px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
             <div className="px-[20px] md:px-[100px]">
-                <div className="flex justify-between items-center my-[20px]">
-                    <h1 className="text-[20px] md:text-3xl font-bold text-gray-600 text-center">Báo cáo</h1>
-                </div>
-                <div className="flex justify-start mb-10">
-                    <select defaultValue={weekUrl} onChange={(e) => selectWeek(e)} className="rounded-md p-[10px] bg-pastel-pink text-gray-600 border-[1px] border-pastel-pink">
-                        <option disabled selected>Chọn tuần</option>
-                        {Object.keys(weekList).map(function (key, index) {
-                            const title = `Ngày ${dayjs(weekList[key][0]).format("DD/MM")}` + " đến " + `${dayjs(weekList[key][4]).format("DD/MM")}`
-                            return (
-                                <option value={key}>{enumWeek[key] + ` (${title})`}</option>
-                            )
-                        })}
+                <div className="flex justify-between">
+                    <div>
+                        <div className="flex justify-between items-center my-[20px]">
+                            <h1 className="text-[20px] md:text-3xl font-bold text-gray-600 text-center">Báo cáo</h1>
+                        </div>
+                        <div className="flex justify-start mb-10">
+                            <select defaultValue={weekUrl} onChange={(e) => selectWeek(e)} className="rounded-md p-[10px] bg-pastel-pink text-gray-600 border-[1px] border-pastel-pink">
+                                <option disabled selected>Chọn tuần</option>
+                                {Object.keys(weekList).map(function (key, index) {
+                                    const title = `Ngày ${dayjs(weekList[key][0]).format("DD/MM")}` + " đến " + `${dayjs(weekList[key][4]).format("DD/MM")}`
+                                    return (
+                                        <option value={key}>{enumWeek[key] + ` (${title})`}</option>
+                                    )
+                                })}
 
-                    </select>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Tổng tiền cơm: {totalRice(groupedData)}k</p>
+                        <p>Tổng tiền nước: {totalWater(groupedData)}k</p>
+                        <p>Đã chuyển: {Math.ceil(reciptNumber)}k</p>
+                    </div>
                 </div>
                 <Table>
                     <TableHeader className="sticky top-0 z-50 shadow-sm border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
@@ -250,7 +252,7 @@ const Report = () => {
                                         <input disabled={!admin} className={`rounded-md p-[6px] w-[100%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`}
                                             defaultValue={formattedAmount(recipt?.amount) || ""}
                                             value={valueRecipt}
-                                            onKeyUp={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
+                                            // onKeyUp={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
                                             onChange={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
                                         ></input>
                                     </TableCell>

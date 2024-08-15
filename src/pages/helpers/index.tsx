@@ -5,3 +5,27 @@ export const formattedAmount = (amount: any) => {
     }
 
 }
+export function isNumber(value) {
+    value = value * 1
+    return typeof value === 'number' && !isNaN(value);
+}
+export const totalRice = (data) => {
+    if (!data) return
+    return data.reduce((total, food) => {
+        const foodTotal = food.items
+            .filter(item => item.name !== "orther-food")
+            .reduce((sum, item) => sum + item.price, 0);
+
+        return total + foodTotal;
+    }, 0);
+}
+export const totalWater = (data) => {
+    if (!data) return
+    return data.reduce((total, food) => {
+        const foodTotal = food.items
+            .filter(item => item.name === "orther-food")
+            .reduce((sum, item) => sum + item.price, 0);
+
+        return total + foodTotal;
+    }, 0);
+}

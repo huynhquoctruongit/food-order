@@ -174,6 +174,7 @@ const OCRComponent = () => {
     });
   };
   const createOrderSuccess = (data) => {
+    console.log('asasas');
     toast({
       variant: "success",
       title: data.user.fullname,

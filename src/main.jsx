@@ -5,7 +5,7 @@ import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SWRConfig } from "swr";
 import { AxiosAPI, fetcherClient } from "./libs/api/axios-client";
-import Report from "@/pages/report";
+import Report from "@/pages/report/report";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
