@@ -17,11 +17,13 @@ import { useParams } from "react-router-dom";
 import { connection } from "@/lib/directus";
 import useOrder from "../helper/use-menu";
 import useMenuToday from "@/hooks/use-menu";
+import { useCompany } from "@/hooks/use-company";
 
 const OCRComponent = () => {
   const { toast } = useToast();
   const refOder = useRef(null);
 
+  const { company } = useCompany();
   const { data } = useSWR("/users");
   const { mutate: mutateOrder } = useOrder();
   const { menu } = useMenuToday();
@@ -106,8 +108,11 @@ const OCRComponent = () => {
 
   const onSelectFood = (elm) => {
     const now = dayjs();
-    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
+
+    const [hour_limit, minute_limit] = (company?.order_time_limit || "13:30:00").split(":");
+    const time = now.hour(hour_limit).minute(minute_limit).second(0).millisecond(0).unix();
     const valid = dayjs().unix() < time;
+    
     if (!valid) {
       toast({
         variant: "destructive",

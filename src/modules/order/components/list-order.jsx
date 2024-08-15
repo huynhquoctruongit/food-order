@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import useOrder from "../helper/use-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { connection } from "@/lib/directus";
+import { useCompany } from "@/hooks/use-company";
 
 export const ItemTable = ({ children, className }) => {
   return (
@@ -25,6 +26,7 @@ const options = [
 const ListOrder = () => {
   const { orders } = useOrder();
   const { profile } = useAuth();
+  const { company } = useCompany();
 
   const { toast } = useToast();
   const groups = groupBy(orders, "user_created.id");
@@ -38,7 +40,9 @@ const ListOrder = () => {
 
   const deleteFood = (item) => {
     const now = dayjs();
-    const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
+    const [hour_limit, minute_limit] = (company?.order_time_limit || "13:30:00").split(":");
+    const time = now.hour(hour_limit).minute(minute_limit).second(0).millisecond(0).unix();
+
     const valid = dayjs().unix() < time;
 
     if (!valid) {
