@@ -8,6 +8,7 @@ import useMenuToday from "@/hooks/use-menu";
 
 const useConvertImage = () => {
   const { provider } = useMenuToday();
+  console.log(provider);
 
   const [loading, setLoading] = useState();
   const { companyId } = useParams();
@@ -53,10 +54,8 @@ const useConvertImage = () => {
     const data = arr.map((item) => {
       const name = item.split(" ").splice(1).join(" ");
       const obj = { name: name, uuid: uuidv4(), image: getRandImage() };
-      if (companyId === "1") {
-        obj.dish_price = provider.dish_price;
-        obj.side_dish_price = provider.side_dish_price;
-      }
+      obj.dish_price = provider.dish_price;
+      obj.side_dish_price = provider.side_dish_price;
       return obj;
     });
     setLoading(false);

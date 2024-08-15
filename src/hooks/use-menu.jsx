@@ -16,10 +16,10 @@ export const useMenuToday = () => {
     fields: "*,user_created.*,bulk_food_provider.*",
   };
   const { data, mutate, isLoading } = useSWR([`/items/menu`, payload]);
-  const { data: dataaProvider } = useSWR(`/items/bulk_food_provider/${providerId}`);
+  const { data: dataProvider } = useSWR(`/items/bulk_food_provider/${providerId}`);
 
   const menu = data?.data[0] || {};
-  return { menu, mutate, isLoading, provider: dataaProvider?.data };
+  return { menu, mutate, isLoading, provider: dataProvider?.data };
 };
 
 export default useMenuToday;
