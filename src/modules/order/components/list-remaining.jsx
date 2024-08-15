@@ -1,10 +1,11 @@
+import { useUserInCompany } from "@/hooks/use-company";
 import { enumFood } from "@/lib/utils";
 
 const ListRemaining = ({ userNonOrderd }) => {
-  if (!userNonOrderd?.length) return null;
+  const { users } = useUserInCompany();
   return (
     <div className="w-full flex flex-wrap gap-4 mt-10">
-      {userNonOrderd.map((el, index) => {
+      {users.map((el, index) => {
         return (
           <div
             className="border flex items-center gap-1 border-dashed border-gray-300 pl-1 pr-2 py-1 rounded-full hover:border-pastel-pink cursor-pointer"

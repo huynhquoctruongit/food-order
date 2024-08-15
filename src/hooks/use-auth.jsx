@@ -9,7 +9,7 @@ export function useAuth(options) {
     data: profile,
     error,
     mutate,
-  } = useSWR("/users/me?fields=*,role.*", {
+  } = useSWR("/users/me?fields=*,role.name,role.id", {
     revalidateOnFocus: false,
     // revalidateOnMount: false,
     shouldRetryOnError: false,

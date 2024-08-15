@@ -5,6 +5,9 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
+export const createLinkOrder = (company, provider) => {
+  return "/company/" + company + "/provider/" + provider;
+};
 export const url = "https://admin.qnsport.vn/websocket";
 export const access_token = "DudCvrFf8z2MYcSVfmr4WdzJfK7uHtjZ";
 

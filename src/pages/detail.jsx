@@ -1,19 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import AxiosClient from "@/lib/api/axios-client";
-import { useToast } from "@/components/ui/use-toast";
 import Profile from "@/modules/info-user";
 import { Button } from "@/components/ui/button-hero.jsx";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
-import { access_token, cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
-import Tesseract from "tesseract.js";
-import { useMenuToday } from "@/hooks/use-menu";
 import OCRComponent from "@/modules/order/screen";
 import { mode } from "@/lib/config";
 import useSWR from "swr";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoadingPage } from "@/components/widget/loading";
 import CreateMenu from "@/modules/order/screen/create-menu";
+import { cn } from "@/lib/utils";
+import { useCompany } from "@/hooks/use-company";
+import { useAuth } from "@/hooks/use-auth";
+import AxiosClient from "@/lib/api/axios-client";
 
 const GroupButtonHero = () => {
   const [loading, setLoading] = useState();
@@ -30,7 +29,7 @@ const GroupButtonHero = () => {
 
       <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
         <span className="flex items-center gap-2 ">
-          Thêm menu {loading ? <Loader2Icon className="w-4 h-4 animate-spin" /> : <SquaresPlusIcon className="w-4 h-4" />}
+          Thêm menu <SquaresPlusIcon className="w-4 h-4" />
         </span>
       </Button>
       <CreateMenu refMenu={refMenu} />
@@ -39,8 +38,11 @@ const GroupButtonHero = () => {
 };
 
 let isPlaying = false;
+const listHaveANiceDay = ["/have-a-nice-day.png", "/have-a-nice-day-1.png", "/have-a-nice-day-2.png"];
 const Order = () => {
+  const { company } = useCompany();
   const [play, setPlay] = useState(false);
+  const { profile } = useAuth();
   useEffect(() => {
     const audio = document.getElementById("audio");
     audio.volumn = 0.5;
@@ -50,6 +52,9 @@ const Order = () => {
       setPlay(true);
       audio.play();
     });
+    if (profile.company !== company?.id) {
+      AxiosClient.patch("/users/me", { company: company?.id });
+    }
   }, []);
   const onClick = () => {
     const audio = document.getElementById("audio");
@@ -57,23 +62,11 @@ const Order = () => {
     else audio.play();
     setPlay(!play);
   };
-  const navigate = useNavigate();
-  const onGoHome = () => {
-    navigate("/");
-  };
+
+  const imgActive = listHaveANiceDay[Math.floor(Math.random() * listHaveANiceDay.length)];
+
   return (
     <div>
-      <div>
-        <div className="flex items-center justify-between text-black root-wrapper py-3">
-          <h1 onClick={onGoHome} className="font-bold text-sm md:text-xl" id="logo">
-            NƯỚC{" "}
-            <span className="font-black bg-gradient-to-r from-[#E5624D] drop-shadow-md to-[#FA9382] text-transparent bg-clip-text">
-              XẾ CHIỀU TÀ
-            </span>
-          </h1>
-          <Profile />
-        </div>
-      </div>
       <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
         <img
           className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
@@ -84,19 +77,13 @@ const Order = () => {
         <div className="absolute root-wrapper w-full">
           <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
             <div className="text-left">
-              <h1 className="text-[20px] md:text-3xl font-bold text-black text-center">
-                APP ĐẶT CƠM <br className="md:hidden" />
-                <br className="md:hidden" />
-                TOP #1 VIỆT NAM
-              </h1>
-              <div className="mt-6 text-gray-700 hidden md:block">
-                Một miếng khi đói bằng một gói khi no lòi họng. <br />
-                Ông kẹ sẽ bắt các bạn ăn cơm còn thừa
-              </div>
+              <h1 className="text-[20px] md:text-3xl font-bold text-black text-left">{company?.name}</h1>
+              <h6 className="italic mt-2 text-gray-400">{company?.address}</h6>
+              <div className="mt-6  text-gray-700 hidden md:block pr-40">{company?.description}</div>
               <GroupButtonHero />
             </div>
             <div className="relative">
-              <img className="w-[512px] aspect-[512/256]" src="/have-a-nice-day.png" alt="" />
+              <img className="w-[512px] aspect-[512/256] object-cover" src={imgActive} alt="" />
             </div>
 
             <img
