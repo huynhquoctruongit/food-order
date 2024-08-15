@@ -1,17 +1,12 @@
-import AxiosClient from "@/lib/api/axios-client";
 import { useState } from "react";
 import Tesseract from "tesseract.js";
 import { v4 as uuidv4 } from "uuid";
 import useImage from "./use-image";
-import { useParams } from "react-router-dom";
 import useMenuToday from "@/hooks/use-menu";
 
 const useConvertImage = () => {
   const { provider } = useMenuToday();
-  console.log(provider);
-
   const [loading, setLoading] = useState();
-  const { companyId } = useParams();
   const { getRandImage } = useImage("avatar");
   const [data, setData] = useState();
   const handleFileChange = async (event) => {
@@ -36,7 +31,17 @@ const useConvertImage = () => {
       "vie+eng", // Chỉ định mã ngôn ngữ là 'vie+eng' cho tiếng Việt và tiếng Anh
     )
       .then(({ data: { text } }) => {
-        processText(text);
+        const list = text.split("\n").filter((item) => item.trim() !== "" && item.indexOf("trưa nay có") === -1);
+
+        const data = list.map((item) => {
+          const name = item.trim();
+          const obj = { name: name, uuid: uuidv4(), image: getRandImage() };
+          obj.dish_price = provider.dish_price;
+          obj.side_dish_price = provider.side_dish_price;
+          return obj;
+        });
+
+        setData(data);
         setLoading(false);
       })
       .catch((error) => {

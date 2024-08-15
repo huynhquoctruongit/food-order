@@ -26,6 +26,7 @@ const CreateMenu = ({ refMenu }) => {
   const ref = useRef();
   const { handleFileChange, isLoading, listFood } = useConvertImage();
 
+
   useImperativeHandle(refMenu, () => ({
     setOpen: (value) => {
       if (profile.permission_to_create_menu !== true) {
@@ -124,13 +125,13 @@ const CreateMenu = ({ refMenu }) => {
             <div className="grid grid-cols-1 xl:grid-cols-2 p-4 bg-white rounded-md gap-4 py-4 md:py-10">
               {foods.map((food, index) => (
                 <div className="border border-gray-300 rounded-xl duration-200 text-sm" key={food.uuid}>
-                  <div className="p-4 flex items-center gap-4">
+                  <div className="p-4 flex items-center gap-4 bg-pastel-pink/20 rounded-t-md">
                     <img src={createImage(food.image, 300)} className="w-8 h-8 object-cover rounded-md" />
                     <input
                       value={food.name}
                       type="text"
                       onChange={(e) => onChange(index, "name", e.target.value)}
-                      className="focus:outline-none text-sm w-full"
+                      className="focus:outline-none text-sm w-full bg-transparent"
                       placeholder="Tên món nè "
                     />
                     <div
