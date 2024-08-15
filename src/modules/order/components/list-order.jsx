@@ -145,22 +145,22 @@ const ListOrder = () => {
               <div className="flex items-center gap-2 w-full">
                 <img src={enumFood[index % enumFood.length]} alt="" className="w-10 h-10 rounded-md border-2 border-white" />
                 <span>{fullname}</span>
-                {profile.id == elm.user.id && (
-                  <div
-                    onClick={() => {
-                      deleteFood(elm);
-                    }}
-                    className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"
-                  >
-                    <XIcon className="w-3 h-3 stroke-white " />
-                  </div>
-                )}
               </div>
               <div className="flex flex-col gap-2">
                 {elm.items.map((el, index) => {
                   return (
                     <div key={el.name + index + "name"} className="flex items-center">
                       <span className="mr-3"> -{el.name} </span>
+                      {profile.id == elm.user.id && (
+                        <div
+                          onClick={() => {
+                            deleteFood(el);
+                          }}
+                          className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"
+                        >
+                          <XIcon className="w-3 h-3 stroke-white " />
+                        </div>
+                      )}
                     </div>
                   );
                 })}

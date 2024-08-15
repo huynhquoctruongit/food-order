@@ -147,7 +147,7 @@ function useToast() {
     toast({
       title: message,
       description: dayjs().format("DD/MM/YYYY HH:mm:ss"),
-      duration: 5000,
+      duration: 4000,
       variant: "destructive",
     });
   };
@@ -155,7 +155,7 @@ function useToast() {
     toast({
       title: message,
       description: dayjs().format("DD/MM/YYYY HH:mm:ss"),
-      duration: 5000,
+      duration: 4000,
       variant: "default",
     });
   };

@@ -3,8 +3,6 @@ import { enumFood } from "@/lib/utils";
 
 const ListRemaining = ({ userNonOrderd }) => {
   const { users } = useUserInCompany();
-  console.log(users);
-
   return (
     <div className="w-full flex flex-wrap gap-4 mt-10">
       {users.map((el, index) => {

@@ -40,6 +40,7 @@ const OCRComponent = () => {
     toast({
       variant: "success",
       title: fullname,
+      duration: 3000,
       description: (
         <span className="">
           <img className="w-5 h-5 shadow-button rounded-full inline mr-2" src="/menu2.png" alt="" />
@@ -54,6 +55,7 @@ const OCRComponent = () => {
       variant: "success",
       title: fullname + " Đã xóa",
       description: " Đã xóa món " + data.name,
+      duration: 3000,
     });
   };
   refCallback.current = (message) => {
@@ -86,10 +88,22 @@ const OCRComponent = () => {
     deleteOrderSuccess(data);
   };
 
-  useSubscribe("create", "order", ["*,user_created.*"], { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, refCallback);
-  useSubscribe("update", "order", ["*,user_created.*"], { bulk_food_provider: { _eq: 1 }, company: { _eq: 1 } }, deleteCallback);
-
   const { companyId, providerId } = useParams();
+  useSubscribe(
+    "create",
+    "order",
+    ["*,user_created.*"],
+    { bulk_food_provider: { _eq: providerId }, company: { _eq: companyId } },
+    refCallback,
+  );
+  useSubscribe(
+    "update",
+    "order",
+    ["*,user_created.*"],
+    { bulk_food_provider: { _eq: providerId }, company: { _eq: companyId } },
+    deleteCallback,
+  );
+
   const onSelectFood = (elm) => {
     const now = dayjs();
     const time = now.hour(13).minute(30).second(0).millisecond(0).unix();
@@ -130,13 +144,6 @@ const OCRComponent = () => {
   const listFood = menu.detail || [];
   const bIds = [];
   const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
-
-  function isTimeBetweenCurrent() {
-    const currentTime = dayjs();
-    const startTime = dayjs("13:00", "HH:mm");
-    const endTime = dayjs("24:00", "HH:mm");
-    return currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
-  }
 
   const getSelectRice = (e, item) => {
     setOptionRice({
