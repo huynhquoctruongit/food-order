@@ -21,12 +21,16 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc"; // Import plugin UTC để xử lý múi giờ UTC
 import { useToast } from "@/components/ui/use-toast";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import isoWeek from "dayjs/plugin/isoWeek"
 import ListFood from "./modules/order/list-food";
 import ListOrder from "./modules/order/list-order";
 import ListRemaining from "./modules/order/list-remaining";
 import _ from "lodash";
 import ListFinal from "./modules/order/list-final";
-import HappyHehe from "./modules/user/happy";
+import PayReminder from "./modules/user/pay-reminder";
+import {getStartAndEndOfLastWeek} from "./pages/helpers/index"
+
+dayjs.extend(isoWeek);
 dayjs.extend(customParseFormat);
 dayjs.extend(utc); // Kích hoạt plugin UTC
 
@@ -65,6 +69,7 @@ const OCRComponent = () => {
 
   const { data, mutate: mutateUser } = useSWR("/items/user_84");
   const now = dayjs().add(7, "hour");
+  const lastWeek = getStartAndEndOfLastWeek()
   const utcTime = now.utc().format();
 
   const todayFormatted = dayjs().format("YYYY-MM-DD");
@@ -72,10 +77,13 @@ const OCRComponent = () => {
   const { data: orderToday, mutate: mutateOrder } = useSWR(
     `/items/order_84?fields=*,user.*&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`
   );
+
+
   const { data: menuToday } = useSWR(
     `/items/menus?fields=*&sort=-date_created&filter[date_created][_gte]=${todayFormatted}T00:00:00.000Z`
   );
   const dataUser = data?.data?.data;
+ 
   refOder.current = orderToday?.data?.data;
   const refFunc = useRef(null);
 
@@ -104,7 +112,10 @@ const OCRComponent = () => {
   //     setUser(JSON.parse(userLocal)?.fullname);
   //   }
   // }, []);
-
+  const { data: orderLastWeek, mutate: mutateOrderLastWeek } = useSWR(userSelect?.id &&
+    `/items/order_84?fields=*,user.*&sort=user&filter[date_created][_between]=${lastWeek.startOfLastWeek},${lastWeek.endOfLastWeek}T24:00:00.000Z&filter[price][_neq]=0&filter[user][_eq]=${userSelect.id}`
+)
+console.log(userSelect,'dataUser')
   useEffect(() => {
     const orderMembers = orderToday?.data?.data;
     const filterOther = orderMembers?.filter(
@@ -346,7 +357,7 @@ const OCRComponent = () => {
 
   return (
     <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
-      {/* <HappyHehe user={user} /> */}
+      <PayReminder orderLastWeek={orderLastWeek} />
       <ModalChoose
         {...{
           selectFood,

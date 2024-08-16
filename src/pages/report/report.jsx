@@ -21,6 +21,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { isNumber, totalRice } from "../helpers/index";
+import { CircleCheckBig, Circle } from "lucide-react"
 
 const Report = () => {
     dayjs.extend(isoWeek);
@@ -38,16 +39,16 @@ const Report = () => {
     )
     const orderMembers = orderToday?.data?.data
     const reciptList = reciptData?.data?.data
-    const groupedData = orderMembers?.reduce((acc, { user, name, price, date_created, id }) => {
+    const groupedData = orderMembers?.reduce((acc, { user, name, price, date_created, id, is_pay }) => {
         let group = acc.find(group => (group.user.id == user?.id || group.user.fullname === user?.fullname));
         if (!group) {
             group = { user: { id: user?.id, fullname: user?.fullname }, items: [] };
             acc.push(group);
         }
-        group.items.push({ name: name, date_created: date_created, id: id, price: price });
+        group.items.push({ name: name, date_created: date_created, id: id, price: price, is_pay : is_pay });
         return acc;
     }, []);
-    const admin = userSelect?.fullname == "Hồng Phạm"
+    const admin = userSelect?.fullname === "Hồng Phạm"
 
     const onUpdateOrder = (e, item, ortherList, date, type) => {
         var priceInput = e.target.value
@@ -121,6 +122,17 @@ const Report = () => {
         }
 
     }
+    const onPay = async (date, user, item) =>{
+        if(!item || !admin) return
+        const dataItem = item?.id ? item : item[0]
+        console.log(dataItem,'dataItem')
+        const isPay = dataItem.is_pay ? true : false
+        const params = {
+            is_pay : !isPay
+        }
+        await AxiosAPI.patch("/items/order_84/" + dataItem.id, params)
+        mutateOrder()
+    }
 
     const getMount = (orderUser, type) => {
         var total = 0
@@ -166,10 +178,9 @@ const Report = () => {
     const reciptNumber = reciptList?.reduce((acc, { amount }) => acc + parseFloat(amount), 0);
     const totalLeftNumber = totalNumber - reciptNumber
 
-    // console.log(totalRice(groupedData), 'groupedData');
     return (
         <div className="bg-[url(/background.png)] bg-contain pt-[23px] pb-[100px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
-            <div className="px-[20px] md:px-[100px]">
+            <div className="px-[20px] md:px-[40px]">
                 <div className="flex justify-between">
                     <div>
                         <div className="flex justify-between items-center my-[20px]">
@@ -197,7 +208,7 @@ const Report = () => {
                 <Table>
                     <TableHeader className="sticky top-0 z-50 shadow-sm border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
                         <TableRow className="rounded-md border-t-[1px] border-t-pastel-pink border-b-pastel-pink">
-                            <TableHead className="bg-white rounded-md w-[200px] px-0 font-bold border-r-[1px] border-r-pastel-pink text-center">Tên</TableHead>
+                            <TableHead className="bg-white rounded-md w-[150px] px-0 font-bold border-r-[1px] border-r-pastel-pink text-center">Tên</TableHead>
                             {currentSelect?.map((elm, index) => {
                                 return (
                                     <TableHead className="bg-white font-bold px-0 items-center mx-auto border-r-[1px] border-r-pastel-pink">
@@ -221,7 +232,7 @@ const Report = () => {
                             const valueRecipt = dataReport?.[valueInput]?.name === "recipt" && dataReport?.[valueInput]?.price || undefined
                             return (
                                 <TableRow className={`${index % 2 == 0 ? "bg-pastel-pink/30" : "bg-white"} hover:bg-unset`} key={userItem.user.id + date + "group"}>
-                                    <TableCell className="font-medium text-left p-2"><div className="p-[6px]">{userItem.user.fullname}</div></TableCell>
+                                    <TableCell className="font-medium text-left p-2 flex items-center"><div className="p-[6px] text-[13px] line-clamp-2">{userItem.user.fullname}</div></TableCell>
                                     {currentSelect?.map((elm, index) => {
                                         const ortherList = userItem?.items?.find((ortherItem) => ortherItem.name === "orther-food" && dayjs(ortherItem.date_created).format("YYYY-MM-DD") == elm)
                                         const riceList = userItem?.items?.filter((riceItem) => riceItem.name !== "orther-food" && dayjs(riceItem.date_created).format("YYYY-MM-DD") == elm)
@@ -232,18 +243,29 @@ const Report = () => {
                                         const finalPrice = riceList.reduce((acc, item) => acc + item.price, 0);
                                         return (
                                             <TableCell key={userItem.user.id + date + index + "-elm-wrapper"} className="text-left p-2">
-                                                <Tooltip>
-                                                    <TooltipTrigger className="w-[50%] text-center">
-                                                        {riceList?.length && <input key={userItem.user.id + date + index + "-elm-input1"} disabled className="w-[50%] rounded-md p-[6px] text-center bg-transparent text-gray-600 select-none" value={finalPrice}></input> || ""}
-                                                    </TooltipTrigger>
-                                                    <TooltipContent className="bg-white">
-                                                        {riceList?.length && <div className="flex flex-col gap-2">{riceList?.map((item) => (
-                                                            <div className="flex gap-2 items-center"><img className="w-5 h-5" src="/food9.png"></img><p>{item.name} - <span className="font-bold">{item.price}k</span></p></div>
-                                                        ))}</div>}
-                                                    </TooltipContent>
-                                                </Tooltip>
+                                                <div className="grid grid-cols-2">
+                                                    <Tooltip>
+                                                        <TooltipTrigger className="text-center">
+                                                            {riceList?.length &&
+                                                             <div className="flex items-center"><input key={userItem.user.id + date + index + "-elm-input1"} disabled className="w-[50%] rounded-md p-[6px] text-center bg-transparent text-gray-600 select-none" value={finalPrice}></input>
+                                                            <div onClick={()=>onPay(date, userItem, riceList)}>
+                                                               {riceList?.[0].is_pay ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20}/> : (admin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)}
+                                                               </div></div> || ""}
+                                                        </TooltipTrigger>
+                                                        <TooltipContent className="bg-white">
+                                                            {riceList?.length && <div className="flex flex-col gap-2">{riceList?.map((item) => (
+                                                                <div className="flex gap-2 items-center"><img className="w-5 h-5" src="/food9.png"></img><p>{item.name} - <span className="font-bold">{item.price}k</span></p></div>
+                                                            ))}</div>}
+                                                        </TooltipContent>
+                                                    </Tooltip>
 
-                                                <input id={date} key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? (ortherList?.price == 0 ? "" : ortherList?.price) : ""} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
+                                                    <div className="flex items-center gap-2 justify-center">
+                                                        <input id={date} key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? (ortherList?.price == 0 ? "" : ortherList?.price) : ""} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
+                                                        <div onClick={()=>onPay(date, userItem, ortherList)}>
+                                                            {ortherList && (ortherList?.is_pay ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20}/> : (admin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)) || <div className="w-5"></div>}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </TableCell>
                                         )
                                     })}

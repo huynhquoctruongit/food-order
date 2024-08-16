@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 export const formattedAmount = (amount: any) => {
     if (amount) {
         const format = parseFloat(amount.toString())
@@ -28,4 +29,14 @@ export const totalWater = (data) => {
 
         return total + foodTotal;
     }, 0);
+}
+export function getStartAndEndOfLastWeek() {
+    const today = dayjs();
+    const startOfThisWeek = today.startOf('isoWeek');
+    const startOfLastWeek = startOfThisWeek.subtract(1, 'week');
+    const endOfLastWeek = startOfLastWeek.endOf('isoWeek');
+    return {
+        startOfLastWeek: startOfLastWeek.format('YYYY-MM-DD'),
+        endOfLastWeek: endOfLastWeek.format('YYYY-MM-DD'),
+    };
 }
