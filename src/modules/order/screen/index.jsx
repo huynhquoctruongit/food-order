@@ -99,7 +99,8 @@ const OCRComponent = () => {
     "update",
     "order",
     ["*,user_created.*"],
-    { bulk_food_provider: { _eq: providerId }, company: { _eq: companyId } },
+    { bulk_food_provider: { _eq: providerId }, company: { _eq: companyId }, status: { _eq: "draft" } },
+
     deleteCallback,
   );
 

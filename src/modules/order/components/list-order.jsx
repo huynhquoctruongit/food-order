@@ -8,6 +8,7 @@ import useOrder from "../helper/use-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { connection } from "@/lib/directus";
 import { useCompany } from "@/hooks/use-company";
+import AxiosClient from "@/lib/api/axios-client";
 
 export const ItemTable = ({ children, className }) => {
   return (
@@ -42,9 +43,7 @@ const ListOrder = () => {
     const now = dayjs();
     const [hour_limit, minute_limit] = (company?.order_time_limit || "13:30:00").split(":");
     const time = now.hour(hour_limit).minute(minute_limit).second(0).millisecond(0).unix();
-
     const valid = dayjs().unix() < time;
-
     if (!valid) {
       toast({
         variant: "destructive",
@@ -53,7 +52,9 @@ const ListOrder = () => {
       });
       return;
     }
-
+    // AxiosClient.patch("/items/order/" + item.id, {
+    //   status: "draft",
+    // });
     connection.sendMessage({
       type: "items",
       collection: "order",
@@ -96,6 +97,8 @@ const ListOrder = () => {
                           {profile.id == elm.user.id && (
                             <div
                               onClick={() => {
+                                console.log("click");
+
                                 deleteFood(el);
                               }}
                               className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"

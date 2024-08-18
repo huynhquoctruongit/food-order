@@ -21,6 +21,7 @@ export const useOdersIsNotPaid = () => {
       user_created: "$CURRENT_USER",
       is_paid: false,
       company: companyId,
+      status: "published",
     },
   };
   const { data, error, isLoading } = useSWR(["/items/order", payload]);
