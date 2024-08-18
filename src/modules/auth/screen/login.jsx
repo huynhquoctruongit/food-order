@@ -7,20 +7,13 @@ import { createImage } from "@/lib/helper";
 import { cn, enumFood } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { create } from "zustand";
-
-export const useModalLogin = create((set) => ({
-  openLogin: false,
-  openOnboarding: false,
-  setOpenLogin: (value) => set({ openLogin: value }),
-  setOpenOnboarding: (value) => set({ openOnboarding: value }),
-}));
+import useStateModal from "@/hooks/use-modal";
 
 const ModalLogin = () => {
   const { data } = useSWR("/items/collection_image?filter[name][_eq]=avatar&fields=*,images.*");
   const listAvatar = data?.data[0]?.images || [];
   const { profile, isLogin, mutate } = useAuth();
-  const { openLogin, setOpenLogin, openOnboarding, setOpenOnboarding } = useModalLogin();
+  const { openLogin, setOpenLogin, openOnboarding, setOpenOnboarding } = useStateModal();
   const [active, setActive] = useState(0);
   const [text, setText] = useState("");
   const { destructive, success } = useToast();

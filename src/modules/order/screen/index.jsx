@@ -22,12 +22,9 @@ import { useCompany } from "@/hooks/use-company";
 const OCRComponent = () => {
   const { toast } = useToast();
   const refOder = useRef(null);
-
   const { company } = useCompany();
-  const { data } = useSWR("/users");
   const { mutate: mutateOrder } = useOrder();
   const { menu } = useMenuToday();
-  const dataUser = data?.data;
 
   const [selectFood, setFoodSelect] = useState([]);
   const [orderNote, setOrderNote] = useState("");
@@ -148,7 +145,6 @@ const OCRComponent = () => {
 
   const listFood = menu.detail || [];
   const bIds = [];
-  const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
   const getSelectRice = (e, item) => {
     setOptionRice({
@@ -177,7 +173,7 @@ const OCRComponent = () => {
         <div></div>
         <div className="mt-10 md:mt-20">
           <ListOrder />
-          <ListRemaining userNonOrderd={userNonOrderd} />
+          <ListRemaining />
           <div className="hidden md:block">
             <ListFinal order={refOder.current} />
           </div>

@@ -3,14 +3,14 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { LogOutIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
-import { useModalLogin } from "./auth/screen/login";
-
+import useStateModal from "@/hooks/use-modal";
+ 
 const Profile = () => {
   const { profile, isLogin, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   useOnClickOutside(ref, () => setOpen(false));
-  const [setOpenOnboarding] = useModalLogin((state) => [state.setOpenOnboarding]);
+  const [setOpenOnboarding] = useStateModal((state) => [state.setOpenOnboarding]);
   if (!isLogin) return null;
   return (
     <div className="flex items-center justify-between gap-4 relative">

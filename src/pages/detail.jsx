@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import Profile from "@/modules/info-user";
 import { Button } from "@/components/ui/button-hero.jsx";
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
-import { Loader2Icon } from "lucide-react";
 import OCRComponent from "@/modules/order/screen";
 import { mode } from "@/lib/config";
 import useSWR from "swr";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { LoadingPage } from "@/components/widget/loading";
 import CreateMenu from "@/modules/order/screen/create-menu";
 import { cn } from "@/lib/utils";
 import { useCompany } from "@/hooks/use-company";
 import { useAuth } from "@/hooks/use-auth";
+import { useOdersIsNotPaid } from "@/hooks/use-order";
 import AxiosClient from "@/lib/api/axios-client";
+import ModalRemind from "@/modules/order/components/remind";
 
 const GroupButtonHero = () => {
-  const [loading, setLoading] = useState();
   const refMenu = useRef();
   const onScroll = () => {
     const menu = document.getElementById("menu");
@@ -26,7 +25,6 @@ const GroupButtonHero = () => {
       <Button variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
-
       <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
         <span className="flex items-center gap-2 ">
           Thêm menu <SquaresPlusIcon className="w-4 h-4" />
@@ -102,6 +100,7 @@ const Order = () => {
         </div>
       </div>
       <OCRComponent />
+      <ModalRemind />
     </div>
   );
 };
@@ -110,9 +109,11 @@ const Wrap = () => {
   const { providerId, companyId } = useParams();
   const { data: provider, isLoading: isLoadingProvider } = useSWR("/items/bulk_food_provider/" + providerId);
   const { data: company, isLoading: isLoadingCompany } = useSWR("/items/company/" + companyId);
+  const { isLoading: isLoadingOrderHistory } = useOdersIsNotPaid();
+  const { isLoading: isLoadingUseCompany } = useCompany();
   const existProvider = provider?.data;
   const existCompany = company?.data;
-  if (isLoadingCompany || isLoadingProvider) return <LoadingPage />;
+  if (isLoadingCompany || isLoadingProvider || isLoadingOrderHistory || isLoadingUseCompany) return <LoadingPage />;
   if (!existProvider || !existCompany)
     return (
       <div className="text-center h-screen flex items-center justify-center text-3xl">

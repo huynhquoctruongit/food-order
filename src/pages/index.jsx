@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button-hero";
 import { useAuth } from "@/hooks/use-auth";
-import useCompanyManager from "@/hooks/use-company";
-import useHistory from "@/hooks/use-history";
+import useHistory from "@/hooks/use-order";
 import { createLinkOrder, enumFood } from "@/lib/utils";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
