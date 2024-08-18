@@ -1,26 +1,25 @@
 import { Button } from "@/components/ui/button-hero";
 import { useAuth } from "@/hooks/use-auth";
 import useCompanyManager from "@/hooks/use-company";
+import useHistory from "@/hooks/use-history";
 import { createLinkOrder, enumFood } from "@/lib/utils";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const { company } = useCompanyManager();
+  const { lastOrder, history } = useHistory();
   const { isLogin, profile } = useAuth();
-  const { bulk_food_provider } = company || {};
   const [searchParams, _] = useSearchParams();
-
   const callback = searchParams.get("callback");
-
+  const { company, bulk_food_provider } = lastOrder || {};
   useEffect(() => {
     if (isLogin === false || !callback) return;
     navigate(callback);
   }, [isLogin]);
 
   const onClick = () => {
-    navigate(createLinkOrder(company.id, bulk_food_provider));
+    navigate(createLinkOrder(company, bulk_food_provider));
   };
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-pastel-pink/40 flex items-center justify-center">
@@ -45,10 +44,10 @@ const MainPage = () => {
             );
           })}
         </div>
-        {isLogin && profile.company && (
+        {isLogin && company && (
           <div className="text-center mt-10">
             <Button variant="default" size="default" onClick={onClick}>
-              ĐI TỚI TRANG ĐẶT MÓN
+              ĐẶT MÓN THÔI
             </Button>
           </div>
         )}
