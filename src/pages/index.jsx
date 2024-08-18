@@ -8,8 +8,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const { lastOrder, history } = useHistory();
-  const { isLogin, profile } = useAuth();
+  const { lastOrder } = useHistory();
+  const { isLogin } = useAuth();
   const [searchParams, _] = useSearchParams();
   const callback = searchParams.get("callback");
   const { company, bulk_food_provider } = lastOrder || {};
