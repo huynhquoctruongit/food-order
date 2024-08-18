@@ -17,7 +17,7 @@ const ModalRemind = () => {
   const { company } = useCompany();
   const admin = company?.admin || {};
   const fullname = admin?.first_name + " " + admin.last_name;
-  const { orders } = useOdersIsNotPaid();
+  const { orders, mutate } = useOdersIsNotPaid();
   useEffect(() => {
     if (orders.length > 0 && company.type_payment === "daily") {
       setOpenRemind(true);
@@ -29,12 +29,14 @@ const ModalRemind = () => {
     { title: "Tiền", value: "money", className: "w-3/12 text-sm" },
   ];
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const payload = orders.map((item) => ({
       id: item.id,
       is_paid: true,
     }));
-    AxiosClient.patch("/items/order", payload);
+    await AxiosClient.patch("/items/order", payload);
+    mutate();
+
     setOpenRemind(false);
   };
   const render = (key, value) => {
@@ -51,7 +53,10 @@ const ModalRemind = () => {
   return (
     <>
       <Dialog open={openRemind} className="" onChange={setOpenRemind}>
-        <DialogContent className="sm:max-w-[800px] max-w-[calc(100%-40px)] bg-white text-black bg-[url(/background-auth.png)] bg-cover">
+        <DialogContent
+          hiddenClose
+          className="sm:max-w-[800px] max-w-[calc(100%-40px)] bg-white text-black bg-[url(/background-auth.png)] bg-cover"
+        >
           <DialogHeader>
             <DialogTitle className="text-black">Thông báo ít có giá trị 🖖</DialogTitle>
           </DialogHeader>

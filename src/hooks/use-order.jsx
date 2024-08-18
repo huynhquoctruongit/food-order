@@ -24,10 +24,10 @@ export const useOdersIsNotPaid = () => {
       status: "published",
     },
   };
-  const { data, error, isLoading } = useSWR(["/items/order", payload]);
+  const { data, error, isLoading, mutate } = useSWR(["/items/order", payload]);
   const orders = data?.data || [];
 
-  return { orders, isLoading, error };
+  return { orders, isLoading, error, mutate };
 };
 
 export default useHistory;
