@@ -18,8 +18,20 @@ const ModalRemind = () => {
   const admin = company?.admin || {};
   const fullname = admin?.first_name + " " + admin.last_name;
   const { orders, mutate } = useOdersIsNotPaid();
+
+  const currentDay = dayjs().day();
+  const weekEnd = dayjs().add(currentDay * -1, "day");
+
+  const orderOldWeek = orders.filter((item) => {
+    dayjs(item.date_created).isBefore(dayjs().subtract(1, "week"));
+    return weekEnd.isAfter(dayjs(item.date_created));
+  });
+  const listOrder = company.type_payment === "daily" ? orders : orderOldWeek;
   useEffect(() => {
-    if (orders.length > 0 && company.type_payment === "daily") {
+    if (listOrder.length > 0 && company.type_payment === "daily") {
+      setOpenRemind(true);
+    }
+    if (orderOldWeek.length > 0 && company.type_payment === "weekly") {
       setOpenRemind(true);
     }
   }, [orders]);
@@ -49,7 +61,6 @@ const ModalRemind = () => {
         return <div className="text-xs md:text-sm">{value.price} Cá</div>;
     }
   };
-
   return (
     <>
       <Dialog open={openRemind} className="" onChange={setOpenRemind}>
@@ -75,11 +86,11 @@ const ModalRemind = () => {
               </div>
               <div className="flex flex-col">
                 <div className="md:max-h-[300px] overflow-y-auto">
-                  <TablePink headers={headers} list={orders} render={render} />
+                  <TablePink headers={headers} list={listOrder} render={render} />
                 </div>
                 <div className="mt-4">
                   Tổng cần thanh toán:{" "}
-                  <span className=" ">{orders.reduce((total, item) => total + parseInt(item.price), 0)} </span>
+                  <span className=" ">{listOrder.reduce((total, item) => total + parseInt(item.price), 0)} </span>
                   Cá
                 </div>
                 <div className="mt-auto hidden md:block text-right">
