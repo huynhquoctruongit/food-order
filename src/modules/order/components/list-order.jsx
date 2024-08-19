@@ -131,8 +131,7 @@ const ListOrder = () => {
                   </div>
                 </ItemTable>
                 <ItemTable className={options[4].className}>
-                  {elm.items.reduce((total, item) => total + parseInt(item.price), 0)}
-                  .000 vnd
+                  {elm.items.reduce((total, item) => total + parseInt(item.price), 0)} cá |
                 </ItemTable>
               </div>
             );

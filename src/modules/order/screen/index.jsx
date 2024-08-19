@@ -187,7 +187,6 @@ const OCRComponent = () => {
 export default OCRComponent;
 
 const ModalChoose = ({ selectFood, isPopup, getSelectRice, orderNote, setPopup, onOrder }) => {
-  let pattern = /^\d+[.,]?\s*/;
   const [text, setText] = useState("");
   return (
     <div className="text-left mt-[20px]">

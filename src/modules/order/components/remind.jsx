@@ -58,12 +58,19 @@ const ModalRemind = () => {
       case "name":
         return <div className="text-xs md:text-sm">{value.name}</div>;
       case "money":
-        return <div className="text-xs md:text-sm">{value.price} Cá</div>;
+        return (
+          <div className="text-xs md:text-sm">
+            <div>{value.price} Cá</div>
+            <div className="whitespace-nowrap">
+              ship:<i className="ml-1">{value.delivery_fee || 0} Cá</i>
+            </div>
+          </div>
+        );
     }
   };
   return (
     <>
-      <Dialog open={openRemind} className="" onChange={setOpenRemind}>
+      <Dialog open={openRemind} className="" onClose={setOpenRemind}>
         <DialogContent
           hiddenClose
           className="sm:max-w-[800px] max-w-[calc(100%-40px)] bg-white text-black bg-[url(/background-auth.png)] bg-cover"
@@ -90,7 +97,9 @@ const ModalRemind = () => {
                 </div>
                 <div className="mt-4">
                   Tổng cần thanh toán:{" "}
-                  <span className=" ">{listOrder.reduce((total, item) => total + parseInt(item.price), 0)} </span>
+                  <span className=" ">
+                    {listOrder.reduce((total, item) => total + parseInt(item.price) + (parseInt(item.delivery_fee) || 0), 0)}{" "}
+                  </span>
                   Cá
                 </div>
                 <div className="mt-auto hidden md:block text-right">

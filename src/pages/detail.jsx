@@ -6,7 +6,7 @@ import { mode } from "@/lib/config";
 import useSWR from "swr";
 import { useParams } from "react-router-dom";
 import { LoadingPage } from "@/components/widget/loading";
-import CreateMenu from "@/modules/order/screen/create-menu";
+import CreateMenu, { SplitButton } from "@/modules/order/screen/create-menu";
 import { cn } from "@/lib/utils";
 import { useCompany } from "@/hooks/use-company";
 import { useAuth } from "@/hooks/use-auth";
@@ -30,7 +30,9 @@ const GroupButtonHero = () => {
           Thêm menu <SquaresPlusIcon className="w-4 h-4" />
         </span>
       </Button>
+
       <CreateMenu refMenu={refMenu} />
+      <SplitButton />
     </div>
   );
 };
