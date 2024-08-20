@@ -18,6 +18,7 @@ import { connection } from "@/lib/directus";
 import useOrder from "../helper/use-menu";
 import useMenuToday from "@/hooks/use-menu";
 import { useCompany } from "@/hooks/use-company";
+import EditCompany from "./config";
 
 const OCRComponent = () => {
   const { toast } = useToast();
@@ -155,7 +156,7 @@ const OCRComponent = () => {
   };
 
   return (
-    <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
+    <div className="text-black pb-10 md:pb-40" id="menu">
       <ModalChoose
         {...{
           selectFood,
@@ -168,7 +169,7 @@ const OCRComponent = () => {
         }}
       />
       <div className="root-wrapper">
-        <div className="flex flex-wrap mt-10">
+        <div className="flex flex-wrap mt-20">
           <ListFood listFood={listFood} onSelectFood={onSelectFood} />
         </div>
         <div></div>

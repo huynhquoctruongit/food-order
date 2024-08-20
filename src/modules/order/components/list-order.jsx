@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { XIcon } from "lucide-react";
-import { useLocalStorage, useMediaQuery } from "usehooks-ts";
+import { useMediaQuery } from "usehooks-ts";
 import { enumFood } from "@/lib/utils";
 import groupBy from "lodash/groupBy";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,7 +8,6 @@ import useOrder from "../helper/use-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { connection } from "@/lib/directus";
 import { useCompany } from "@/hooks/use-company";
-import AxiosClient from "@/lib/api/axios-client";
 
 export const ItemTable = ({ children, className }) => {
   return (
@@ -131,7 +130,7 @@ const ListOrder = () => {
                   </div>
                 </ItemTable>
                 <ItemTable className={options[4].className}>
-                  {elm.items.reduce((total, item) => total + parseInt(item.price), 0)} cá |
+                  {elm.items.reduce((total, item) => total + parseInt(item.price), 0)} cá
                 </ItemTable>
               </div>
             );

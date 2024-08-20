@@ -218,16 +218,12 @@ export const SplitButton = () => {
         >
           <div className="py-10">
             <Input ref={text} type="number" placeholder="Nhập số tiền ship" className="w-full" />
+            <i className="mt-2 block text-xs text-gray-500">Chỉ nên nhập chia tiền khi đã chốt danh sách món ăn nhé </i>
           </div>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="">
-              <div className="rounded-full px-3 py-1.5 border border-dashed border-gray-300 cursor-pointer"> Thêm món </div>
-            </div>
-
+            <div></div>
             <ButtonHero disabled={isLoading} onClick={onSubmit} className="items-center flex gap-4">
               {isLoading ? "Đang chia" : " Chia tiền "}
-
-              <PlusCircle />
             </ButtonHero>
           </div>
         </DialogContent>

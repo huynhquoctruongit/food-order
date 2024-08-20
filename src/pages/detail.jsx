@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useOdersIsNotPaid } from "@/hooks/use-order";
 import AxiosClient from "@/lib/api/axios-client";
 import ModalRemind from "@/modules/order/components/remind";
+import EditCompany from "@/modules/order/screen/config";
 
 const GroupButtonHero = () => {
   const refMenu = useRef();
@@ -67,6 +68,7 @@ const Order = () => {
 
   return (
     <div>
+      <EditCompany />
       <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
         <img
           className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
