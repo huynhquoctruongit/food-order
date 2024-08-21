@@ -14,7 +14,7 @@ const ChatWiget = () => {
   const wrap = useRef(null);
   const { companyId } = useParams();
   const { messages, setMessages } = useMessage();
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
   const sendMessage = () => {
     AxiosClient.post("/items/message", {
