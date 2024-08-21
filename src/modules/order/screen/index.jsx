@@ -107,7 +107,6 @@ const OCRComponent = () => {
 
   const onSelectFood = (elm) => {
     const now = dayjs();
-
     const [hour_limit, minute_limit] = (company?.order_time_limit || "13:30:00").split(":");
     const time = now.hour(hour_limit).minute(minute_limit).second(0).millisecond(0).unix();
     const valid = dayjs().unix() < time;

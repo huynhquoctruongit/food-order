@@ -14,7 +14,6 @@ const ListFood = ({ onSelectFood }) => {
   const listFood = menu?.detail;
 
   const expand = listFood?.length > 9;
-
   const generateFood = provider?.type === "drink" ? getRandImage : getRandImageAvatar;
   return (
     <div className="flex flex-col md:flex-row gap-4 relative items-stretch">
@@ -38,29 +37,43 @@ const ListFood = ({ onSelectFood }) => {
           )}
           {listFood?.map((elm, index) => {
             return (
-              <div
+              <ItemFood
+                expand={expand}
+                index={index}
+                elm={elm}
+                onSelectFood={onSelectFood}
+                generateFood={generateFood}
                 key={index + "-elm"}
-                onClick={() => onSelectFood(elm)}
-                className={cn(
-                  "rounded-lg border relative border-gray-300 w-full flex items-center gap-2 hover:border-pastel-pink hover:shadow-button-small duration-200 cursor-pointer",
-                  expand ? "md:w-[calc((100%-60px)/4)]" : "md:w-[calc((100%-60px)/3)] ",
-                )}
-              >
-                <div className="h-[100px] aspect-square bg-[#FFCFC8]/20 flex items-center flex-col justify-center">
-                  <img className="w-[70px]" src={createImage(generateFood(), 400)} alt="" />
-                </div>
-                <div className="p-1 h-full flex flex-col ">
-                  <div className="mb-1 flex gap-0.5">
-                    <div className="text-[10px] mt-2 text-left bg-pastel-pink/60 text-primary-01 w-fit rounded-md px-1">
-                      {elm.dish_price} cá
-                    </div>
-                  </div>
-                  <div className="text-left text-sm text-gray-700 line-clamp-3">{elm.name}</div>
-                </div>
-              </div>
+              />
             );
           })}
         </div>
+      </div>
+    </div>
+  );
+};
+
+const ItemFood = ({ elm, onSelectFood, generateFood, expand, index }) => {
+  const image = useMemo(() => createImage(generateFood(), 400), [elm.id]);
+  return (
+    <div
+      key={index + "-elm"}
+      onClick={() => onSelectFood(elm)}
+      className={cn(
+        "rounded-lg border relative border-gray-300 w-full flex items-center gap-2 hover:border-pastel-pink hover:shadow-button-small duration-200 cursor-pointer",
+        expand ? "md:w-[calc((100%-60px)/4)]" : "md:w-[calc((100%-60px)/3)] ",
+      )}
+    >
+      <div className="h-[100px] aspect-square bg-[#FFCFC8]/20 flex items-center flex-col justify-center">
+        <img className="w-[70px]" src={image} alt="" />
+      </div>
+      <div className="p-1 h-full flex flex-col ">
+        <div className="mb-1 flex gap-0.5">
+          <div className="text-[10px] mt-2 text-left bg-pastel-pink/60 text-primary-01 w-fit rounded-md px-1">
+            {elm.dish_price} cá
+          </div>
+        </div>
+        <div className="text-left text-sm text-gray-700 line-clamp-3">{elm.name}</div>
       </div>
     </div>
   );

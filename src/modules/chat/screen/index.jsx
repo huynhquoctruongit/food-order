@@ -20,7 +20,8 @@ const ChatWiget = () => {
   const { profile } = useAuth();
   const { messages, setMessages } = useMessage();
   const isMd = useMediaQuery("(min-width: 768px)");
-  const [show, setShow] = useState(isMd ? true : false);
+  // const [show, setShow] = useState(isMd ? true : false);
+  const [show, setShow] = useState(false);
 
   const sendMessage = async () => {
     if (refLoading.current) return;
@@ -56,7 +57,7 @@ const ChatWiget = () => {
   return (
     <>
       {!show && (
-        <div className="fixed bottom-4 md:bottom-10 right-4 md:right-10 z-100">
+        <div className="fixed cursor-pointer bottom-4 md:bottom-10 right-4 md:right-10 z-100">
           <div className=" rounded-full p-2 bg-white shadow-md relative" onClick={() => setShow(true)}>
             <img src="/chat.png" className="w-8 h-8 object-contain" />
             <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
@@ -66,11 +67,11 @@ const ChatWiget = () => {
 
       <div
         className={cn(
-          "fixed bottom-0 z-[100] right-0 md:right-10 w-full md:w-96 h-[30rem] bg-white  border border-b-0 border-gray-400 rounded-b-none rounded-md flex flex-col",
+          "fixed bottom-0 z-[100] right-0 md:right-10 w-full md:w-96 h-[30rem] bg-white  border border-b-0 border-pastel-pink rounded-b-none rounded-md flex flex-col",
           { hidden: !show },
         )}
       >
-        <div className="flex items-center justify-between w-full border-gray-200 border-b p-4 ">
+        <div className="flex items-center justify-between w-full border-pastel-pink border-b p-4 ">
           <h1 className="text-base">Tậm sự cơm trưa</h1>
           <div className="p-l cursor-pointer" onClick={() => setShow(false)}>
             <ChevronDown className="stroke-gray-500" />

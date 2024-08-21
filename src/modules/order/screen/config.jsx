@@ -14,8 +14,10 @@ import { useToast } from "@/components/ui/use-toast";
 const EditCompany = () => {
   const [openConfig, setOpenConfig] = useState(false);
   const { profile } = useAuth();
-  const { company } = useCompany();
-  if (profile.id !== company.admin?.id) return;
+  const { company, isLoading } = useCompany();
+  console.log(isLoading);
+
+  if (profile.id !== company.admin?.id || isLoading) return;
   return (
     <>
       <div className="bg-pastel-pink/40 ">
@@ -40,13 +42,14 @@ const ConFig = ({ open, onOpenChange }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { company, mutate } = useCompany();
   const { destructive, success } = useToast();
-  const hours = Array.from({ length: 24 }, (_, i) => i);
-  console.log(company);
+  const order_time_limit = company?.order_time_limit?.split(":") || [0, 0];
 
   const [form, setForm] = useState({
     name: company?.name,
     address: company?.address,
     description: company.description,
+    hour: order_time_limit[0],
+    minute: order_time_limit[1],
   });
 
   const onChangeData = (name) => {
@@ -54,9 +57,21 @@ const ConFig = ({ open, onOpenChange }) => {
       setForm((prev) => ({ ...prev, [name]: e.target.value }));
     };
   };
+
+  const onChangeBlur = (name) => {
+    return (e) => {
+      const value = parseInt(e.target.value);
+      setForm((prev) => ({ ...prev, [name]: value > 10 ? value : "0" + value }));
+      if (name === "hour" && (value < 0 || value > 24)) setForm((prev) => ({ ...prev, [name]: 12 }));
+      if (name === "minute" && (value < 0 || value > 60)) setForm((prev) => ({ ...prev, [name]: "00" }));
+    };
+  };
+
   const onSubmit = async () => {
     setIsLoading(true);
-    await AxiosClient.patch(`/items/company/${company.id}`, form).catch(() => {
+    const payload = { ...form, order_time_limit: `${form.hour}:${form.minute}:00`, hour: undefined, minute: undefined };
+
+    await AxiosClient.patch(`/items/company/${company.id}`, payload).catch(() => {
       destructive("Có lỗi xảy ra");
     });
     await mutate();
@@ -100,6 +115,26 @@ const ConFig = ({ open, onOpenChange }) => {
               placeholder="Vui lòng nhập địa chỉ công ty"
               className="w-full mt-2"
             />
+          </div>
+          <div className="mt-4">
+            <Label className="text-base font-normal">Thời gian kết thúc</Label>
+            <div className="flex items-center gap-3">
+              <Input
+                value={form.hour}
+                onChange={onChangeData("hour")}
+                onBlur={onChangeBlur("hour")}
+                placeholder="Giờ"
+                className="w-full mt-2"
+              />
+              :
+              <Input
+                value={form.minute}
+                onBlur={onChangeBlur("minute")}
+                onChange={onChangeData("minute")}
+                placeholder="Phút"
+                className="w-full mt-2"
+              />
+            </div>
           </div>
         </div>
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
