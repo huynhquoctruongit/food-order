@@ -15,7 +15,7 @@ const MarqueeChat = () => {
   const { messages } = useMessage();
   if (messages.length === 0) return null;
   return (
-    <marquee behavior="scroll" direction="left" scrollamount="10" className="bg-pastel-pink">
+    <marquee behavior="scroll" direction="left" scrollamount="10" className="bg-pastel-pink mb-0 pb-0">
       <div className="flex items-center py-3 gap-20 px-10">
         {messages.map((elm, index) => {
           const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;

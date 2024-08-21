@@ -71,41 +71,44 @@ const Order = () => {
   return (
     <div>
       <EditCompany />
-      <MarqueeChat />
-      <div className="relative flex items-center justify-center md:pt-0 min-h-[calc(100vh-56px)] md:min-h-fit">
-        <img
-          className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
-          src="/hero.png"
-          alt=""
-        />
+      <div className="min-h-[calc(100vh-56px)] md:min-h-fit">
+        <MarqueeChat />
+        <div className="-translate-y-2.5 relative flex items-center justify-center md:pt-0 ">
+          <img
+            className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
+            src="/hero.png"
+            alt=""
+          />
 
-        <div className="absolute root-wrapper w-full">
-          <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
-            <div className="text-left">
-              <h1 className="text-[20px] md:text-3xl font-bold text-black text-left">{company?.name}</h1>
-              <h6 className="italic mt-2 text-gray-400">{company?.address}</h6>
-              <div className="mt-6  text-gray-700 hidden md:block pr-40">{company?.description}</div>
-              <GroupButtonHero />
-            </div>
-            <div className="relative">
-              <img className="w-[512px] aspect-[512/256] object-cover" src={imgActive} alt="" />
-            </div>
+          <div className="absolute root-wrapper w-full">
+            <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
+              <div className="text-left">
+                <h1 className="text-[20px] md:text-3xl font-bold text-black text-left">{company?.name}</h1>
+                <h6 className="italic mt-2 text-gray-400">{company?.address}</h6>
+                <div className="mt-6  text-gray-700 hidden md:block pr-40">{company?.description}</div>
+                <GroupButtonHero />
+              </div>
+              <div className="relative">
+                <img className="w-[512px] aspect-[512/256] object-cover" src={imgActive} alt="" />
+              </div>
 
-            <img
-              onClick={onClick}
-              className={cn(
-                "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
-                play ? "animate-spin" : "",
-              )}
-              src="/audio.png"
-              alt=""
-            />
-            <audio id="audio">
-              <source src="/audio.mp3" type="audio/mpeg" />
-            </audio>
+              <img
+                onClick={onClick}
+                className={cn(
+                  "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
+                  play ? "animate-spin" : "",
+                )}
+                src="/audio.png"
+                alt=""
+              />
+              <audio id="audio">
+                <source src="/audio.mp3" type="audio/mpeg" />
+              </audio>
+            </div>
           </div>
         </div>
       </div>
+
       <OCRComponent />
       <ModalRemind />
     </div>
