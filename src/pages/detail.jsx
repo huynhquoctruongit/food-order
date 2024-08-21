@@ -106,7 +106,6 @@ const Order = () => {
       </div>
       <OCRComponent />
       <ModalRemind />
-      <ChatWiget />
     </div>
   );
 };
@@ -126,7 +125,12 @@ const Wrap = () => {
         Không tồn tại nhà hàng hoặc nhà cung cấp
       </div>
     );
-  return <Order />;
+  return (
+    <>
+      <Order />
+      <ChatWiget />
+    </>
+  );
 };
 
 export default Wrap;

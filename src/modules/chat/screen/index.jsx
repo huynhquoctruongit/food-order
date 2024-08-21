@@ -9,21 +9,27 @@ import { useSubscribe } from "@/hooks/use-connection";
 import { call } from "lodash/groupBy";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
+import { createImage } from "@/lib/helper";
+import dayjs from "dayjs";
 
 const ChatWiget = () => {
   const ref = useRef(null);
   const wrap = useRef(null);
+  const refLoading = useRef(null);
   const { companyId } = useParams();
   const { profile } = useAuth();
   const { messages, setMessages } = useMessage();
   const isMd = useMediaQuery("(min-width: 768px)");
   const [show, setShow] = useState(isMd ? true : false);
 
-  const sendMessage = () => {
-    AxiosClient.post("/items/message", {
+  const sendMessage = async () => {
+    if (refLoading.current) return;
+    refLoading.current = true;
+    await AxiosClient.post("/items/message", {
       message: ref.current.innerHTML,
       company: companyId,
     });
+    refLoading.current = false;
     ref.current.innerHTML = "";
   };
   const callback = useRef(null);
@@ -50,7 +56,7 @@ const ChatWiget = () => {
   return (
     <>
       {!show && (
-        <div className="fixed bottom-4 md:bottom-10 right-4 md:right-10">
+        <div className="fixed bottom-4 md:bottom-10 right-4 md:right-10 z-100">
           <div className=" rounded-full p-2 bg-white shadow-md relative" onClick={() => setShow(true)}>
             <img src="/chat.png" className="w-8 h-8 object-contain" />
             <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
@@ -60,7 +66,7 @@ const ChatWiget = () => {
 
       <div
         className={cn(
-          "fixed bottom-0 right-0 md:right-10 w-full md:w-96 h-[30rem] bg-white  border border-b-0 border-gray-400 rounded-b-none rounded-md flex flex-col",
+          "fixed bottom-0 z-[100] right-0 md:right-10 w-full md:w-96 h-[30rem] bg-white  border border-b-0 border-gray-400 rounded-b-none rounded-md flex flex-col",
           { hidden: !show },
         )}
       >
@@ -77,17 +83,38 @@ const ChatWiget = () => {
                 const isMe = elm.user_created?.id === profile.id;
                 const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;
                 return (
-                  <div className={cn("flex flex-col ", !isMe ? "items-start" : "items-end")} key={elm.id}>
-                    <div
-                      dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
-                      className={cn(
-                        "text-sm  w-fit border-gray-300 rounded-md p-2  rounded-tr-2xl rounded-br-none",
-                        isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white",
-                      )}
-                    ></div>
-                    <div className="flex items-center justify-end gap-2 mt-2">
-                      <div className="text-xs text-gray-400">{fullname}</div>
-                      <img src="/avatar.png" className="w-6 h-6 aspect-square rounded-full" />
+                  <div>
+                    <div className={cn("flex gap-2 flex-row-reverse ", !isMe ? "justify-start " : "justify-end")} key={elm.id}>
+                      <div className="relative">
+                        <div
+                          dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
+                          className={cn(
+                            "text-sm  w-fit border-gray-300 rounded-md p-2  rounded-tr-2xl rounded-bl-none",
+                            isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white",
+                          )}
+                        ></div>
+                        <div className={cn("text-[10px] mt-1 text-slate-300 text-right absolute top-full left-0")}>
+                          {dayjs(elm.date_created).format("HH:mm:ss")}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-end gap-2 mt-2 ">
+                        <div className="relative group">
+                          <div
+                            className={cn(
+                              "text-xs text-gray-400 top-full left-0 hidden group-hover:block absolute  mt-1  whitespace-nowrap bg-slate-50 rounded-md px-2 py-0.5",
+                            )}
+                          >
+                            {fullname}
+                          </div>
+                          <img
+                            src={createImage(elm.user_created.avatar, 300)}
+                            className="w-8 h-8 bg-slate-50 p-1 shadow-lg aspect-square rounded-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className={cn("text-[10px] mt-1 text-slate-300 text-right opacity-0")}>
+                      {dayjs(elm.date_created).format("HH:mm:ss")}
                     </div>
                   </div>
                 );
