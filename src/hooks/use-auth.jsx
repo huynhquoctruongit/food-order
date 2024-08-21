@@ -31,7 +31,7 @@ export function useAuth(options) {
         Secure: true,
       });
       setCookie("expires", "");
-    } catch (error) {}
+    } catch (error) { }
     directus.logout();
   }
   const firstLoading = profile === undefined && error === undefined;
@@ -44,6 +44,7 @@ export function useAuth(options) {
         email: profileObj.email,
         fullname: profileObj.fullname,
         role: profileObj.role,
+        company: userInfo.company
       });
     }
   }, [profileObj.id]);

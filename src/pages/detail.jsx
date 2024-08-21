@@ -6,7 +6,7 @@ import { Loader2Icon } from "lucide-react";
 import OCRComponent from "@/modules/order/screen";
 import { mode } from "@/lib/config";
 import useSWR from "swr";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { LoadingPage } from "@/components/widget/loading";
 import CreateMenu from "@/modules/order/screen/create-menu";
 import { cn } from "@/lib/utils";
@@ -32,6 +32,11 @@ const GroupButtonHero = () => {
           Thêm menu <SquaresPlusIcon className="w-4 h-4" />
         </span>
       </Button>
+      <Link to="/report?week=this_week">
+        <Button variant="secondary" size="default">
+          Báo cáo
+        </Button>
+      </Link>
       <CreateMenu refMenu={refMenu} />
     </div>
   );
