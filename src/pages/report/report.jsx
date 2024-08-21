@@ -211,7 +211,7 @@ const Report = () => {
                 <Table>
                     <TableHeader className="sticky top-0 z-50 shadow-sm border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
                         <TableRow className="rounded-md border-t-[1px] border-t-pastel-pink border-b-pastel-pink">
-                            <TableHead className="bg-white rounded-md w-[150px] px-0 font-bold border-r-[1px] border-r-pastel-pink text-center">Tên</TableHead>
+                            <TableHead className="bg-white rounded-md w-[150px] px-0 font-bold border-r-[1px] border-r-pastel-pink text-center">Sen</TableHead>
                             {currentSelect?.map((elm, index) => {
                                 return (
                                     <TableHead className="bg-white font-bold px-0 items-center mx-auto border-r-[1px] border-r-pastel-pink">

@@ -17,7 +17,7 @@ export const ItemTable = ({ children, className }) => {
   );
 };
 const options = [
-  { title: "Đồng chí", value: "dongchi", className: "w-4/12" },
+  { title: "Sen", value: "dongchi", className: "w-4/12" },
   { title: "Món", value: "mon", className: "w-4/12" },
   { title: "Ghi chú", value: "ghi-chu", className: "w-3/12" },
   { title: "Thời gian", value: "date-luc", className: "w-2/12" },
