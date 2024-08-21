@@ -18,15 +18,17 @@ const EditCompany = () => {
   if (profile.id !== company.admin?.id) return;
   return (
     <>
-      <div className="root-wrapper bg-pastel-pink/40 py-4 flex justify-end gap-4">
-        {/* <div className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm">
+      <div className="bg-pastel-pink/40 ">
+        <div className="root-wrapper py-4 flex justify-end gap-4">
+          {/* <div className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm">
           <TablePropertiesIcon className="stroke-slate-500" />
         </div> */}
-        <div
-          className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm"
-          onClick={() => setOpenConfig(true)}
-        >
-          <Settings className="stroke-slate-500" />
+          <div
+            className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm"
+            onClick={() => setOpenConfig(true)}
+          >
+            <Settings className="stroke-slate-500" />
+          </div>
         </div>
       </div>
       <ConFig open={openConfig} onOpenChange={setOpenConfig} />
