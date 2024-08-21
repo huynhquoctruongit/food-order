@@ -84,38 +84,31 @@ const ChatWiget = () => {
                 const isMe = elm.user_created?.id === profile.id;
                 const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;
                 return (
-                  <div>
-                    <div className={cn("flex gap-2 flex-row-reverse ", !isMe ? "justify-start " : "justify-end")} key={elm.id}>
-                      <div className="relative">
-                        <div
-                          dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
-                          className={cn(
-                            "text-sm  w-fit border-gray-300 rounded-md p-2  rounded-tr-2xl rounded-bl-none",
-                            isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white",
-                          )}
-                        ></div>
-                        <div className={cn("text-[10px] mt-1 text-slate-300 text-right absolute top-full left-0")}>
-                          {dayjs(elm.date_created).format("HH:mm:ss")}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-end gap-2 mt-2 ">
+                  <div className={cn("flex justify-start pb-4", isMe ? "justify-end" : "justify-start")}>
+                    <div className={cn("flex gap-2 items-start justify-start max-w-[90%]")} key={elm.id}>
+                      <div className="flex items-center justify-end gap-2">
                         <div className="relative group">
-                          <div
-                            className={cn(
-                              "text-xs text-gray-400 top-full left-0 hidden group-hover:block absolute  mt-1  whitespace-nowrap bg-slate-50 rounded-md px-2 py-0.5",
-                            )}
-                          >
-                            {fullname}
-                          </div>
                           <img
                             src={createImage(elm.user_created.avatar, 300)}
                             className="min-w-8 w-8 h-8 bg-slate-50 p-1 shadow-lg aspect-square rounded-full"
                           />
                         </div>
                       </div>
-                    </div>
-                    <div className={cn("text-[10px] mt-1 text-slate-300 text-right opacity-0")}>
-                      {dayjs(elm.date_created).format("HH:mm:ss")}
+                      <div
+                        className={cn(
+                          "relative w-fit border-gray-300 p-2 rounded-2xl rounded-tl-md" ,
+                          isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white",
+                        )}
+                      >
+                        <div className="text-xs mb-2 text-gray-200">{fullname}</div>
+                        <div
+                          dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
+                          className={cn("text-sm  ", isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white")}
+                        ></div>
+                        <div className={cn("text-[10px] mt-1 text-slate-400 text-right absolute top-full left-0")}>
+                          {dayjs(elm.date_created).format("HH:mm:ss")}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );

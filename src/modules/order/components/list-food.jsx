@@ -23,7 +23,7 @@ const ListFood = ({ onSelectFood }) => {
           <img className="w-40 mx-auto md:w-full" src="/book.png" alt="" />
         </div>
       )}
-      <div className={expand ? "md:w-5/5" : "w-4/5"}>
+      <div className={expand ? "md:w-5/5" : "w-full md:w-4/5"}>
         <div className="w-full flex flex-wrap gap-4 relative z-10">
           {listFood?.length === 0 && !isLoading && (
             <div className="rounded-2xl bg-pastel-pink/10 h-full w-full p-10">
