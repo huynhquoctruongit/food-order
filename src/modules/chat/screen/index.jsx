@@ -7,13 +7,14 @@ import { useOnClickOutside } from "usehooks-ts";
 import useMessage from "../helper/use-message";
 import { useSubscribe } from "@/hooks/use-connection";
 import { call } from "lodash/groupBy";
+import { cn } from "@/lib/utils";
 
 const ChatWiget = () => {
   const ref = useRef(null);
   const wrap = useRef(null);
   const { companyId } = useParams();
   const { messages, setMessages } = useMessage();
-  const [focus, setFocus] = useState(false);
+  const [show, setShow] = useState(false);
 
   const sendMessage = () => {
     AxiosClient.post("/items/message", {
@@ -41,47 +42,60 @@ const ChatWiget = () => {
 
   useEffect(() => {
     wrap.current.scrollTop = wrap.current.firstChild.clientHeight;
-  }, [messages]);
+  }, [messages,show]);
 
-  useOnClickOutside(ref, () => {
-    setFocus(false);
-  });
   return (
-    <div className="fixed bottom-0 right-10 w-96 h-[30rem] bg-white  border border-b-0 border-gray-400 rounded-b-none rounded-md flex flex-col">
-      <div className="flex items-center justify-between w-full border-gray-200 border-b p-4 ">
-        <h1 className="text-base">Tậm sự cơm trưa</h1>
-        <div className="p-l cursor-pointer">
-          <ChevronDown className="stroke-gray-500" />
+    <>
+      {!show && (
+        <div className="fixed bottom-10 right-10">
+          <div className=" rounded-full p-2 bg-white shadow-md relative" onClick={() => setShow(true)}>
+            <img src="/chat.png" className="w-8 h-8 object-contain" />
+            <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
+          </div>
         </div>
-      </div>
-      <div className="flex-1 relative">
-        <div className="absolute top-0 left-0 h-full w-full overflow-y-auto p-4 " ref={wrap}>
-          <div className="flex flex-col gap-4">
-            {messages.map((elm, index) => {
-              const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;
-              return (
-                <div className="flex flex-col items-end" key={elm.id}>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
-                    className="text-sm border border-dashed w-fit border-gray-300 rounded-md p-2  rounded-tr-2xl rounded-br-none"
-                  ></div>
-                  <div className="flex items-center justify-end gap-2 mt-2">
-                    <div className="text-xs text-gray-400">{fullname}</div>
-                    <img src="/avatar.png" className="w-6 h-6 aspect-square rounded-full" />
+      )}
+
+      <div
+        className={cn(
+          "fixed bottom-0 right-10 w-96 h-[30rem] bg-white  border border-b-0 border-gray-400 rounded-b-none rounded-md flex flex-col",
+          { hidden: !show },
+        )}
+      >
+        <div className="flex items-center justify-between w-full border-gray-200 border-b p-4 ">
+          <h1 className="text-base">Tậm sự cơm trưa</h1>
+          <div className="p-l cursor-pointer" onClick={() => setShow(false)}>
+            <ChevronDown className="stroke-gray-500" />
+          </div>
+        </div>
+        <div className="flex-1 relative">
+          <div className="absolute top-0 left-0 h-full w-full overflow-y-auto p-4 " ref={wrap}>
+            <div className="flex flex-col gap-4">
+              {messages.map((elm, index) => {
+                const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;
+                return (
+                  <div className="flex flex-col items-end" key={elm.id}>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
+                      className="text-sm border border-dashed w-fit border-gray-300 rounded-md p-2  rounded-tr-2xl rounded-br-none"
+                    ></div>
+                    <div className="flex items-center justify-end gap-2 mt-2">
+                      <div className="text-xs text-gray-400">{fullname}</div>
+                      <img src="/avatar.png" className="w-6 h-6 aspect-square rounded-full" />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="p-4 border-t border-gray-300 text-sm flex items-end">
+          <div ref={ref} contentEditable className="focus:outline-none flex-1 pr-2"></div>
+          <div className="cursor-pointer" onClick={sendMessage}>
+            <PaperAirplaneIcon className="w-5 h-5 -rotate-45" />
           </div>
         </div>
       </div>
-      <div className="p-4 border-t border-gray-300 text-sm flex items-end">
-        <div ref={ref} onClick={() => setFocus(true)} contentEditable className="focus:outline-none flex-1 pr-2"></div>
-        <div className="cursor-pointer" onClick={sendMessage}>
-          <PaperAirplaneIcon className="w-5 h-5 -rotate-45" />
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
