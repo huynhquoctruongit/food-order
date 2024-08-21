@@ -14,6 +14,7 @@ import { useOdersIsNotPaid } from "@/hooks/use-order";
 import AxiosClient from "@/lib/api/axios-client";
 import ModalRemind from "@/modules/order/components/remind";
 import EditCompany from "@/modules/order/screen/config";
+import ChatWiget from "@/modules/chat/screen";
 
 const GroupButtonHero = () => {
   const refMenu = useRef();
@@ -105,6 +106,7 @@ const Order = () => {
       </div>
       <OCRComponent />
       <ModalRemind />
+      <ChatWiget />
     </div>
   );
 };
