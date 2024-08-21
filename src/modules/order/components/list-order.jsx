@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { XIcon } from "lucide-react";
-import { useLocalStorage, useMediaQuery } from "usehooks-ts";
+import { useMediaQuery } from "usehooks-ts";
 import { enumFood } from "@/lib/utils";
 import groupBy from "lodash/groupBy";
 import { useAuth } from "@/hooks/use-auth";
@@ -42,9 +42,7 @@ const ListOrder = () => {
     const now = dayjs();
     const [hour_limit, minute_limit] = (company?.order_time_limit || "13:30:00").split(":");
     const time = now.hour(hour_limit).minute(minute_limit).second(0).millisecond(0).unix();
-
     const valid = dayjs().unix() < time;
-
     if (!valid) {
       toast({
         variant: "destructive",
@@ -53,7 +51,9 @@ const ListOrder = () => {
       });
       return;
     }
-
+    // AxiosClient.patch("/items/order/" + item.id, {
+    //   status: "draft",
+    // });
     connection.sendMessage({
       type: "items",
       collection: "order",
@@ -96,6 +96,8 @@ const ListOrder = () => {
                           {profile.id == elm.user.id && (
                             <div
                               onClick={() => {
+                                console.log("click");
+
                                 deleteFood(el);
                               }}
                               className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"
@@ -128,8 +130,7 @@ const ListOrder = () => {
                   </div>
                 </ItemTable>
                 <ItemTable className={options[4].className}>
-                  {elm.items.reduce((total, item) => total + parseInt(item.price), 0)}
-                  .000 vnd
+                  {elm.items.reduce((total, item) => total + parseInt(item.price), 0)} cá
                 </ItemTable>
               </div>
             );

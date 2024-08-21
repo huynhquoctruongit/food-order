@@ -1,10 +1,13 @@
+import { useAuth } from "@/hooks/use-auth";
 import Profile from "@/modules/info-user";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const { profile } = useAuth()
   const navigate = useNavigate();
   const onGoHome = () => {
-    navigate("/");
+    const link = `/company/${profile?.company}/provider/1`
+    profile ? navigate(link) : navigate("/");
   };
   return (
     <div className="bg-white">

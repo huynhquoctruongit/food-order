@@ -17,4 +17,27 @@ export const createImage = (id, width, placeholder) => {
 
 export const sleep = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export function scrollElementTo(element, targetPosition, duration = 1000) {
+  const start = element.scrollTop; // Vị trí hiện tại của phần tử
+  const startTime = "now" in window.performance ? performance.now() : new Date().getTime();
+  const distance = targetPosition - start;
+
+  function scroll() {
+    const currentTime = "now" in window.performance ? performance.now() : new Date().getTime();
+    const time = Math.min(1, (currentTime - startTime) / duration);
+
+    element.scrollTop = start + distance * easeInOutQuad(time);
+
+    if (time < 1) {
+      requestAnimationFrame(scroll);
+    }
+  }
+
+  function easeInOutQuad(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  }
+
+  scroll();
 }

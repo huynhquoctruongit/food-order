@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import useSWR from "swr";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -22,12 +22,9 @@ import { useCompany } from "@/hooks/use-company";
 const OCRComponent = () => {
   const { toast } = useToast();
   const refOder = useRef(null);
-
   const { company } = useCompany();
-  const { data } = useSWR("/users");
   const { mutate: mutateOrder } = useOrder();
   const { menu } = useMenuToday();
-  const dataUser = data?.data;
 
   const [selectFood, setFoodSelect] = useState([]);
   const [orderNote, setOrderNote] = useState("");
@@ -46,7 +43,7 @@ const OCRComponent = () => {
       description: (
         <span className="">
           <img className="w-5 h-5 shadow-button rounded-full inline mr-2" src="/menu2.png" alt="" />
-          Đã đặt cơm <span className="font-bold"> {fullname} </span>
+          Đã đặt cơm <span className="font-bold"> {data.name} </span>
         </span>
       ),
     });
@@ -102,17 +99,17 @@ const OCRComponent = () => {
     "update",
     "order",
     ["*,user_created.*"],
-    { bulk_food_provider: { _eq: providerId }, company: { _eq: companyId } },
+    { bulk_food_provider: { _eq: providerId }, company: { _eq: companyId }, status: { _eq: "draft" } },
+
     deleteCallback,
   );
 
   const onSelectFood = (elm) => {
     const now = dayjs();
-
     const [hour_limit, minute_limit] = (company?.order_time_limit || "13:30:00").split(":");
     const time = now.hour(hour_limit).minute(minute_limit).second(0).millisecond(0).unix();
     const valid = dayjs().unix() < time;
-    
+
     if (!valid) {
       toast({
         variant: "destructive",
@@ -122,13 +119,13 @@ const OCRComponent = () => {
       return;
     }
     setPopup(true);
-
     setFoodSelect(elm);
   };
 
   const onOrder = async (message) => {
     setPopup(!isPopup);
-    const price = false == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
+
+    const price = selectFood.type == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
     const params = {
       name: selectFood.name,
       price: price,
@@ -146,18 +143,13 @@ const OCRComponent = () => {
   };
 
   const listFood = menu.detail || [];
-  const bIds = [];
-  const userNonOrderd = dataUser?.filter((item) => !bIds?.includes(item.id));
 
   const getSelectRice = (e, item) => {
-    setOptionRice({
-      ...optionRice,
-      [item]: e,
-    });
+    setFoodSelect({ ...selectFood, type: e });
   };
 
   return (
-    <div className="py-[20px] text-black pb-10 md:pb-40" id="menu">
+    <div className="text-black pb-10 md:pb-40" id="menu">
       <ModalChoose
         {...{
           selectFood,
@@ -170,13 +162,13 @@ const OCRComponent = () => {
         }}
       />
       <div className="root-wrapper">
-        <div className="flex flex-wrap mt-10">
+        <div className="flex flex-wrap mt-20">
           <ListFood listFood={listFood} onSelectFood={onSelectFood} />
         </div>
         <div></div>
         <div className="mt-10 md:mt-20">
           <ListOrder />
-          <ListRemaining userNonOrderd={userNonOrderd} />
+          <ListRemaining />
           <div className="hidden md:block">
             <ListFinal order={refOder.current} />
           </div>
@@ -189,7 +181,6 @@ const OCRComponent = () => {
 export default OCRComponent;
 
 const ModalChoose = ({ selectFood, isPopup, getSelectRice, orderNote, setPopup, onOrder }) => {
-  let pattern = /^\d+[.,]?\s*/;
   const [text, setText] = useState("");
   return (
     <div className="text-left mt-[20px]">

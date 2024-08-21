@@ -21,7 +21,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { isNumber, totalRice } from "../helpers/index";
-import { CircleCheckBig, Circle } from "lucide-react"
+import { CircleCheckBig, Circle, Pin } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 
 const Report = () => {
@@ -101,13 +101,13 @@ const Report = () => {
                             name: value.name,
                             user: value.user,
                             price: value.price || 0,
-                            company : profile.company,
+                            company: profile.company,
                             date_created: value.date_created
                         }
                         const paramsRecipt = {
                             user_created: value.user,
                             amount: value.price || 0,
-                            company : profile.company,
+                            company: profile.company,
                             date_start: value.date_created
                         }
                         if (value.name == "recipt") {
@@ -201,10 +201,11 @@ const Report = () => {
                             </select>
                         </div>
                     </div>
-                    <div>
-                        <p>Tổng tiền cơm: {totalRice(groupedData)}k</p>
-                        <p>Tổng tiền nước: {totalWater(groupedData)}k</p>
-                        <p>Đã chuyển: {Math.ceil(reciptNumber)}k</p>
+                    <div className="bg-white p-4 relative border-dashed border-[1px] border-pastel-pink rounded-md mb-8 h-fit shadow-sm">
+                        <div className="absolute top-[-10px] left-0"><Pin color="#f6a094" /></div>
+                        <p className="text-[14px]">Tổng tiền cơm: <span className="font-bold">{totalRice(groupedData)} cá</span></p>
+                        <p className="text-[14px]">Tổng tiền nước: <span className="font-bold">{totalWater(groupedData)} cá</span></p>
+                        <p className="text-[14px]">Đã chuyển: <span className="font-bold">{Math.ceil(reciptNumber)} cá</span></p>
                     </div>
                 </div>
                 <Table>

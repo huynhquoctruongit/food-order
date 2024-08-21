@@ -17,16 +17,18 @@ const useCompanyManager = () => {
 
 export const useCompany = () => {
   const { companyId } = useParams();
-  const { data, error, isLoading } = useSWR("/items/company/" + companyId);
+  const payload = {
+    fields: ["*", "admin.id", "admin.last_name", "admin.first_name", "admin.qr_code_for_payment", "admin.email"],
+  };
+  const { data, error, isLoading, mutate } = useSWR(["/items/company/" + companyId, payload]);
   const company = data?.data;
-  return { company, isLoading, error };
+  return { company, isLoading, error, mutate };
 };
 
 export const useUserInCompany = () => {
   const { companyId } = useParams();
   const { data, error, isLoading } = useSWR("/users?filter[company][_eq]=" + companyId);
   const users = data?.data || [];
-
   return { users, isLoading, error };
 };
 

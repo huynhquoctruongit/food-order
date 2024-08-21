@@ -1,17 +1,24 @@
 import { Button } from "@/components/ui/button-hero";
 import { useAuth } from "@/hooks/use-auth";
-import useCompanyManager from "@/hooks/use-company";
+import useHistory from "@/hooks/use-order";
 import { createLinkOrder, enumFood } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const { company } = useCompanyManager();
-  const { isLogin, profile } = useAuth();
-  const { bulk_food_provider } = company || {};
+  const { lastOrder } = useHistory();
+  const { isLogin } = useAuth();
+  const [searchParams, _] = useSearchParams();
+  const callback = searchParams.get("callback");
+  const { company, bulk_food_provider } = lastOrder || {};
+  useEffect(() => {
+    if (isLogin === false || !callback) return;
+    navigate(callback);
+  }, [isLogin]);
 
   const onClick = () => {
-    navigate(createLinkOrder(company.id, bulk_food_provider));
+    navigate(createLinkOrder(company, bulk_food_provider));
   };
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-pastel-pink/40 flex items-center justify-center">
@@ -19,7 +26,7 @@ const MainPage = () => {
         <div>
           <img src="/not-found.png" className="w-60 mx-auto" alt="" />
         </div>
-        <div className="w-full md:w-96 text-xs md:text-base mx-auto mt-2 md:mt-10 text-center italic">
+        <div className="text-[#4e4e4e] w-full md:w-96 text-xs md:text-base mx-auto mt-2 md:mt-10 text-center italic">
           Chị Hồng đã dành nhiều thời gian để đặt đồ ăn trưa cho chúng mình ở công ty, lưu ý từng phần ăn, tổng hợp chi phí và
           theo dõi việc thanh toán cho mọi người. Tụi mình được tạo ra để hỗ trợ chị Hồng, giúp công việc này trở nên nhanh chóng
           và dễ dàng hơn.
@@ -36,10 +43,10 @@ const MainPage = () => {
             );
           })}
         </div>
-        {isLogin && profile.company && (
+        {isLogin && company && (
           <div className="text-center mt-10">
             <Button variant="default" size="default" onClick={onClick}>
-              ĐI TỚI TRANG ĐẶT MÓN
+              ĐẶT MÓN THÔI
             </Button>
           </div>
         )}
