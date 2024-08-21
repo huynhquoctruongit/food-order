@@ -18,7 +18,6 @@ import { connection } from "@/lib/directus";
 import useOrder from "../helper/use-menu";
 import useMenuToday from "@/hooks/use-menu";
 import { useCompany } from "@/hooks/use-company";
-import EditCompany from "./config";
 
 const OCRComponent = () => {
   const { toast } = useToast();
@@ -121,13 +120,13 @@ const OCRComponent = () => {
     }
 
     setPopup(true);
-
     setFoodSelect(elm);
   };
 
   const onOrder = async (message) => {
     setPopup(!isPopup);
-    const price = false == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
+
+    const price = selectFood.type == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
     const params = {
       name: selectFood.name,
       price: price,
@@ -145,13 +144,9 @@ const OCRComponent = () => {
   };
 
   const listFood = menu.detail || [];
-  const bIds = [];
 
   const getSelectRice = (e, item) => {
-    setOptionRice({
-      ...optionRice,
-      [item]: e,
-    });
+    setFoodSelect({ ...selectFood, type: e });
   };
 
   return (

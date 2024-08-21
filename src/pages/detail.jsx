@@ -16,6 +16,7 @@ import ModalRemind from "@/modules/order/components/remind";
 import EditCompany from "@/modules/order/screen/config";
 import ChatWiget from "@/modules/chat/screen";
 import MarqueeChat from "@/modules/chat/screen/real-chat";
+import useMessage from "@/modules/chat/helper/use-message";
 
 const GroupButtonHero = () => {
   const refMenu = useRef();
@@ -121,9 +122,11 @@ const Wrap = () => {
   const { data: company, isLoading: isLoadingCompany } = useSWR("/items/company/" + companyId);
   const { isLoading: isLoadingOrderHistory } = useOdersIsNotPaid();
   const { isLoading: isLoadingUseCompany } = useCompany();
+  const { isLoading: isLoadingMessage } = useMessage();
   const existProvider = provider?.data;
   const existCompany = company?.data;
-  if (isLoadingCompany || isLoadingProvider || isLoadingOrderHistory || isLoadingUseCompany) return <LoadingPage />;
+  if (isLoadingCompany || isLoadingProvider || isLoadingOrderHistory || isLoadingUseCompany || isLoadingMessage)
+    return <LoadingPage />;
   if (!existProvider || !existCompany)
     return (
       <div className="text-center h-screen flex items-center justify-center text-3xl">

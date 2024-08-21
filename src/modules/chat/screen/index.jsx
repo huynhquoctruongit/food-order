@@ -18,7 +18,9 @@ const ChatWiget = () => {
   const refLoading = useRef(null);
   const { companyId } = useParams();
   const { profile } = useAuth();
-  const { messages, setMessages } = useMessage();
+  const { messages, setMessages, isLoading } = useMessage();
+  console.log(isLoading);
+  
   const isMd = useMediaQuery("(min-width: 768px)");
   // const [show, setShow] = useState(isMd ? true : false);
   const [show, setShow] = useState(false);
@@ -80,6 +82,7 @@ const ChatWiget = () => {
         <div className="flex-1 relative">
           <div className="absolute top-0 left-0 h-full w-full overflow-y-auto p-4 " ref={wrap}>
             <div className="flex flex-col gap-4">
+              {messages.length === 0 && <div>Chưa có tin nhắn nào</div>}
               {messages.map((elm, index) => {
                 const isMe = elm.user_created?.id === profile.id;
                 const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;
@@ -90,13 +93,13 @@ const ChatWiget = () => {
                         <div className="relative group">
                           <img
                             src={createImage(elm.user_created.avatar, 300)}
-                            className="min-w-8 w-8 h-8 bg-slate-50 p-1 shadow-lg aspect-square rounded-full"
+                            className="min-w-10 w-10 h-10 bg-white p-1 border border-dashed border-gray-500 aspect-square rounded-full"
                           />
                         </div>
                       </div>
                       <div
                         className={cn(
-                          "relative w-fit border-gray-300 p-2 rounded-2xl rounded-tl-md" ,
+                          "relative w-fit border-gray-300 p-2 rounded-2xl rounded-tl-md",
                           isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white",
                         )}
                       >
