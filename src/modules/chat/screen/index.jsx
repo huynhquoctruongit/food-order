@@ -108,7 +108,7 @@ const ChatWiget = () => {
                           </div>
                           <img
                             src={createImage(elm.user_created.avatar, 300)}
-                            className="w-8 h-8 bg-slate-50 p-1 shadow-lg aspect-square rounded-full"
+                            className="min-w-8 w-8 h-8 bg-slate-50 p-1 shadow-lg aspect-square rounded-full"
                           />
                         </div>
                       </div>
