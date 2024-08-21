@@ -121,7 +121,6 @@ const OCRComponent = () => {
       });
       return;
     }
-
     setPopup(true);
 
     setFoodSelect(elm);

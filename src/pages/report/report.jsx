@@ -33,16 +33,14 @@ const Report = () => {
     const [userSelect, setSelectUser] = useState({})
     const dateCurrent = currentSelect?.[0] + "T05:00:00.000Z"
     const { profile } = useAuth()
-    console.log(profile.company, 'profile');
     const { data: orderToday, mutate: mutateOrder } = useSWR(currentSelect?.[0] && profile?.company &&
         `/items/order?fields=*,user_created.*&filter[status]=published&filter[company]=${profile.company}&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z&filter[price][_neq]=0`
     )
     const { data: reciptData, mutate: mutateRecipt } = useSWR(currentSelect?.[0] && profile?.company &&
         `/items/recipt?fields=*&filter[company]=${profile.company}&filter[date_start][_eq]=${dateCurrent}&filter[amount][_neq]=0`
-        // `/items/recipt?fields=*`
     )
     const orderMembers = orderToday?.data
-    const reciptList = reciptData?.data?.data
+    const reciptList = reciptData?.data
     const groupedData = orderMembers?.reduce((acc, { user_created, name, price, date_created, id, is_paid }) => {
         let group = acc.find(group => (group.user.id == user_created?.id || group.user.fullname === user_created?.first_name));
         if (!group) {
@@ -52,7 +50,7 @@ const Report = () => {
         group.items.push({ name: name, date_created: date_created, id: id, price: price, is_paid: is_paid });
         return acc;
     }, []);
-    const admin = userSelect?.fullname === "Hồng Phạm"
+    const admin = userSelect?.role?.name === "Administrator"
 
     const onUpdateOrder = (e, item, ortherList, date, type) => {
         var priceInput = e.target.value
@@ -85,7 +83,7 @@ const Report = () => {
         }
         debounceTimeout.current = setTimeout(() => {
             onSave()
-        }, 200);
+        }, 1000);
         return () => {
             clearTimeout(debounceTimeout.current);
         }
@@ -103,20 +101,22 @@ const Report = () => {
                             name: value.name,
                             user: value.user,
                             price: value.price || 0,
+                            company : profile.company,
                             date_created: value.date_created
                         }
                         const paramsRecipt = {
-                            user: value.user,
+                            user_created: value.user,
                             amount: value.price || 0,
+                            company : profile.company,
                             date_start: value.date_created
                         }
                         if (value.name == "recipt") {
-                            if (value.order_id) await AxiosAPI.patch("/items/recipt_84/" + value.order_id, paramsRecipt)
-                            else if (value.price) await AxiosAPI.post("/items/recipt_84", paramsRecipt)
+                            if (value.order_id) await AxiosAPI.patch("/items/recipt/" + value.order_id, paramsRecipt)
+                            else if (value.price) await AxiosAPI.post("/items/recipt", paramsRecipt)
                             mutateRecipt()
                         } else {
-                            if (value.order_id) await AxiosAPI.patch("/items/order_84/" + value.order_id, params)
-                            else if (value.price) await AxiosAPI.post("/items/order_84", params)
+                            if (value.order_id) await AxiosAPI.patch("/items/order/" + value.order_id, params)
+                            else if (value.price) await AxiosAPI.post("/items/order", params)
                             mutateOrder()
                         }
                     }
@@ -133,7 +133,7 @@ const Report = () => {
         const params = {
             is_paid: !isPay
         }
-        await AxiosAPI.patch("/items/order_84/" + dataItem.id, params)
+        await AxiosAPI.patch("/items/order/" + dataItem.id, params)
         mutateOrder()
     }
 
@@ -142,12 +142,11 @@ const Report = () => {
         orderUser?.items?.map((elm) => {
             total = total + elm.price * 1
         })
-        // type == "total-left" && reciptList?.map((elm) => {
-        //     if (orderUser.user.id == elm?.user?.id) {
-        //         total = total - elm?.amount * 1
-        //     }
-        // })
-        console.log(total,'total');
+        type == "total-left" && reciptList?.map((elm) => {
+            if (orderUser.user.id == elm?.user?.id) {
+                total = total - elm?.amount * 1
+            }
+        })
         return parseFloat(Math.ceil(total?.toFixed(1)));
     }
 
@@ -181,7 +180,6 @@ const Report = () => {
     // if (!reciptList) return
     const reciptNumber = reciptList?.reduce((acc, { amount }) => acc + parseFloat(amount), 0);
     const totalLeftNumber = totalNumber - reciptNumber
-
     return (
         <div className="bg-[url(/background.png)] bg-contain pt-[23px] pb-[100px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
             <div className="px-[20px] md:px-[40px]">
@@ -232,7 +230,7 @@ const Report = () => {
                         {groupedData?.map((userItem, index) => {
                             const date = dayjs(currentSelect[0] + "T12:00:00+07:00").format("YYYY-MM-DD")
                             const valueInput = userItem.user.id + "-" + date
-                            const recipt = reciptList?.find((elm) => elm?.user?.fullname === userItem?.user?.fullname && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
+                            const recipt = reciptList?.find((elm) => elm?.user_created === userItem?.user?.id && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
                             const valueRecipt = dataReport?.[valueInput]?.name === "recipt" && dataReport?.[valueInput]?.price || undefined
                             return (
                                 <TableRow className={`${index % 2 == 0 ? "bg-pastel-pink/30" : "bg-white"} hover:bg-unset`} key={userItem.user.id + date + "group"}>

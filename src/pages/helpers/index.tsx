@@ -15,7 +15,7 @@ export const totalRice = (data) => {
     return data.reduce((total, food) => {
         const foodTotal = food.items
             .filter(item => item.name !== "orther-food")
-            .reduce((sum, item) => sum + item.price, 0);
+            .reduce((sum, item) => sum + item.price * 1, 0);
 
         return total + foodTotal;
     }, 0);
@@ -25,7 +25,7 @@ export const totalWater = (data) => {
     return data.reduce((total, food) => {
         const foodTotal = food.items
             .filter(item => item.name === "orther-food")
-            .reduce((sum, item) => sum + item.price, 0);
+            .reduce((sum, item) => sum + item.price * 1, 0);
 
         return total + foodTotal;
     }, 0);
