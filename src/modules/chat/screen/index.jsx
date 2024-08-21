@@ -3,18 +3,21 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { ChevronDown, SendIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useOnClickOutside } from "usehooks-ts";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import useMessage from "../helper/use-message";
 import { useSubscribe } from "@/hooks/use-connection";
 import { call } from "lodash/groupBy";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 const ChatWiget = () => {
   const ref = useRef(null);
   const wrap = useRef(null);
   const { companyId } = useParams();
+  const { profile } = useAuth();
   const { messages, setMessages } = useMessage();
-  const [show, setShow] = useState(true);
+  const isMd = useMediaQuery("(min-width: 768px)");
+  const [show, setShow] = useState(isMd ? true : false);
 
   const sendMessage = () => {
     AxiosClient.post("/items/message", {
@@ -42,12 +45,12 @@ const ChatWiget = () => {
 
   useEffect(() => {
     wrap.current.scrollTop = wrap.current.firstChild.clientHeight;
-  }, [messages,show]);
+  }, [messages, show]);
 
   return (
     <>
       {!show && (
-        <div className="fixed bottom-10 right-10">
+        <div className="fixed bottom-4 md:bottom-10 right-4 md:right-10">
           <div className=" rounded-full p-2 bg-white shadow-md relative" onClick={() => setShow(true)}>
             <img src="/chat.png" className="w-8 h-8 object-contain" />
             <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
@@ -57,7 +60,7 @@ const ChatWiget = () => {
 
       <div
         className={cn(
-          "fixed bottom-0 right-10 w-96 h-[30rem] bg-white  border border-b-0 border-gray-400 rounded-b-none rounded-md flex flex-col",
+          "fixed bottom-0 right-0 md:right-10 w-full md:w-96 h-[30rem] bg-white  border border-b-0 border-gray-400 rounded-b-none rounded-md flex flex-col",
           { hidden: !show },
         )}
       >
@@ -71,12 +74,16 @@ const ChatWiget = () => {
           <div className="absolute top-0 left-0 h-full w-full overflow-y-auto p-4 " ref={wrap}>
             <div className="flex flex-col gap-4">
               {messages.map((elm, index) => {
+                const isMe = elm.user_created?.id === profile.id;
                 const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;
                 return (
-                  <div className="flex flex-col items-end" key={elm.id}>
+                  <div className={cn("flex flex-col ", !isMe ? "items-start" : "items-end")} key={elm.id}>
                     <div
                       dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
-                      className="text-sm border border-dashed w-fit border-gray-300 rounded-md p-2  rounded-tr-2xl rounded-br-none"
+                      className={cn(
+                        "text-sm  w-fit border-gray-300 rounded-md p-2  rounded-tr-2xl rounded-br-none",
+                        isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white",
+                      )}
                     ></div>
                     <div className="flex items-center justify-end gap-2 mt-2">
                       <div className="text-xs text-gray-400">{fullname}</div>
