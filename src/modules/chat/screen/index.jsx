@@ -20,7 +20,7 @@ const ChatWiget = () => {
   const { profile } = useAuth();
   const { messages, setMessages, isLoading } = useMessage();
   console.log(isLoading);
-  
+
   const isMd = useMediaQuery("(min-width: 768px)");
   // const [show, setShow] = useState(isMd ? true : false);
   const [show, setShow] = useState(false);
@@ -46,7 +46,7 @@ const ChatWiget = () => {
     ref.current.addEventListener("keydown", (e) => {
       if (e.ctrlKey === false && e.shiftKey === false && e.metaKey === false && e.key === "Enter") {
         e.preventDefault();
-        if (ref.current.innerHTML.trim() === "") return;
+        if (!ref.current.innerHTML.trim()) return;
         sendMessage();
       }
     });
@@ -105,7 +105,7 @@ const ChatWiget = () => {
                       >
                         <div className="text-xs mb-2 text-gray-200">{fullname}</div>
                         <div
-                          dangerouslySetInnerHTML={{ __html: elm.message || "tin nhắn rổng" }}
+                          dangerouslySetInnerHTML={{ __html: elm.message }}
                           className={cn("text-sm  ", isMe ? "bg-primary-01 text-white" : "bg-secondary-01 text-white")}
                         ></div>
                         <div className={cn("text-[10px] mt-1 text-slate-400 text-right absolute top-full left-0")}>
