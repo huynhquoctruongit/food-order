@@ -25,19 +25,19 @@ const GroupButtonHero = () => {
     menu.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <div className="flex flex-col md:flex-row items-center gap-6 mt-6 md:mt-16">
-      <Button variant="default" size="default" onClick={onScroll}>
+    <div className="flex flex-col flex-wrap md:flex-row items-center gap-6 mt-6 md:mt-16">
+      <Button className="whitespace-nowrap" variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
       <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
-        <span className="flex items-center gap-2 ">
+        <span className="flex items-center gap-2 whitespace-nowrap">
         <SquaresPlusIcon className="w-4 h-4" /> Thêm menu 
         </span>
       </Button>
       <CreateMenu refMenu={refMenu} />
       <SplitButton />
       <Link to="/report?week=this_week" className="text-[#218d7f] hover:text-[#34756c]">
-        <Button variant="outline" size="default" className="flex items-center gap-2 border-[1px] border-[#188E7E]">
+        <Button variant="outline" size="default" className="flex whitespace-nowrap items-center gap-2 border-[1px] border-[#188E7E]">
           <PresentationChartBarIcon className="w-4 h-4" />
           Báo cáo
         </Button>
