@@ -31,13 +31,16 @@ const GroupButtonHero = () => {
       </Button>
       <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
         <span className="flex items-center gap-2 whitespace-nowrap">
-        <SquaresPlusIcon className="w-4 h-4" /> Thêm menu 
+          <SquaresPlusIcon className="w-4 h-4" /> Thêm menu
         </span>
       </Button>
       <CreateMenu refMenu={refMenu} />
-      <SplitButton />
       <Link to="/report?week=this_week" className="text-[#218d7f] hover:text-[#34756c]">
-        <Button variant="outline" size="default" className="flex whitespace-nowrap items-center gap-2 border-[1px] border-[#188E7E]">
+        <Button
+          variant="outline"
+          size="default"
+          className="flex whitespace-nowrap items-center gap-2 border-[1px] border-[#188E7E]"
+        >
           <PresentationChartBarIcon className="w-4 h-4" />
           Báo cáo
         </Button>

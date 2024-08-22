@@ -183,7 +183,6 @@ export const SplitButton = () => {
   const { profile } = useAuth();
   const [split, setSplit] = useState(false);
   const { company } = useCompany();
-  console.log(company);
   const admin = company?.admin || {};
 
   const { mutate } = useOrder();
@@ -204,6 +203,7 @@ export const SplitButton = () => {
     success("Chia tiền thành công"), setIsLoading(false);
     setSplit(false);
   };
+  if (!profile.permission_to_create_menu) return null;
   return (
     <>
       {(profile.uuid === admin.uuid || profile.permission_to_create_menu) && (

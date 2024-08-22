@@ -10,21 +10,19 @@ import { useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AxiosClient from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
+import { SplitButton } from "./create-menu";
 
 const EditCompany = () => {
   const [openConfig, setOpenConfig] = useState(false);
   const { profile } = useAuth();
   const { company, isLoading } = useCompany();
-  console.log(isLoading);
 
-  if (profile.id !== company.admin?.id || isLoading) return;
+  if ((profile.id !== company.admin?.id && !profile.permission_to_create_menu) || isLoading) return;
   return (
     <>
       <div className="bg-pastel-pink/40 ">
         <div className="root-wrapper py-4 flex justify-end gap-4">
-          {/* <div className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm">
-          <TablePropertiesIcon className="stroke-slate-500" />
-        </div> */}
+          <SplitButton />
           <div
             className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm"
             onClick={() => setOpenConfig(true)}
