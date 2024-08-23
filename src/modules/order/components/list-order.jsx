@@ -92,12 +92,10 @@ const ListOrder = () => {
                     {elm.items.map((el, index) => {
                       return (
                         <div key={el.name + index + "name"} className="flex items-center">
-                          <span className="mr-3"> -{el.name} </span>
+                          <span className="mr-3"> - {el.name} </span>
                           {profile.id == elm.user.id && (
                             <div
                               onClick={() => {
-                                console.log("click");
-
                                 deleteFood(el);
                               }}
                               className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"

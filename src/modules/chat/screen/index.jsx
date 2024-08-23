@@ -1,11 +1,11 @@
 import AxiosClient from "@/lib/api/axios-client";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { ChevronDown, SendIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { act, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import useMessage from "../helper/use-message";
-import { useSubscribe } from "@/hooks/use-connection";
+import useConnection, { useSubscribe } from "@/hooks/use-connection";
 import { call } from "lodash/groupBy";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
@@ -19,7 +19,10 @@ const ChatWiget = () => {
   const { companyId } = useParams();
   const { profile } = useAuth();
   const { messages, setMessages, isLoading } = useMessage();
-  console.log(isLoading);
+  const init = useRef();
+  const { connection, status } = useConnection();
+  const [idActivity, setIdActivity] = useState(null);
+  const prevent = useRef(false);
 
   const isMd = useMediaQuery("(min-width: 768px)");
   // const [show, setShow] = useState(isMd ? true : false);
@@ -28,19 +31,32 @@ const ChatWiget = () => {
   const sendMessage = async () => {
     if (refLoading.current) return;
     refLoading.current = true;
+    ref.current.innerHTML = "";
     await AxiosClient.post("/items/message", {
       message: ref.current.innerHTML,
       company: companyId,
     });
     refLoading.current = false;
-    ref.current.innerHTML = "";
   };
   const callback = useRef(null);
   callback.current = (message) => {
     if (message.event !== "create") return;
     setMessages(message.data[0]);
   };
+
   useSubscribe("create", "message", ["*,user_created.*"], { company: { _eq: companyId } }, callback);
+
+  const typing = useRef(null);
+
+  typing.current = (message) => {
+    // if (message.event !== "create" && message.event !== "delete") return;
+    console.log(message);
+
+    if (message.event === "create") setIdActivity(message.data[0]);
+    if (message.event === "delete") setIdActivity(null);
+  };
+
+  useSubscribe("create", "activity_user", ["*,user_created.*"], { company: companyId, name: "typing" }, typing);
 
   useEffect(() => {
     ref.current.addEventListener("keydown", (e) => {
@@ -51,10 +67,55 @@ const ChatWiget = () => {
       }
     });
   }, []);
+  useLayoutEffect(() => {
+    if ((messages && messages.length === 0) || init.current || !show) return;
+    init.current = true;
+    wrap.current.scrollTo({
+      top: wrap.current.firstChild.clientHeight,
+    });
+  }, [messages, show]);
 
   useEffect(() => {
-    wrap.current.scrollTop = wrap.current.firstChild.clientHeight;
-  }, [messages, show]);
+    wrap.current.scrollTo({
+      top: wrap.current.firstChild.clientHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  const createType = () => {
+    if (prevent.current) return;
+    prevent.current = true;
+    connection.sendMessage({
+      type: "items",
+      collection: "activity_user",
+      action: "create",
+      data: { name: "typing", company: companyId },
+    });
+  };
+  const deleteType = (id) => {
+    if (!id) return;
+    console.log("delte");
+
+    prevent.current = false;
+    connection.sendMessage({
+      type: "items",
+      collection: "activity_user",
+      action: "delete",
+      id: id,
+    });
+  };
+
+  const onChange = () => {
+    console.log(ref.current.innerHTML.trim());
+    
+    if (ref.current.innerHTML.trim()) {
+      createType();
+    } else {
+      console.log('kạdkjskd',idActivity);
+      
+      deleteType(idActivity.id);
+    }
+  };
 
   return (
     <>
@@ -74,13 +135,13 @@ const ChatWiget = () => {
         )}
       >
         <div className="flex items-center justify-between w-full border-pastel-pink border-b p-4 ">
-          <h1 className="text-base">Tậm sự cơm trưa</h1>
+          <h1 className="text-base">Tâm sự cơm trưa</h1>
           <div className="p-l cursor-pointer" onClick={() => setShow(false)}>
             <ChevronDown className="stroke-gray-500" />
           </div>
         </div>
         <div className="flex-1 relative">
-          <div className="absolute top-0 left-0 h-full w-full overflow-y-auto p-4 " ref={wrap}>
+          <div className="absolute top-0 left-0 h-full w-full overflow-y-auto p-4" ref={wrap}>
             <div className="flex flex-col gap-4">
               {messages.length === 0 && <div>Chưa có tin nhắn nào</div>}
               {messages.map((elm, index) => {
@@ -116,11 +177,12 @@ const ChatWiget = () => {
                   </div>
                 );
               })}
+              {idActivity && <div> {idActivity.user_created.first_name} Typing...</div>}
             </div>
           </div>
         </div>
         <div className="p-4 border-t border-gray-300 text-sm flex items-end">
-          <div ref={ref} contentEditable className="focus:outline-none flex-1 pr-2"></div>
+          <div ref={ref} contentEditable onInput={onChange} className="focus:outline-none flex-1 pr-2"></div>
           <div className="cursor-pointer" onClick={sendMessage}>
             <PaperAirplaneIcon className="w-5 h-5 -rotate-45" />
           </div>
