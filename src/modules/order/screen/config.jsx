@@ -18,12 +18,12 @@ const EditCompany = () => {
   const { profile } = useAuth();
   const { company, isLoading } = useCompany();
 
-  if ((profile.id !== company.admin?.id && !profile.permission_to_create_menu) || isLoading) return;
+  if (isLoading) return;
   return (
     <>
       <div className="bg-pastel-pink/40 ">
         <div className="root-wrapper py-4 flex justify-end gap-4">
-          <SplitButton />
+
           <Link to="/report?week=this_week" className="text-[#218d7f] hover:text-[#34756c]">
             <Button
               variant="outline"
@@ -34,13 +34,15 @@ const EditCompany = () => {
               Báo cáo
             </Button>
           </Link>
-
-          <div
-            className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm"
-            onClick={() => setOpenConfig(true)}
-          >
-            <Settings className="stroke-slate-500" />
-          </div>
+          {(profile.id === company.admin?.id || profile.permission_to_create_menu) && <div className="flex items-center gap-2">
+            <SplitButton />
+            <div
+              className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm"
+              onClick={() => setOpenConfig(true)}
+            >
+              <Settings className="stroke-slate-500" />
+            </div>
+          </div>}
         </div>
       </div>
       <ConFig open={openConfig} onOpenChange={setOpenConfig} />
