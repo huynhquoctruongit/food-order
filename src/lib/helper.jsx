@@ -2,8 +2,8 @@ import { cms } from "./config";
 
 export function getHostname() {
   const href = location.hostname;
-  if (href.indexOf("youpass") > -1) {
-    return ".vercel.vn";
+  if (href.indexOf("nuocxechieuta") > -1) {
+    return "nuocxechieuta.toidot.com";
   } else {
     return "localhost";
   }
