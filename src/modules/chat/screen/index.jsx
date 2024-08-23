@@ -46,17 +46,17 @@ const ChatWiget = () => {
 
   useSubscribe("create", "message", ["*,user_created.*"], { company: { _eq: companyId } }, callback);
 
-  const typing = useRef(null);
+  // const typing = useRef(null);
 
-  typing.current = (message) => {
+  // typing.current = (message) => {
     // if (message.event !== "create" && message.event !== "delete") return;
-    console.log(message);
+    // console.log(message);
 
-    if (message.event === "create") setIdActivity(message.data[0]);
-    if (message.event === "delete") setIdActivity(null);
-  };
+    // if (message.event === "create") setIdActivity(message.data[0]);
+    // if (message.event === "delete") setIdActivity(null);
+  // };
 
-  useSubscribe("create", "activity_user", ["*,user_created.*"], { company: companyId, name: "typing" }, typing);
+  // useSubscribe("create", "activity_user", ["*,user_created.*"], { company: companyId, name: "typing" }, typing);
 
   useEffect(() => {
     ref.current.addEventListener("keydown", (e) => {
@@ -106,15 +106,15 @@ const ChatWiget = () => {
   };
 
   const onChange = () => {
-    console.log(ref.current.innerHTML.trim());
+    // console.log(ref.current.innerHTML.trim());
     
-    if (ref.current.innerHTML.trim()) {
-      createType();
-    } else {
-      console.log('kạdkjskd',idActivity);
+    // if (ref.current.innerHTML.trim()) {
+    //   createType();
+    // } else {
+    //   console.log('kạdkjskd',idActivity);
       
-      deleteType(idActivity.id);
-    }
+    //   deleteType(idActivity.id);
+    // }
   };
 
   return (
