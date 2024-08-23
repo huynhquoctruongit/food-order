@@ -31,9 +31,10 @@ const ChatWiget = () => {
   const sendMessage = async () => {
     if (refLoading.current) return;
     refLoading.current = true;
+    const message = ref.current.innerHTML;
     ref.current.innerHTML = "";
     await AxiosClient.post("/items/message", {
-      message: ref.current.innerHTML,
+      message: message,
       company: companyId,
     });
     refLoading.current = false;
@@ -49,11 +50,11 @@ const ChatWiget = () => {
   // const typing = useRef(null);
 
   // typing.current = (message) => {
-    // if (message.event !== "create" && message.event !== "delete") return;
-    // console.log(message);
+  // if (message.event !== "create" && message.event !== "delete") return;
+  // console.log(message);
 
-    // if (message.event === "create") setIdActivity(message.data[0]);
-    // if (message.event === "delete") setIdActivity(null);
+  // if (message.event === "create") setIdActivity(message.data[0]);
+  // if (message.event === "delete") setIdActivity(null);
   // };
 
   // useSubscribe("create", "activity_user", ["*,user_created.*"], { company: companyId, name: "typing" }, typing);
@@ -107,12 +108,10 @@ const ChatWiget = () => {
 
   const onChange = () => {
     // console.log(ref.current.innerHTML.trim());
-    
     // if (ref.current.innerHTML.trim()) {
     //   createType();
     // } else {
     //   console.log('kạdkjskd',idActivity);
-      
     //   deleteType(idActivity.id);
     // }
   };
