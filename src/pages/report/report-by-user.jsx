@@ -3,7 +3,6 @@ import {
     Table,
     TableBody,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -25,20 +24,19 @@ import { CircleCheckBig, Circle, Pin } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { fullName } from "@/lib/helper"
 
-const Report = () => {
+const ReportByUser = () => {
     dayjs.extend(isoWeek);
     let urlParams = new URLSearchParams(window.location.search);
     const weekUrl = urlParams.get("week")
     const [dataReport, setDataReport] = useState()
     const [currentSelect, setCurrentSelect] = useState()
-    const [userSelect, setSelectUser] = useState({})
     const dateCurrent = currentSelect?.[0] + "T05:00:00.000Z"
     const { profile } = useAuth()
     const { data: orderToday, mutate: mutateOrder } = useSWR(currentSelect?.[0] && profile?.company &&
-        `/items/order?fields=*,user_created.*&filter[status]=published&filter[company]=${profile.company}&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z&filter[price][_neq]=0`
+        `/items/order?fields=*,user_created.*&filter[status]=published&filter[company]=${profile.company}&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z&filter[price][_neq]=0&filter[user_created][id]=${profile?.id}`
     )
     const { data: reciptData, mutate: mutateRecipt } = useSWR(currentSelect?.[0] && profile?.company &&
-        `/items/recipt?fields=*&filter[company]=${profile.company}&filter[date_start][_eq]=${dateCurrent}&filter[amount][_neq]=0`
+        `/items/recipt?fields=*&filter[company]=${profile.company}&filter[date_start][_eq]=${dateCurrent}&filter[amount][_neq]=0&filter[user_created]=${profile?.id}`
     )
     const orderMembers = orderToday?.data
     const reciptList = reciptData?.data
@@ -70,12 +68,7 @@ const Report = () => {
             [item.user.id + "-" + date]: params
         })
     }
-    useEffect(() => {
-        const userLocal = localStorage.getItem("user")
-        if (userLocal) {
-            setSelectUser(JSON.parse(userLocal))
-        }
-    }, [])
+
     const debounceTimeout = useRef()
     useEffect(() => {
         if (debounceTimeout.current) {
@@ -173,20 +166,15 @@ const Report = () => {
         setCurrentSelect(weekList[weekUrl])
     }, [weekUrl])
 
-    var totalNumber = groupedData?.reduce((total, { items }) =>
-        total + items.reduce((sum, { date_created, price, name }) =>
-            sum + (price ? price * 1 : 0), 0), 0);
-
-    // if (!reciptList) return
+    if (!reciptList) return
     const reciptNumber = reciptList?.reduce((acc, { amount }) => acc + parseFloat(amount), 0);
-    const totalLeftNumber = totalNumber - reciptNumber
     return (
         <div className="bg-[url(/background.png)] bg-contain pt-[23px] pb-[100px] bg-white text-gray-600 min-h-[calc(100vh-64px)]">
             <div className="px-[20px] md:px-[40px]">
                 <div className="flex justify-between">
                     <div>
                         <div className="flex justify-between items-center my-[20px]">
-                            <h1 className="text-[20px] md:text-3xl font-bold text-gray-600 text-center">Báo cáo</h1>
+                            <h1 className="text-[20px] md:text-2xl font-bold text-gray-600 text-center">Thống kê của <span className="text-[#FA9382]">{fullName(profile)}</span></h1>
                         </div>
                         <div className="flex justify-start mb-10">
                             <select defaultValue={weekUrl} onChange={(e) => selectWeek(e)} className="rounded-md p-[10px] bg-pastel-pink text-gray-600 border-[1px] border-pastel-pink">
@@ -229,7 +217,6 @@ const Report = () => {
                     </TableHeader>
                     <TableBody className="border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
                         {groupedData?.map((userItem, index) => {
-                            console.log(userItem,'userItem');
                             const date = dayjs(currentSelect[0] + "T12:00:00+07:00").format("YYYY-MM-DD")
                             const valueInput = userItem.user.id + "-" + date
                             const recipt = reciptList?.find((elm) => elm?.user_created === userItem?.user?.id && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
@@ -278,7 +265,6 @@ const Report = () => {
                                         <input disabled={!isAdmin} className={`rounded-md p-[6px] w-[100%] text-center bg-transparent text-gray-600 ${isAdmin && "border-[1px] border-pastel-pink"}`}
                                             defaultValue={formattedAmount(recipt?.amount) || ""}
                                             value={valueRecipt}
-                                            // onKeyUp={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
                                             onChange={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
                                         ></input>
                                     </TableCell>
@@ -287,33 +273,21 @@ const Report = () => {
                             )
                         })}
                     </TableBody>
-                    <TableFooter>
-                        <TableRow className="bg-pastel-pink hover:bg-pastel-pink">
-                            <TableCell className="font-bold text-left">Tổng</TableCell>
-                            {currentSelect?.map((elm, index) => {
-                                const totalPrice = groupedData?.reduce((total, { items }) =>
-                                    total + items?.reduce((sum, { date_created, price, name }) =>
-                                        sum + (date_created.startsWith(elm) && price && name !== "orther-food" ? price * 1 : 0), 0), 0);
-                                const totalOther = groupedData?.reduce((total, { items }) =>
-                                    total + items?.reduce((sum, { date_created, price, name }) =>
-                                        sum + (date_created.startsWith(elm) && price && name === "orther-food" ? price * 1 : 0), 0), 0);
-                                return (
-                                    <TableCell className="text-left p-2">
-                                        <input className="w-[50%] text-center bg-transparent font-bold" disabled value={totalPrice}></input>
-                                        <input className="w-[50%] text-center bg-transparent font-bold" disabled value={totalOther}></input>
-                                    </TableCell>
-                                )
-                            })}
-                            <TableCell className="text-right p-2 font-bold">{totalNumber}</TableCell>
-                            <TableCell className="p-2 text-center font-bold">{Math.ceil(reciptNumber)}</TableCell>
-                            <TableCell className="text-right p-2 font-bold">{totalLeftNumber}k</TableCell>
-                        </TableRow>
-                    </TableFooter>
+
                 </Table>
             </div>
-
-        </div >
+            {/* <div className="px-[20px] flex gap-[20px] flex-wrap md:px-[40px] mt-20 max-w-[1000px] mx-auto">
+                <div className="w-full flex gap-[20px]">
+                    <div className="w-4/12 h-[50px] bg-white border-[1px] border-pastel-pink rounded-md flex items-center justify-center">123</div>
+                    <div className="w-5/12 h-[50px] bg-white border-[1px] border-pastel-pink rounded-md flex items-center justify-center">123</div>
+                    <div className="w-3/12 h-[50px] bg-white border-[1px] border-pastel-pink rounded-md flex items-center justify-center">123</div>
+                </div>
+                <div className="w-6/12 h-[50px] bg-white border-[1px] border-pastel-pink rounded-md flex items-center justify-center">123</div>
+                <div className="w-6/12 h-[50px] bg-white border-[1px] border-pastel-pink rounded-md flex items-center justify-center">123</div>
+                <div className="w-full h-[50px] bg-white border-[1px] border-pastel-pink rounded-md flex items-center justify-center">123</div>
+            </div> */}
+        </div>
 
     )
 }
-export default Report
+export default ReportByUser

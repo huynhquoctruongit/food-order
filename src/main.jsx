@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SWRConfig } from "swr";
 import { fetcherClient } from "@/lib/api/axios-client";
-import Report from "@/pages/report/report";
+import Report from "@/pages/report/index";
 import { Toaster } from "@/components/ui/toaster";
 import Order from "./pages/detail";
 import dayjs from "dayjs";
