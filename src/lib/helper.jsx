@@ -41,3 +41,10 @@ export function scrollElementTo(element, targetPosition, duration = 1000) {
 
   scroll();
 }
+export function fullName(item) {
+  if (item?.fullname) {
+    return item?.fullname;
+  } else {
+    return (item?.first_name || "") + " " + (item?.last_name || "");
+  }
+}

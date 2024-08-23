@@ -23,6 +23,7 @@ import {
 import { isNumber, totalRice } from "../helpers/index";
 import { CircleCheckBig, Circle, Pin } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { fullName } from "@/lib/helper"
 
 const Report = () => {
     dayjs.extend(isoWeek);
@@ -42,16 +43,15 @@ const Report = () => {
     const orderMembers = orderToday?.data
     const reciptList = reciptData?.data
     const groupedData = orderMembers?.reduce((acc, { user_created, name, price, date_created, id, is_paid }) => {
-        let group = acc.find(group => (group.user.id == user_created?.id || group.user.fullname === user_created?.first_name));
+        let group = acc.find(group => (group.user.id == user_created?.id || fullName(group.user) === fullName(user_created)));
         if (!group) {
-            group = { user: { id: user_created?.id, fullname: user_created?.first_name }, items: [] };
+            group = { user: { id: user_created?.id, fullname: fullName(user_created) }, items: [] };
             acc.push(group);
         }
         group.items.push({ name: name, date_created: date_created, id: id, price: price, is_paid: is_paid });
         return acc;
     }, []);
-    const admin = userSelect?.role?.name === "Administrator"
-
+    const isAdmin = profile?.permission_to_update_report
     const onUpdateOrder = (e, item, ortherList, date, type) => {
         var priceInput = e.target.value
         if (e.key === 'Enter' || e.keyCode === 13) {
@@ -127,7 +127,7 @@ const Report = () => {
 
     }
     const onPay = async (date, user, item) => {
-        if (!item || !admin) return
+        if (!item || !isAdmin) return
         const dataItem = item?.id ? item : item[0]
         const isPay = dataItem.is_paid ? true : false
         const params = {
@@ -229,13 +229,14 @@ const Report = () => {
                     </TableHeader>
                     <TableBody className="border-l-[1px] border-l-pastel-pink border-r-[1px] border-r-pastel-pink">
                         {groupedData?.map((userItem, index) => {
+                            console.log(userItem,'userItem');
                             const date = dayjs(currentSelect[0] + "T12:00:00+07:00").format("YYYY-MM-DD")
                             const valueInput = userItem.user.id + "-" + date
                             const recipt = reciptList?.find((elm) => elm?.user_created === userItem?.user?.id && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
                             const valueRecipt = dataReport?.[valueInput]?.name === "recipt" && dataReport?.[valueInput]?.price || undefined
                             return (
                                 <TableRow className={`${index % 2 == 0 ? "bg-pastel-pink/30" : "bg-white"} hover:bg-unset`} key={userItem.user.id + date + "group"}>
-                                    <TableCell className="font-medium text-left p-2 flex items-center"><div className="p-[6px] text-[13px] line-clamp-2">{userItem.user.fullname}</div></TableCell>
+                                    <TableCell className="font-medium text-left p-2 flex items-center"><div className="p-[6px] text-[13px] line-clamp-2">{fullName(userItem.user)}</div></TableCell>
                                     {currentSelect?.map((elm, index) => {
                                         const ortherList = userItem?.items?.find((ortherItem) => ortherItem.name === "orther-food" && dayjs(ortherItem.date_created).format("YYYY-MM-DD") == elm)
                                         const riceList = userItem?.items?.filter((riceItem) => riceItem.name !== "orther-food" && dayjs(riceItem.date_created).format("YYYY-MM-DD") == elm)
@@ -252,7 +253,7 @@ const Report = () => {
                                                             {riceList?.length &&
                                                                 <div className="flex items-center"><input key={userItem.user.id + date + index + "-elm-input1"} disabled className="w-[50%] rounded-md p-[6px] text-center bg-transparent text-gray-600 select-none" value={finalPrice}></input>
                                                                     <div onClick={() => onPay(date, userItem, riceList)}>
-                                                                        {riceList?.[0].is_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (admin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)}
+                                                                        {riceList?.[0].is_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (isAdmin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)}
                                                                     </div></div> || ""}
                                                         </TooltipTrigger>
                                                         <TooltipContent className="bg-white">
@@ -263,9 +264,9 @@ const Report = () => {
                                                     </Tooltip>
 
                                                     <div className="flex items-center gap-2 justify-center">
-                                                        <input id={date} key={userItem.user.id + date + index + "-elm-input2"} disabled={!admin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? (ortherList?.price == 0 ? "" : ortherList?.price) : ""} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
+                                                        <input id={date} key={userItem.user.id + date + index + "-elm-input2"} disabled={!isAdmin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${isAdmin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? (ortherList?.price == 0 ? "" : ortherList?.price) : ""} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
                                                         <div onClick={() => onPay(date, userItem, ortherList)}>
-                                                            {ortherList && (ortherList?.is_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (admin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)) || <div className="w-5"></div>}
+                                                            {ortherList && (ortherList?.is_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (isAdmin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)) || <div className="w-5"></div>}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -274,7 +275,7 @@ const Report = () => {
                                     })}
                                     <TableCell className="text-right p-2">{getMount(userItem, 'total')}</TableCell>
                                     <TableCell className="text-left p-2">
-                                        <input disabled={!admin} className={`rounded-md p-[6px] w-[100%] text-center bg-transparent text-gray-600 ${admin && "border-[1px] border-pastel-pink"}`}
+                                        <input disabled={!isAdmin} className={`rounded-md p-[6px] w-[100%] text-center bg-transparent text-gray-600 ${isAdmin && "border-[1px] border-pastel-pink"}`}
                                             defaultValue={formattedAmount(recipt?.amount) || ""}
                                             value={valueRecipt}
                                             // onKeyUp={(e) => onUpdateOrder(e, userItem, recipt, currentSelect[0], "recipt")}
