@@ -31,7 +31,7 @@ const MainApp = () => {
         <BrowserRouter>
           <div className="text-primary bg-[url(/background.png)] bg-contain text-left overflow-hidden min-h-[100vh] flex flex-col">
             <Header />
-            <div className="bg-white/40 flex-1 relative">
+            <div className="bg-white/40 flex-1 relative text-gray-700">
               <Routes>
                 <Route element={<Order />} path="/company/:companyId/provider/:providerId" />
                 <Route element={<Report />} path="/report" />
