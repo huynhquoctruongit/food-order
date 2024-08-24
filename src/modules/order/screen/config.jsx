@@ -150,7 +150,9 @@ const ConFig = ({ open, onOpenChange }) => {
           </div>
         </div>
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div></div>
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="items-center flex gap-4">
+            Hủy
+          </Button>
           <Button disabled={isLoading} onClick={onSubmit} className="items-center flex gap-4">
             {isLoading ? "Đang cập nhật" : "Cập nhật"}
           </Button>

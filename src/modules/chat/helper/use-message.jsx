@@ -13,12 +13,8 @@ const useMessage = () => {
   };
   const { data, loading, isLoading, mutate } = useSWR(["/items/message", payload]);
   const setMessages = (message) => {
-    console.log(message);
     const newData = { ...data };
-
     newData.data = [...newData.data, message];
-    console.log(newData);
-
     mutate(newData, { revalidate: false });
   };
   const messages = data?.data || [];
