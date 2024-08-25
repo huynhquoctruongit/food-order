@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import useSWR from "swr";
 
-const useHistory = () => {
+const useHistory = (limit = 10, page = 1) => {
   const payload = {
     filter: {
       user_created: "$CURRENT_USER",
+      status: "published",
     },
-    limit: 10,
+    limit: limit,
+    page: page,
   };
   const { data, error, isLoading } = useSWR(["/items/order", payload]);
   const history = data?.data || [];

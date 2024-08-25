@@ -1,12 +1,10 @@
-import { useAuth } from "@/hooks/use-auth"
-import ReportByAdmin from "./report-by-admin"
-import ReportByUser from "./report-by-user"
+import { useAuth } from "@/hooks/use-auth";
+import ReportByAdmin from "./report-by-admin";
+import ReportByUser from "../../modules/report/screen/user";
 const Report = () => {
-    const { profile } = useAuth()
-    const isAdmin = profile?.permission_to_update_report
-    return (
-        isAdmin ? <ReportByAdmin /> : <ReportByUser />
-    )
-
-}
-export default Report
+  const { profile, isLoading } = useAuth();
+  const isAdmin = profile?.permission_to_update_report;
+  if (isLoading) return null;
+  return isAdmin ? <ReportByAdmin /> : <ReportByUser />;
+};
+export default Report;
