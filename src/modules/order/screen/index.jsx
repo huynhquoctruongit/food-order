@@ -18,6 +18,7 @@ import { connection } from "@/lib/directus";
 import useOrder from "../helper/use-menu";
 import useMenuToday from "@/hooks/use-menu";
 import { useCompany } from "@/hooks/use-company";
+import { useOdersIsNotPaid } from "@/hooks/use-order";
 
 const OCRComponent = () => {
   const { toast } = useToast();
@@ -29,7 +30,7 @@ const OCRComponent = () => {
   const [selectFood, setFoodSelect] = useState([]);
   const [orderNote, setOrderNote] = useState("");
   const [isPopup, setPopup] = useState("");
-  const [optionRice, setOptionRice] = useState({});
+  const { mutate: mutateOrderToPaid } = useOdersIsNotPaid();
 
   const refCallback = useRef(null);
   const deleteCallback = useRef(null);
@@ -103,7 +104,6 @@ const OCRComponent = () => {
 
     deleteCallback,
   );
-
   const onSelectFood = (elm) => {
     const now = dayjs();
     const [hour_limit, minute_limit] = (company?.order_time_limit || "13:30:00").split(":");
@@ -124,7 +124,6 @@ const OCRComponent = () => {
 
   const onOrder = async (message) => {
     setPopup(!isPopup);
-
     const price = selectFood.type == "no-rice" ? selectFood?.side_dish_price : selectFood?.dish_price;
     const params = {
       name: selectFood.name,
@@ -140,6 +139,10 @@ const OCRComponent = () => {
       action: "create",
       data: params,
     });
+    if (!company.free_ship) return;
+    setTimeout(() => {
+      mutateOrderToPaid();
+    }, 1000);
   };
 
   const listFood = menu.detail || [];

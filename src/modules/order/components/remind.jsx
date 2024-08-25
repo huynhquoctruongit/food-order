@@ -37,8 +37,8 @@ const ModalRemind = () => {
   }, [orders]);
   const headers = [
     { title: "Thời gian", value: "time", className: "w-4/12 text-sm" },
-    { title: "Món", value: "name", className: "w-6/12 text-sm" },
-    { title: "Tiền", value: "money", className: "w-3/12 text-sm" },
+    { title: "Món", value: "name", className: "w-5/12 text-sm" },
+    { title: "Tiền", value: "money", className: "w-4/12 text-sm" },
   ];
 
   const onSubmit = async () => {
@@ -60,9 +60,11 @@ const ModalRemind = () => {
       case "money":
         return (
           <div className="text-xs md:text-sm">
-            <div>{value.price} Cá</div>
+            <div>
+              Cơm: <i className="ml-1"> {value.price} Cá </i>
+            </div>
             <div className="whitespace-nowrap">
-              ship:<i className="ml-1">{value.delivery_fee || 0} Cá</i>
+              Ship: <i className="ml-1">{value.delivery_fee || 0} Cá</i>
             </div>
           </div>
         );

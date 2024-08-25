@@ -143,7 +143,7 @@ const ChatWiget = () => {
                 {messages.length === 0 && (
                   <div className="text-xs border border-dashed border-pastel-pink p-2 rounded-2xl flex items-center gap-4">
                     <img src="/upload.gif" className="min-w-12 w-12 aspect-square" alt="" />
-                    Xin chào ní, hãy để lại lời nhắn cho tớ nha
+                    Xin chào mấy ní, hãy để lại lời nhắn cho tớ nha
                   </div>
                 )}
                 {messages.map((elm, index) => {

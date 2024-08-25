@@ -31,6 +31,8 @@ const useConvertImage = () => {
       "vie+eng", // Chỉ định mã ngôn ngữ là 'vie+eng' cho tiếng Việt và tiếng Anh
     )
       .then(({ data: { text } }) => {
+        console.log(text);
+
         const list = text.split("\n").filter((item) => item.trim() !== "" && item.indexOf("trưa nay có") === -1);
 
         const data = list.map((item) => {
