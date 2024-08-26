@@ -6,43 +6,41 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
 import { useCompany } from "@/hooks/use-company";
 import { Settings } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import AxiosClient from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
-import { SplitButton } from "./create-menu";
+import CreateMenu, { SplitButton } from "./create-menu";
 import { Link } from "react-router-dom";
-import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import { PresentationChartBarIcon, SquaresPlusIcon } from "@heroicons/react/24/outline";
 
 const EditCompany = () => {
   const [openConfig, setOpenConfig] = useState(false);
   const { profile } = useAuth();
   const { company, isLoading } = useCompany();
-
-  if (isLoading) return;
+  const refMenu = useRef();
+  if (isLoading || !profile.permission_to_create_menu) return;
   return (
     <>
       <div className="bg-pastel-pink/40 ">
         <div className="root-wrapper py-4 flex justify-end gap-4">
+          <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
+            <span className="flex items-center gap-2 whitespace-nowrap">
+              <SquaresPlusIcon className="w-4 h-4" /> Thêm menu
+            </span>
+          </Button>
 
-          <Link to="/report?week=this_week" className="text-[#218d7f] hover:text-[#34756c]">
-            <Button
-              variant="outline"
-              size="default"
-              className="flex whitespace-nowrap items-center gap-2 border-[1px] border-[#188E7E]"
-            >
-              <PresentationChartBarIcon className="w-4 h-4" />
-              Báo cáo
-            </Button>
-          </Link>
-          {(profile.id === company.admin?.id || profile.permission_to_create_menu) && <div className="flex items-center gap-2">
-            <SplitButton />
-            <div
-              className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm"
-              onClick={() => setOpenConfig(true)}
-            >
-              <Settings className="stroke-slate-500" />
+          <CreateMenu refMenu={refMenu} />
+          {(profile.id === company.admin?.id || profile.permission_to_create_menu) && (
+            <div className="flex items-center gap-2">
+              <SplitButton />
+              <div
+                className="w-10 h-10 flex items-center justify-center rounded-md bg-white cursor-pointer shadow-sm"
+                onClick={() => setOpenConfig(true)}
+              >
+                <Settings className="stroke-slate-500" />
+              </div>
             </div>
-          </div>}
+          )}
         </div>
       </div>
       <ConFig open={openConfig} onOpenChange={setOpenConfig} />

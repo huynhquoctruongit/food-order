@@ -19,7 +19,7 @@ import MarqueeChat from "@/modules/chat/screen/real-chat";
 import useMessage from "@/modules/chat/helper/use-message";
 
 const GroupButtonHero = () => {
-  const refMenu = useRef();
+ 
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
@@ -29,12 +29,17 @@ const GroupButtonHero = () => {
       <Button className="whitespace-nowrap" variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
-      <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
-        <span className="flex items-center gap-2 whitespace-nowrap">
-          <SquaresPlusIcon className="w-4 h-4" /> Thêm menu
-        </span>
-      </Button>
-      <CreateMenu refMenu={refMenu} />
+      
+      <Link to="/report?week=this_week" className="text-[#218d7f] hover:text-[#34756c]">
+        <Button
+          variant="outline"
+          size="default"
+          className="flex whitespace-nowrap items-center gap-2 border-[1px] border-[#188E7E]"
+        >
+          <PresentationChartBarIcon className="w-4 h-4" />
+          Báo cáo
+        </Button>
+      </Link>
     </div>
   );
 };
