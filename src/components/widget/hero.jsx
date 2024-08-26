@@ -2,19 +2,21 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../ui/button-hero";
 import { cn } from "@/lib/utils";
 import { mode } from "@/lib/config";
+import { useNavigate } from "react-router-dom";
 
 let isPlaying = false;
 const listHaveANiceDay = ["/have-a-nice-day.png", "/have-a-nice-day-1.png", "/have-a-nice-day-2.png"];
 
 const GroupButtonHero = () => {
-  const onScroll = () => {
-    const menu = document.getElementById("menu");
-    menu.scrollIntoView({ behavior: "smooth" });
+  // const {profile} = useAuth();
+  const navigate = useNavigate();
+  const onClick = () => {
+    return navigate(-1);
   };
   return (
     <div className="flex flex-col flex-wrap md:flex-row items-center gap-6 mt-6 md:mt-16">
-      <Button className="whitespace-nowrap" variant="default" size="default" onClick={onScroll}>
-        Lết xuống menu
+      <Button className="whitespace-nowrap" variant="default" size="default" onClick={onClick}>
+        Quay về đặt món
       </Button>
     </div>
   );

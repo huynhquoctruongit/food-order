@@ -52,20 +52,21 @@ const ReportByUser = () => {
         <div className="flex items-center">
           <div className="flex text-xs px-1.5 py-0.5 text-primary-01 rounded-full bg-pastel-pink/40">{item.price} cá</div>
         </div>
-        <div className="mt-1 text-gray-400"> {item.name}</div>
+        <div className=" text-gray-400 mt-2"> {item.name}</div>
       </div>
     );
   };
   if (isLoading) return null;
   return (
     <div className="">
-      <HeroHeader />
+      <HeroHeader title="Lịch sử ăn dằm nằm dề" description="Nhìn bụng biết bụng ăn bao nhiêu! Nhìn bạn biết nặng bao nhiêu" />
       <div className="root-wrapper my-20">
         <div className="flex flex-col gap-20">
           {listWeek.map((item, index) => {
             return (
               <div className="">
-                <div className="text-left mb-4 text-sm">
+                <div className="text-left  font-bold mb-8 text-lg rounded-md border border-dashed border-primary-01 w-fit px-2 py-1">
+                  <span className="text-lg  text-primary-01"> Tuần thứ {dayjs(item[0].date_created).isoWeek()} </span>
                   {item[0].startWeek} -{" "}
                   {dayjs(item[0].startWeekUnix * 1000)
                     .add(6, "day")
