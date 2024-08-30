@@ -4,6 +4,8 @@ import HeroHeader from "@/components/widget/hero";
 import TablePink from "@/components/widget/table-pink";
 import useHistory from "@/hooks/use-order";
 import groupBy from "lodash/groupBy";
+import ChartPrice from "../component/chart-price";
+import LabelInfo from "../component/info";
 dayjs.extend(isoWeek);
 
 const optionss = [
@@ -60,7 +62,11 @@ const ReportByUser = () => {
   return (
     <div className="">
       <HeroHeader title="Lịch sử ăn dằm nằm dề" description="Nhìn bụng biết bụng ăn bao nhiêu! Nhìn bạn biết nặng bao nhiêu" />
-      <div className="root-wrapper my-20">
+      <div className="root-wrapper my-10">
+        <div className="flex  gap-10">
+          <ChartPrice />
+          <LabelInfo />
+        </div>
         <div className="flex flex-col gap-20">
           {listWeek.map((item, index) => {
             return (
