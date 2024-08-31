@@ -11,8 +11,9 @@ import MainPage from "./pages";
 import ModalLogin from "./modules/auth/screen/login";
 import "./index.css";
 import Header from "./components/widget/header";
-import isoWeek from "dayjs/plugin/isoWeek"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import isoWeek from "dayjs/plugin/isoWeek";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import ReportByAdmin from "./pages/report/report-by-admin";
 
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
@@ -34,6 +35,7 @@ const MainApp = () => {
             <div className="bg-white/40 flex-1 relative text-gray-700">
               <Routes>
                 <Route element={<Order />} path="/company/:companyId/provider/:providerId" />
+                <Route element={<ReportByAdmin />} path="/admin-report" />
                 <Route element={<Report />} path="/report" />
                 <Route element={<MainPage />} path="/" />
               </Routes>
