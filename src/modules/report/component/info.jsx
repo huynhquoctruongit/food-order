@@ -16,26 +16,32 @@ const LabelInfo = () => {
   const history = historyRes?.data || [];
 
   return (
-    <div className="mb-20 text-left w-full grid grid-cols-2 gap-6">
-      <div className="border-primary-01 border rounded-lg h-fit">
-        <div className="p-6">
-          <div className="text-lg text-black">Tổng tiền</div>
-          <div className="text-4xl text-primary-01 mt-4 font-bold">{total} cá</div>
+    <div className="w-full flex-1 relative text-left">
+      <div className="flex flex-col gap-6 md:absolute top-0 left-0 w-full h-full">
+        <div className="gap-6 grid md:grid-cols-2">
+          <div className="border-primary-01 border rounded-lg h-fit">
+            <div className="p-6">
+              <div className="text-lg text-black">Tổng tiền</div>
+              <div className="text-4xl text-primary-01 mt-4 font-bold">{total} cá</div>
+            </div>
+          </div>
+          <div className="border-primary-01 border rounded-lg h-fit">
+            <div className="p-6">
+              <div className="text-lg text-black">Tổng món</div>
+              <div className="text-4xl text-primary-01 mt-4 font-bold">{totalOlder} Món</div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="border-primary-01 border rounded-lg h-fit">
-        <div className="p-6">
-          <div className="text-lg text-black">Tổng món</div>
-          <div className="text-4xl text-primary-01 mt-4 font-bold">{totalOlder} Món</div>
-        </div>
-      </div>
-      <div className="border-primary-01 border rounded-lg h-fit col-span-2">
-        <div className="p-6">
-          <div className="text-lg text-black font-black">LỊCH SỬ </div>
-          <div className="flex flex-col gap-1 mt-1" >
-            {history.map((item) => (
-              <div key={item.id}>{item.name}</div>
-            ))}
+        <div className="relative w-full flex-1">
+          <div className="border-primary-01 border rounded-lg col-span-2 text-left">
+            <div className="p-6">
+              <div className="text-lg text-black font-black">LỊCH SỬ 5 MÓN</div>
+              <div className="flex flex-col gap-0.5 mt-1 text-left">
+                {history.map((item) => (
+                  <div key={item.id}> - {item.name}</div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

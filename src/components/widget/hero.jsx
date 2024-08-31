@@ -43,9 +43,9 @@ const HeroHeader = ({ title = "REPORT", description = "Nội dụng report" }) =
   const imgActive = useMemo(() => listHaveANiceDay[Math.floor(Math.random() * listHaveANiceDay.length)], []);
 
   return (
-    <div className="-translate-y-2.5 relative flex items-center justify-center md:pt-0 ">
+    <div className="relative flex items-center justify-center md:pt-0 ">
       <img
-        className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
+        className="w-full h-git md:h-full object-cover aspect-square md:aspect-[3.5/1]"
         src="/hero.png"
         alt=""
       />
