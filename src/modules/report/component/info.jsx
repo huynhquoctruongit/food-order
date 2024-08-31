@@ -19,21 +19,21 @@ const LabelInfo = () => {
     <div className="w-full flex-1 relative text-left">
       <div className="flex flex-col gap-6 md:absolute top-0 left-0 w-full h-full">
         <div className="gap-6 grid md:grid-cols-2">
-          <div className="border-primary-01 border rounded-lg h-fit">
+          <div className="border-primary-01/40 border rounded-lg h-fit ring-[6px] bg-white ring-primary-01/5 ring-offset-0">
             <div className="p-6">
-              <div className="text-lg text-black">Tổng tiền</div>
-              <div className="text-4xl text-primary-01 mt-4 font-bold">{total} cá</div>
+              <div className="text-lg text-black font-black uppercase">Tổng tiền</div>
+              <div className="text-4xl text-primary-01 mt-4 font-bold ">{total} cá</div>
             </div>
           </div>
-          <div className="border-primary-01 border rounded-lg h-fit">
+          <div className="border-primary-01/40 border rounded-lg h-fit ring-[6px] bg-white ring-primary-01/5 ring-offset-0">
             <div className="p-6">
-              <div className="text-lg text-black">Tổng món</div>
+              <div className="text-lg text-black font-black uppercase">Tổng món</div>
               <div className="text-4xl text-primary-01 mt-4 font-bold">{totalOlder} Món</div>
             </div>
           </div>
         </div>
         <div className="relative w-full flex-1">
-          <div className="border-primary-01 border rounded-lg col-span-2 text-left">
+          <div className="border-primary-01/40 border rounded-lg col-span-2 text-left ring-[6px] bg-white ring-primary-01/5 ring-offset-0">
             <div className="p-6">
               <div className="text-lg text-black font-black">LỊCH SỬ 5 MÓN</div>
               <div className="flex flex-col gap-0.5 mt-1 text-left">

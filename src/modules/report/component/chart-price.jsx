@@ -25,7 +25,7 @@ const ChartPrice = () => {
 
   return (
     <div className="text-left">
-      <div className="rounded-md w-full p-3 md:p-6 flex border border-primary-01">
+      <div className="rounded-md w-full p-3 md:p-6 flex border border-primary-01/40 ring-[6px] bg-white ring-primary-01/5 ring-offset-0">
         <div>
           <div className="">
             {listPrice.map((price, index) => (

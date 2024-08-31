@@ -8,9 +8,9 @@ export const ItemTable = ({ children, className }) => {
 
 const TablePink = ({ headers = [], list = [], render = (key, value) => {} }) => {
   return (
-    <div className="relative overflow-x-auto w-[calc(100vw-40px)] overflow-y-hidden">
+    <div className="relative overflow-x-auto md:w-full w-[calc(100vw-40px)] overflow-y-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-[calc(100%+16px)] h-[calc(100%+16px)] bg-pastel-pink/10 rounded-xl"></div>
-      <div className="md:w-full border border-pastel-pink rounded-md bg-white relative z-10  w-[1000px]">
+      <div className="md:w-full border border-pastel-pink rounded-md bg-white relative z-10 w-[1000px] ">
         <div className="flex items-center w-full ">
           {headers.map((option, index) => {
             return (

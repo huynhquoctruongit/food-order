@@ -39,7 +39,6 @@ const MainApp = () => {
                 <Route element={<Report />} path="/report" />
                 <Route element={<MainPage />} path="/" />
               </Routes>
-
               <Toaster />
               <ModalLogin />
             </div>

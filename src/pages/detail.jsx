@@ -19,7 +19,6 @@ import MarqueeChat from "@/modules/chat/screen/real-chat";
 import useMessage from "@/modules/chat/helper/use-message";
 
 const GroupButtonHero = () => {
- 
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
@@ -29,7 +28,7 @@ const GroupButtonHero = () => {
       <Button className="whitespace-nowrap" variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
-      
+
       <Link to="/report?week=this_week" className="text-[#218d7f] hover:text-[#34756c]">
         <Button
           variant="outline"
@@ -77,7 +76,7 @@ const Order = () => {
       <EditCompany />
       <div className="min-h-[calc(100vh-56px)] md:min-h-fit">
         <MarqueeChat />
-        <div className="-translate-y-2.5 relative flex items-center justify-center md:pt-0 ">
+        <div className="-translate-y-1.5 relative flex items-center justify-center md:pt-0 ">
           <img
             className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
             src="/hero.png"

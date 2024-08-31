@@ -1,23 +1,39 @@
-import AxiosClient from "@/lib/api/axios-client";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { ChevronDown, SendIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useMediaQuery } from "usehooks-ts";
 import useMessage from "../helper/use-message";
-import { useSubscribe } from "@/hooks/use-connection";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/use-auth";
 import { createImage } from "@/lib/helper";
-import dayjs from "dayjs";
+
+const Invester = () => {
+  const open = (href) => {
+    window.open(href + `?utm_source=web-dat-com&utm_url=${window.location.href}`, "_blank");
+  };
+  return (
+    <div className="flex items-center gap-10 root-wrapper justify-start">
+      <div onClick={() => open("https://ielts1984.vn")} className="flex items-end gap-4 cursor-pointer">
+        <img src="/ielts.webp" className="h-10 w-auto" alt="" />{" "}
+        <span className="text-white text-md mb-1 font-bold">Học bản chất, học 1 lần dùng cả đời</span>
+      </div>
+      <div onClick={() => open("https://youpass.vn")} className="flex items-end gap-4 cursor-pointer">
+        <img src="/youpass.png" className="h-8 w-auto" alt="" />{" "}
+        <span className="text-white text-md font-bold">Luyện tập IELTS miễn phí tại nhà</span>
+      </div>
+    </div>
+  );
+};
 
 const MarqueeChat = () => {
-  const { messages } = useMessage();
-  if (messages.length === 0) return null;
+  const { messages = [] } = useMessage();
+  console.log(messages);
+  if (messages.length === 0)
+    return (
+      <div className="py-3 bg-pastel-pink">
+        <Invester />
+      </div>
+    );
   return (
-    <marquee behavior="scroll" direction="left" scrollamount="10" className="bg-pastel-pink mb-0 pb-0">
-      <div className="flex items-center py-3 gap-20 px-10">
-        {messages.map((elm, index) => {
+    // <marquee behavior="scroll" direction="left" scrollamount="10" className="bg-pastel-pink mb-0 pb-0">
+    <div className="flex items-center py-3 gap-20 px-10">
+      {messages.length > 0 &&
+        messages.map((elm, index) => {
           const fullname = elm.user_created?.first_name + " " + elm.user_created?.last_name;
           return (
             <div key={elm.id} className="flex items-center gap-1">
@@ -36,8 +52,8 @@ const MarqueeChat = () => {
             </div>
           );
         })}
-      </div>
-    </marquee>
+    </div>
+    // </marquee>
   );
 };
 
