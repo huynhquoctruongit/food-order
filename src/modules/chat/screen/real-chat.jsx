@@ -1,34 +1,57 @@
 import useMessage from "../helper/use-message";
 import { cn } from "@/lib/utils";
 import { createImage } from "@/lib/helper";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { XIcon } from "lucide-react";
+import { useMediaQuery } from "usehooks-ts";
 
+const variant = {
+  initial: { opacity: 1, y: 200 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 1, y: 200 },
+};
 const Invester = () => {
+  const [show, setShow] = useState(true);
   const open = (href) => {
     window.open(href + `?utm_source=web-dat-com&utm_url=${window.location.href}`, "_blank");
   };
+  const isMd = useMediaQuery("(min-width: 768px)");
+
   return (
-    <div className="flex items-center gap-10 root-wrapper justify-start">
-      <div onClick={() => open("https://ielts1984.vn")} className="flex items-end gap-4 cursor-pointer">
-        <img src="/ielts.webp" className="h-10 w-auto" alt="" />{" "}
-        <span className="text-white text-md mb-1 font-bold">Học bản chất, học 1 lần dùng cả đời</span>
+    <motion.div
+      initial={isMd ? "animate" : "initial"}
+      variants={variant}
+      animate={show ? "animate" : "exit"}
+      exit="exit"
+      transition={{ duration: 0.3 }}
+      className="py-4 md:py-3 bg-white md:bg-pastel-pink  md:relative fixed bottom-0 left-0 right-0 z-[1000] "
+    >
+      <div className="root-wrapper flex items-center gap-4 md:gap-10">
+        <div className="text-xs md:hidden text-[#164474]">Học IELTS cùng với: </div>
+        <div onClick={() => open("https://ielts1984.vn")} className="flex items-end gap-4 cursor-pointer">
+          <img src="/ielts.webp" className="h-8 md:h-10 w-auto" alt="" />{" "}
+          <span className="text-white text-md mb-1 font-bold hidden md:block">Học bản chất, học 1 lần dùng cả đời</span>
+        </div>
+        <div onClick={() => open("https://youpass.vn")} className="flex items-end gap-4 cursor-pointer">
+          <img src="/youpass.png" className="h-6 md:h-8 w-auto" alt="" />{" "}
+          <span className="text-white text-md font-bold hidden md:block">Luyện tập IELTS miễn phí tại nhà</span>
+        </div>
+        <div
+          onClick={() => setShow(false)}
+          className="absolute md:hidden shadow-xl -translate-x-1/2 bottom-full left-1/2 p-1 bg-white rounded-full"
+        >
+          <XIcon className="text-primary-01 w-3 h-3" />
+        </div>
       </div>
-      <div onClick={() => open("https://youpass.vn")} className="flex items-end gap-4 cursor-pointer">
-        <img src="/youpass.png" className="h-8 w-auto" alt="" />{" "}
-        <span className="text-white text-md font-bold">Luyện tập IELTS miễn phí tại nhà</span>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
 const MarqueeChat = () => {
   const { messages = [] } = useMessage();
-  console.log(messages);
-  if (messages.length === 0)
-    return (
-      <div className="py-3 bg-pastel-pink">
-        <Invester />
-      </div>
-    );
+
+  if (messages.length === 0) return <Invester />;
   return (
     // <marquee behavior="scroll" direction="left" scrollamount="10" className="bg-pastel-pink mb-0 pb-0">
     <div className="flex items-center py-3 gap-20 px-10">
