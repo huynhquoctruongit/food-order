@@ -45,7 +45,7 @@ const HeroHeader = ({ title = "REPORT", description = "Nội dụng report" }) =
   return (
     <div className="relative flex items-center justify-center md:pt-0 ">
       <img
-        className="w-full h-git md:h-full object-cover aspect-square md:aspect-[3.5/1]"
+        className="w-full h-git md:h-full object-cover aspect-square md:aspect-[4.5/1]"
         src="/hero.png"
         alt=""
       />
