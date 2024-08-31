@@ -10,7 +10,7 @@ const ChartPrice = () => {
       company: { _eq: profile.company },
       status: { _eq: "published" },
       user_created: { _eq: profile.id },
-      date_created: { _gte: "$NOW(-5 week)" },
+      // date_created: { _gte: "$NOW(-35 day)" },
     },
     groupBy: ["week(date_created)"],
     aggregate: { sum: ["price", "delivery_fee"] },
@@ -65,8 +65,11 @@ const ChartPrice = () => {
       )}
 
       {week.length === 0 && (
-        <div className="text-center text-gray-400 border border-primary-01/40 ring-[6px] bg-white ring-primary-01/5 ring-offset-0 min-h-[300px] md:min-w-[350px]">
-          Không có dữ liệu
+        <div className="text-center text-gray-400 border flex items-center justify-center border-primary-01/40 ring-[6px] bg-white ring-primary-01/5 ring-offset-0 min-h-[360px] rounded-md md:min-w-[350px]">
+          <div className="flex items-center justify-center flex-col">
+            <img src="/not-found.png" className="w-20 h-20" />
+            <div className="text-gray-400">Không có dữ liệu</div>
+          </div>
         </div>
       )}
     </div>

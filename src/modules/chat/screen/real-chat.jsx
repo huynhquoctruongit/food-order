@@ -25,7 +25,7 @@ const Invester = () => {
       animate={show ? "animate" : "exit"}
       exit="exit"
       transition={{ duration: 0.3 }}
-      className="py-4 md:py-3 bg-white md:bg-pastel-pink  md:relative fixed bottom-0 left-0 right-0 z-[1000] "
+      className="py-4 md:py-3 bg-white md:bg-pastel-pink  md:static fixed bottom-0 left-0 right-0 z-[1000] "
     >
       <div className="root-wrapper flex items-center gap-4 md:gap-10">
         <div className="text-xs md:hidden text-[#164474]">Học IELTS cùng với: </div>
