@@ -74,21 +74,17 @@ const Order = () => {
   return (
     <div>
       <EditCompany />
-      <div className="min-h-[calc(100vh-56px)] md:min-h-fit">
+      <div className="">
         <MarqueeChat />
         <div className="-translate-y-1.5 relative flex items-center justify-center md:pt-0 ">
-          <img
-            className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
-            src="/hero.png"
-            alt=""
-          />
+          <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
 
-          <div className="absolute root-wrapper w-full">
+          <div className="root-wrapper w-full py-20">
             <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
               <div className="text-left">
-                <h1 className="text-[20px] md:text-3xl font-bold text-black text-left">{company?.name}</h1>
-                <h6 className="italic mt-2 text-gray-400">{company?.address}</h6>
-                <div className="mt-6  text-gray-700 hidden md:block pr-40">{company?.description}</div>
+                <h1 className="text-[20px] md:text-3xl font-bold text-black text-center md:text-left">{company?.name}</h1>
+                <h6 className="italic mt-2 text-gray-400 text-center md:text-left">{company?.address}</h6>
+                <div className="mt-6 text-gray-700 hidden md:block pr-40 text-center md:text-left">{company?.description}</div>
                 <GroupButtonHero />
               </div>
               <div className="relative">
