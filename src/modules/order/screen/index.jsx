@@ -178,7 +178,7 @@ const OCRComponent = () => {
           </div>
         </div>
       </div>
-      <ListOnline />
+      {/* <ListOnline /> */}
     </div>
   );
 };
