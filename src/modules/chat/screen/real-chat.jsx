@@ -63,14 +63,12 @@ const MarqueeChat = () => {
                 <div className="rounded-md bg-white/20 p-1 flex items-center px-3 gap-4">
                   <img src={createImage(elm.user_created.avatar, 300)} className="min-w-8 w-8 h-8  aspect-square " />
                   <div className="text-xs">{fullname}</div>
-                  {/* <div className={cn("text-[10px] mt-1 text-slate-300 text-right absolute top-full left-0")}>
-                    {dayjs(elm.date_created).format("HH:mm:ss")}
-                  </div> */}
                 </div>
-
                 <div
                   dangerouslySetInnerHTML={{ __html: elm.message }}
-                  className={cn("text-sm md:text-base  w-fit text-white border-gray-300 rounded-md p-2 rounded-tr-2xl rounded-bl-none")}
+                  className={cn(
+                    "text-sm md:text-base  w-fit text-white border-gray-300 rounded-md p-2 rounded-tr-2xl rounded-bl-none",
+                  )}
                 ></div>
               </div>
             );
