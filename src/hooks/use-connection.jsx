@@ -22,17 +22,9 @@ const useConnection = () => {
     if (status === "connected" || statusConnected !== "disconnected") return;
     connection.onWebSocket("close", function () {});
     const cleanup = connection.onWebSocket("message", function (data) {
-      console.log(data);
       if (data.type == "auth" && data.status == "ok") {
         statusConnected = "connected";
         setStatus("connected");
-        connection.sendMessage({
-          type: "items",
-          collection: "activity_user",
-          action: "create",
-          data: { name: "online" },
-        });
-        console.log("online");
       }
       if (data.type == "auth" && data.status == "error") {
         statusConnected = "disconnected";
@@ -50,9 +42,10 @@ const useConnection = () => {
         statusConnected = "disconnected";
         setStatus("disconnected");
       });
-    window.addEventListener("beforeunload", () => {
+    window.addEventListener("beforeunload", (event) => {
       const url = "https://mindguros.vercel.app/api/activity-user/" + profile.id; // URL API của bạn
       navigator.sendBeacon(url);
+      if (window.location.hostname.includes("localhost")) return;
       const confirmationMessage = "Bạn có chắc chắn muốn rời khỏi trang này? Các thay đổi của bạn có thể không được lưu.";
       event.preventDefault(); // Cần cho một số trình duyệt
       event.returnValue = confirmationMessage; // Hỗ trợ các trình duyệt mới

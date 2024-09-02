@@ -37,6 +37,7 @@ const MainApp = () => {
                 <Route element={<Order />} path="/company/:companyId/provider/:providerId" />
                 <Route element={<ReportByAdmin />} path="/admin-report" />
                 <Route element={<Report />} path="/report" />
+                <Route element={<MainPage />} path="/relax" />
                 <Route element={<MainPage />} path="/" />
               </Routes>
               <Toaster />
