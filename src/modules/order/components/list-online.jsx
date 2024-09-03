@@ -26,7 +26,7 @@ const ListOnline = () => {
   }, []);
   if (userCount === 0) return null;
   return (
-    <div className="w-full flex flex-wrap gap-4 fixed bottom-4 lg:bottom-10 right-1 xl:bottom-2 xl:left-1/2  xl:-translate-x-1/2 root-wrapper py-2 justify-center z-[1000]">
+    <div className="w-fit flex flex-wrap gap-4 fixed bottom-4 lg:bottom-10 right-1 xl:bottom-2 xl:left-1/2  xl:-translate-x-1/2 py-2 justify-center z-[10000000000000]">
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -45,7 +45,10 @@ const ListOnline = () => {
                 className="border flex items-center gap-1 border-dashed border-primary-01 group relative rounded-full hover:border-pastel-pink cursor-pointer"
                 key={profile.id}
               >
-                <motion.div whileHover={{ scale: 1.1 }} className="w-6 h-6 lg:w-10 lg:h-10 rounded-full bg-pastel-pink/5 flex items-center justify-center ">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  className="w-6 h-6 lg:w-10 lg:h-10 rounded-full bg-pastel-pink/5 flex items-center justify-center "
+                >
                   <img className="w-6 h-6lg:w-10 lg:h-10 rounded-full object-contain" src={createImage(profile.avatar, 100)} />
                 </motion.div>
                 <span className="text-sm absolute bottom-full left-full px-2 py-1 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md bg-primary-01 text-white  whitespace-nowrap ">

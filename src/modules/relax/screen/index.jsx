@@ -2,7 +2,7 @@ import Loading, { LoadingPage } from "@/components/widget/loading";
 import useQuestion from "../helper/use-question";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn, enumFood } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createImage } from "@/lib/helper";
 import useImage from "@/modules/order/helper/use-image";
 import UserProfile from "@/components/widget/user";
@@ -10,9 +10,20 @@ import { Button } from "@/components/ui/button-hero";
 import { ChevronsRightIcon } from "lucide-react";
 
 const Relax = () => {
-  const { isLoading, getNextQuestion } = useQuestion();
-  const question = getNextQuestion();
-  if (isLoading) return <LoadingPage />;
+  const { isLoading, getNextQuestion, questions } = useQuestion();
+  const [question, setQuestion] = useState();
+
+  const getNext = () => {
+    if (questions.length === 0) return;
+    const index = getNextQuestion();
+    setQuestion(questions[index]);
+  };
+  useEffect(() => {
+    if (questions.length === 0) return;
+    getNext();
+  }, [questions]);
+
+  if (isLoading || !question) return <LoadingPage />;
   return (
     <motion.div>
       <motion.div
@@ -25,7 +36,7 @@ const Relax = () => {
         <div className="absolute top-2/3 left-1/2 bg-secondary-01/5  blur-2xl w-64 h-64 rounded-full"></div>
         <div className="flex items-stretch gap-10 mt-10 relative z-10">
           <div className="w-4/6 ">
-            <Question question={question} key={question.id} />
+            <Question question={question} key={question.id} getNext={getNext} />
           </div>
           <div className="w-2/6 border border-primary-01 rounded-xl p-6  bg-white">
             <div className="text-primary-01">Cẩn thận với các người chơi này</div>
@@ -50,8 +61,7 @@ const Relax = () => {
 };
 export default Relax;
 
-const Question = ({ question }) => {
-  const {   createAnswer } = useQuestion();
+const Question = ({ question, getNext }) => {
   const [active, setActive] = useState(null);
   const onClick = (option) => {
     if (active) return;
@@ -69,7 +79,7 @@ const Question = ({ question }) => {
         </div>
       </div>
       <div className="flex flex-col gap-6 mt-10 flex-wrap">
-        {question.options.map((option, index) => {
+        {question?.options?.map((option, index) => {
           const itemActive = enumJuice[index % enumJuice.length];
           return (
             <div key={option.id} className="flex gap-x-4 items-center gap-y-1 cursor-pointer ">
@@ -109,7 +119,7 @@ const Question = ({ question }) => {
         })}
       </div>
       <div className="flex justify-end mt-10">
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2" onClick={getNext}>
           Câu tiếp đê <ChevronsRightIcon className="w-4" />
         </Button>
       </div>

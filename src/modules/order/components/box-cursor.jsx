@@ -79,7 +79,7 @@ const BoxCursor = ({ children }) => {
     window.addEventListener("keyup", onKeyUp);
     function onKeyDown(e) {
       if (e.key === "/") {
-        e.preventDefault();
+        // e.preventDefault();
       }
     }
     window.addEventListener("keydown", onKeyDown);
@@ -165,7 +165,7 @@ const MyCursor = ({ refInput, state, setState }) => {
         <>
           <MousePointer2 className={"stroke-none fill-primary-01 relative cursor-none pointer-events-none"} />
           <div
-            className="absolute top-full left-2 bg-pastel-pink px-4 py-2 text-sm leading-relaxed text-white"
+            className="absolute top-full left-2 bg-primary-01 px-4 py-2 text-sm leading-relaxed text-white"
             onKeyUp={(e) => e.stopPropagation()}
             style={{
               borderRadius: 20,
