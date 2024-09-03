@@ -40,6 +40,10 @@ const BoxCursor = ({ children }) => {
     });
   };
 
+  const refInput = useRef(null);
+  const refState = useRef(state);
+  refState.current = state;
+
   const onPointerDown = (event) => {
     updateMyPresence({
       cursor: {
@@ -57,7 +61,13 @@ const BoxCursor = ({ children }) => {
   useEffect(() => {
     function onKeyUp(e) {
       if (e.key === "/") {
-        setState({ mode: CursorMode.Chat, previousMessage: null, message: "" });
+        setState((state) => {
+          if (state.mode === CursorMode.Chat) {
+            refInput.current.focus();
+            return state;
+          }
+          return { mode: CursorMode.Chat, previousMessage: null, message: "" };
+        });
       } else if (e.key === "Escape") {
         updateMyPresence({ message: "" });
         setState({ mode: CursorMode.Hidden });
@@ -88,7 +98,7 @@ const BoxCursor = ({ children }) => {
       className="cusor-hidden"
     >
       {children}
-      {cursor && <MyCursor state={state} setState={setState} />}
+      {cursor && <MyCursor refInput={refInput} state={state} setState={setState} />}
       {others
         .filter(({ presence }) => presence.profile)
         .map(({ connectionId, presence }) => {
@@ -107,13 +117,30 @@ const BoxCursor = ({ children }) => {
             />
           );
         })}
+      <div className="fixed bottom-1 left-1 w-fit px-2 py-2 z-50">
+        <ul className="mt-4 flex lg:items-center flex-col lg:flex-row text-xs lg:justify-center gap-2">
+          {/* <li className="flex items-center space-x-2 rounded-md bg-gray-100 py-2 px-3 text-sm">
+            <span>Reactions</span>
+            <span className="block rounded border border-gray-300 px-1 text-xs font-medium uppercase text-gray-500">E</span>
+          </li> */}
+          <li className="flex items-center space-x-2 rounded-md bg-pastel-pink text-xs w-fit py-1 px-1.5 md:py-2 md:px-3  md:text-sm">
+            <span className="text-white">Chat</span>
+            <span className="block rounded border border-white px-1 text-xs font-medium uppercase text-white">/</span>
+          </li>
+
+          <li className="flex items-center space-x-2 rounded-md bg-pastel-pink text-xs w-fit py-1 px-1.5 md:py-2 md:px-3  md:text-sm">
+            <span className="text-white">Escape</span>
+            <span className="block rounded border border-white px-1 text-xs font-medium uppercase text-white">esc</span>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };
 
 export default BoxCursor;
 
-const MyCursor = ({ state, setState }) => {
+const MyCursor = ({ refInput, state, setState }) => {
   const timer = useRef(null);
   const [{ cursor }, updateMyPresence] = useMyPresence();
   useEffect(() => {
@@ -138,7 +165,7 @@ const MyCursor = ({ state, setState }) => {
         <>
           <MousePointer2 className={"stroke-none fill-primary-01 relative cursor-none pointer-events-none"} />
           <div
-            className="absolute top-full left-2 bg-blue-500 px-4 py-2 text-sm leading-relaxed text-white"
+            className="absolute top-full left-2 bg-pastel-pink px-4 py-2 text-sm leading-relaxed text-white"
             onKeyUp={(e) => e.stopPropagation()}
             style={{
               borderRadius: 20,
@@ -146,7 +173,8 @@ const MyCursor = ({ state, setState }) => {
           >
             {state.previousMessage && <div>{state.previousMessage}</div>}
             <input
-              className="w-60 border-none	bg-transparent text-white placeholder-blue-300 outline-none"
+              ref={refInput}
+              className="w-60 border-none	bg-transparent text-white placeholder-white outline-none"
               autoFocus={true}
               onChange={(e) => {
                 updateMyPresence({ message: e.target.value });
