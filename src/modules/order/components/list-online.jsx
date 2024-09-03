@@ -9,12 +9,17 @@ import { motion } from "framer-motion";
 import { useMyPresence, useOthers } from "@liveblocks/react/suspense";
 import { useAuth } from "@/hooks/use-auth";
 import { createImage } from "@/lib/helper";
+import { useMediaQuery } from "usehooks-ts";
 
 const ListOnline = () => {
   const others = useOthers();
+  console.log(others);
+
   const { profile } = useAuth();
   const [persence, updateMyPresence] = useMyPresence();
   const userCount = others.length;
+  const isMd = useMediaQuery("(min-width: 768px)");
+  const limit = isMd ? 5 : 3;
 
   useEffect(() => {
     const user = {
@@ -26,7 +31,7 @@ const ListOnline = () => {
   }, []);
   if (userCount === 0) return null;
   return (
-    <div className="w-fit flex flex-wrap gap-4 fixed bottom-4 lg:bottom-10 right-1 xl:bottom-2 xl:left-1/2  xl:-translate-x-1/2 py-2 justify-center z-[10000000000000]">
+    <div className="w-fit flex flex-wrap gap-4 fixed bottom-4 xl:bottom-10  left-1/2  -translate-x-1/2 py-2 justify-center z-10">
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -34,6 +39,7 @@ const ListOnline = () => {
         className="flex items-center gap-1 lg:gap-4 p-1 lg:p-4 shadow-lg bg-white w-fit rounded-full flex-wrap"
       >
         {others
+          .slice(0, limit)
           .filter((el) => el.presence?.profile)
           .map((el, index) => {
             const profile = el.presence?.profile;
@@ -57,16 +63,25 @@ const ListOnline = () => {
               </motion.div>
             );
           })}
-        {/* <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3, }}
-          className="border flex items-center gap-1 border-dashed border-primary-01 group relative rounded-full hover:border-pastel-pink cursor-pointer"
-        >
-          <span className="text-sm absolute bottom-full left-full px-2 py-1 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md bg-primary-01 text-white  whitespace-nowrap ">
-            {userCount}
-          </span>
-        </motion.div> */}
+        {userCount > limit && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 5 * 0.1 }}
+            className="border flex items-center gap-1 border-dashed border-primary-01 group relative rounded-full hover:border-pastel-pink cursor-pointer"
+            key={profile.id}
+          >
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              className="w-6 h-6 lg:w-10 lg:h-10 rounded-full bg-pastel-pink/5 flex items-center justify-center "
+            >
+              {userCount - limit}
+            </motion.div>
+            <span className="text-sm absolute bottom-full left-full px-2 py-1 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md bg-primary-01 text-white  whitespace-nowrap ">
+              {profile.name}
+            </span>
+          </motion.div>
+        )}
       </motion.div>
     </div>
   );
