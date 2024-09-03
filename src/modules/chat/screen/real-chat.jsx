@@ -38,11 +38,7 @@ const MarqueeChat = () => {
   const { messages = [] } = useMessage();
 
   if (messages.length === 0) return <Invester />;
-  return (
-    <marquee behavior="scroll" direction="left" scrollamount="10" className="bg-pastel-pink mb-0 pb-0">
-      <div className="flex items-center py-3 gap-20 px-10"></div>
-    </marquee>
-  );
+  return null;
 };
 
 export default MarqueeChat;

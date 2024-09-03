@@ -2,7 +2,7 @@ import AxiosClient from "@/lib/api/axios-client";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { ChevronDown, SendIcon } from "lucide-react";
 import { act, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import useMessage from "../helper/use-message";
 import useConnection, { useSubscribe } from "@/hooks/use-connection";
@@ -120,10 +120,17 @@ const ChatWiget = () => {
   return (
     <>
       {!show && (
-        <div className="fixed cursor-pointer bottom-4 md:bottom-10 right-4 md:right-10 z-100">
+        <div className="fixed cursor-pointer bottom-4 flex flex-col gap-2 md:bottom-10 right-4 md:right-10 z-100">
+          <Link to="/relax" className=" rounded-full p-2 bg-white shadow-md relative group " onClick={() => setShow(true)}>
+            <img src="/health.png" className="w-8 h-8 object-contain" />
+            <div className="absolute hidden group-hover:flex bottom-full right-full w-96 h-96 bg-white rounded-full items-center justify-center">
+              <img src="/health.png" className="w-80 h-80 object-contain " />
+            </div>
+            <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
+          </Link>
           <div className=" rounded-full p-2 bg-white shadow-md relative" onClick={() => setShow(true)}>
             <img src="/chat.png" className="w-8 h-8 object-contain" />
-            <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
+            {/* <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div> */}
           </div>
         </div>
       )}
