@@ -75,6 +75,8 @@ const getStatistic = async (userId) => {
   return statics.data;
 };
 
+const enumApa = ["A", "B", "C", "D"];
+
 const Question = ({ question, getNext }) => {
   const [active, setActive] = useState(null);
   const { profile } = useAuth();
@@ -104,18 +106,19 @@ const Question = ({ question, getNext }) => {
       <div className="flex gap-10 items-start">
         <div className="text-primary-01 w-10/12">{question.content}</div>
         <div className="w-2/12">
-          <img src={createImage(question.image, 500)} alt="" className="w-40 h-full object-contain" />
+          <img
+            src={createImage(question.image || "4ff542bd-bbbb-4ee2-809a-f941e05b2605", 500)}
+            alt=""
+            className="w-40 h-full object-contain"
+          />
         </div>
       </div>
       <div className="flex flex-col gap-6 mt-10 flex-wrap">
         {question?.options?.map((option, index) => {
           const itemActive = enumJuice[index % enumJuice.length];
           return (
-            <div key={option.id} className="flex gap-x-4 items-center gap-y-1 cursor-pointer ">
-              <div className="min-w-16 w-16 h-16">
-                <img src={createImage(option.image || itemActive, 500)} alt="" className=" w-16 h-16 object-contain" />
-              </div>
-
+            <div key={option.id} className="flex gap-x-4 items-start gap-y-1 cursor-pointer ">
+              <div className="min-w-10 w-10">{enumApa[index]}.</div>
               <div>
                 <div
                   onClick={() => onClick(option)}

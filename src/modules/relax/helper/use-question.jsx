@@ -1,6 +1,11 @@
 import AxiosClient from "@/lib/api/axios-client";
 import useSWR from "swr";
 
+function difference(arr1, arr2) {
+  const set2 = new Set(arr2);
+  return arr1.filter((item) => !set2.has(item));
+}
+
 const useQuestion = () => {
   const { data, isLoading } = useSWR("/items/question?fields=*,options.*");
   const {
@@ -12,11 +17,12 @@ const useQuestion = () => {
   const listAnswer = answer?.data || [];
 
   const getNextQuestion = () => {
-    const randomIndex = Math.floor(Math.random() * questions.length);
-    const question = questions[randomIndex];
-    if (listAnswer.length >= questions.length) return -1;
-    if (listAnswer.find((item) => item.question === question.id)) return getNextQuestion();
-    return randomIndex;
+    const questionValid = difference(questions, listAnswer);
+    if (questionValid.length === 0) return -1;
+    const randomIndex = Math.floor(Math.random() * questionValid.length);
+    const question = questionValid[randomIndex];
+    const index = questions.findIndex((item) => item.id === question.id);
+    return index;
   };
   const createAnswer = async (payload) => {
     await AxiosClient.post("/items/answer", payload);
