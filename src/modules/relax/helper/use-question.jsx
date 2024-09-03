@@ -7,7 +7,7 @@ function difference(arr1, arr2) {
 }
 
 const useQuestion = () => {
-  const { data, isLoading } = useSWR("/items/question?fields=*,options.*");
+  const { data, isLoading } = useSWR("/items/question?fields=*,options.*,topic.name");
   const {
     data: answer,
     isLoading: isLoadingAnswer,

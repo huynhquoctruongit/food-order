@@ -11,6 +11,7 @@ import { ChevronsRightIcon } from "lucide-react";
 import AxiosClient from "@/lib/api/axios-client";
 import { useAuth } from "@/hooks/use-auth";
 import ListUserPoint from "../component/list-user-point";
+import useSWR from "swr";
 
 const Relax = () => {
   const { isLoading, getNextQuestion, questions } = useQuestion();
@@ -79,6 +80,9 @@ const enumApa = ["A", "B", "C", "D"];
 
 const Question = ({ question, getNext }) => {
   const [active, setActive] = useState(null);
+  const { data: statics, mutate: mutateStatics } = useSWR("/items/statictis_user?filter[user][_eq]=$CURRENT_USER");
+  const staticUser = statics?.data[0] || { point: 0, count_correct: 0, count_incorrect: 0 };
+
   const { profile } = useAuth();
   const { createAnswer } = useQuestion();
   const onClick = async (option) => {
@@ -97,14 +101,18 @@ const Question = ({ question, getNext }) => {
       count_correct: staticUser.count_correct + (option.is_correct ? 1 : 0),
       count_incorrect: staticUser.count_incorrect + (option.is_correct ? 0 : 1),
     });
+    mutateStatics();
   };
   const { data } = useImage("juice");
   const enumJuice = data.map((item) => item.directus_files_id);
 
   return (
-    <div className="border h-full min-h-[500px] border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
+    <div className="border h-full min-h-[500px] flex flex-col border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
       <div className="flex gap-10 items-start">
-        <div className="text-primary-01 w-10/12">{question.content}</div>
+        <div className="text-primary-01 w-10/12">
+          <div className="text-lg font-bold text-gray-600">Món quà: {question.topic.name}</div>
+          <div>{question.content}</div>
+        </div>
         <div className="w-2/12">
           <img
             src={createImage(question.image || "4ff542bd-bbbb-4ee2-809a-f941e05b2605", 500)}
@@ -130,27 +138,24 @@ const Question = ({ question, getNext }) => {
                 >
                   {option.label} {active && active?.id === option.id && (option.is_correct ? "👍" : "👎")}
                 </div>
-                <AnimatePresence>
-                  {active && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, height: 0 }}
-                      animate={{ opacity: 1, y: 0, height: "auto" }}
-                      transition={{ duration: 0.3, type: "ease" }}
-                      className={cn("text-xs mt-1 ml-2", {
-                        "text-green-700": option.is_correct,
-                        "text-gray-500": !option.is_correct,
-                      })}
-                    >
-                      {option.explanation}{" "}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <motion.div
+                  // initial={{ opacity: 0, y: 10, height: 0 }}
+                  // animate={{ opacity: 1, y: 0, height: "auto" }}
+                  // transition={{ duration: 0.3, type: "ease" }}
+                  className={cn("text-xs mt-1 ml-2 opacity-0 duration-200", {
+                    "text-green-700 opacity-100": option.is_correct && active,
+                    "text-gray-500 opacity-100": !option.is_correct && active,
+                  })}
+                >
+                  {option.explanation}
+                </motion.div>
               </div>
             </div>
           );
         })}
       </div>
-      <div className="flex justify-end mt-10">
+      <div className="flex justify-between mt-auto pt-10">
+        <div>Điểm hiện tại: {staticUser.point}</div>
         <Button className="flex items-center gap-2" onClick={getNext}>
           Câu tiếp đê <ChevronsRightIcon className="w-4" />
         </Button>
