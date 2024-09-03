@@ -155,7 +155,9 @@ const Question = ({ question, getNext }) => {
         })}
       </div>
       <div className="flex justify-between mt-auto pt-10">
-        <div>Điểm hiện tại: {staticUser.point}</div>
+        <div>
+          Điểm hiện tại: <span className="border border-dashed border-primary-01 px-2 py-1 rounded-full text-primary-01 font-bold">{staticUser.point}</span>
+        </div>
         <Button className="flex items-center gap-2" onClick={getNext}>
           Câu tiếp đê <ChevronsRightIcon className="w-4" />
         </Button>
