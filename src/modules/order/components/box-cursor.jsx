@@ -123,14 +123,14 @@ const BoxCursor = ({ children }) => {
             <span>Reactions</span>
             <span className="block rounded border border-gray-300 px-1 text-xs font-medium uppercase text-gray-500">E</span>
           </li> */}
-          <li className="flex items-center space-x-2 rounded-md bg-pastel-pink text-xs w-fit py-1 px-1.5 md:py-2 md:px-3  md:text-sm">
-            <span className="text-white">Chat</span>
-            <span className="block rounded border border-white px-1 text-xs font-medium uppercase text-white">/</span>
+          <li className="flex items-center space-x-2 rounded-md border border-gray-200 bg-white text-xs w-fit py-1 px-1.5 md:py-2 md:px-3  md:text-sm">
+            <span className="text-gray-400">Chat</span>
+            <span className="block rounded border border-white px-1 text-xs font-medium uppercase text-gray-400">/</span>
           </li>
 
-          <li className="flex items-center space-x-2 rounded-md bg-pastel-pink text-xs w-fit py-1 px-1.5 md:py-2 md:px-3  md:text-sm">
-            <span className="text-white">Escape</span>
-            <span className="block rounded border border-white px-1 text-xs font-medium uppercase text-white">esc</span>
+          <li className="flex items-center space-x-2 rounded-md border border-gray-200 bg-white text-xs w-fit py-1 px-1.5 md:py-2 md:px-3  md:text-sm">
+            <span className="text-gray-400">Escape</span>
+            <span className="block rounded border border-white px-1 text-xs font-medium uppercase text-gray-400">esc</span>
           </li>
         </ul>
       </div>
