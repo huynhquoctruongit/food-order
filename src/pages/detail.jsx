@@ -135,7 +135,7 @@ const Wrap = () => {
     );
   return (
     <>
-      <RoomProvider id="my-room">
+      <RoomProvider id={companyId}>
         <ClientSideSuspense fallback={<LoadingPage />}>
           <BoxCursor>
             <Order />

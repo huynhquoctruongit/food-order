@@ -89,22 +89,24 @@ const BoxCursor = ({ children }) => {
     >
       {children}
       {cursor && <MyCursor state={state} setState={setState} />}
-      {others.map(({ connectionId, presence }) => {
-        if (presence == null || !presence.cursor) {
-          return null;
-        }
+      {others
+        .filter(({ presence }) => presence.profile)
+        .map(({ connectionId, presence }) => {
+          if (presence == null || !presence.cursor) {
+            return null;
+          }
 
-        return (
-          <Cursor
-            key={connectionId}
-            color={COLORS[connectionId % COLORS.length]}
-            x={presence.cursor.x}
-            y={presence.cursor.y}
-            profile={presence.profile}
-            message={presence.message}
-          />
-        );
-      })}
+          return (
+            <Cursor
+              key={connectionId}
+              color={COLORS[connectionId % COLORS.length]}
+              x={presence.cursor.x}
+              y={presence.cursor.y}
+              profile={presence.profile}
+              message={presence.message}
+            />
+          );
+        })}
     </div>
   );
 };
