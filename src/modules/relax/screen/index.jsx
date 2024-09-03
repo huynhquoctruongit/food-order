@@ -39,9 +39,9 @@ const Relax = () => {
         className="root-wrapper text-left relative mt-10"
       >
         <div className="absolute top-1/3 left-0 bg-pastel-pink/20  blur-xl w-72 h-72 rounded-full"></div>
-        <div className="absolute top-2/3 left-1/2 bg-secondary-01/5  blur-2xl w-64 h-64 rounded-full"></div>
+        <div className="absolute top-2/3 left-1/2 bg-secondary-01/10  blur-[100px] w-96 h-96 rounded-full"></div>
         <div className="flex items-stretch gap-10 mt-10 relative z-10">
-          <div className="w-4/6 ">
+          <div className="w-7/12 ">
             {isEnd && (
               <div className="border flex items-center justify-center flex-col h-full min-h-[500px] border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
                 <img src="/not-found.png" alt="" className="w-40 h-40 object-contain" />
@@ -51,8 +51,8 @@ const Relax = () => {
             )}
             {!isEnd && <Question question={question} key={question.id} getNext={getNext} />}
           </div>
-          <div className="w-2/6 border border-primary-01 rounded-xl p-6  bg-white">
-            <div className="text-primary-01">Cẩn thận với các người chơi này</div>
+          <div className="w-5/12 border border-primary-01 rounded-xl p-6">
+            <div className="text-primary-01 text-xl font-bold">Cẩn thận với các người chơi này</div>
             <div className="mt-4 flex flex-col gap-4">
               <ListUserPoint />
             </div>
@@ -102,8 +102,8 @@ const Question = ({ question, getNext }) => {
   return (
     <div className="border h-full min-h-[500px] border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
       <div className="flex gap-10 items-start">
-        <div className="text-primary-01 w-2/3">{question.content}</div>
-        <div className="w-1/3">
+        <div className="text-primary-01 w-10/12">{question.content}</div>
+        <div className="w-2/12">
           <img src={createImage(question.image, 500)} alt="" className="w-40 h-full object-contain" />
         </div>
       </div>
@@ -120,7 +120,7 @@ const Question = ({ question, getNext }) => {
                 <div
                   onClick={() => onClick(option)}
                   className={cn(
-                    "text-sm rounded-full w-fit whitespace-nowrap  hover:shadow-lg hover:shadow-primary-01/10 duration-200  px-3 py-0.5 border-dashed border-pastel-pink border ",
+                    "text-sm rounded-full w-fit whitespace-nowrap  hover:shadow-lg hover:shadow-primary-01/10 duration-200 px-3 py-1 border-dashed border-pastel-pink border ",
                     { "bg-secondary-01 text-white border-secondary-01": active && active?.id === option.id && option.is_correct },
                     { "bg-primary-01 text-white border-primary-01": active && active?.id === option.id && !option.is_correct },
                   )}
