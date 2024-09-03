@@ -70,7 +70,7 @@ const createSubscribe = async (event, collection, fields, filter, callback) => {
   });
   cache.keys[key] = { subscription, unsubscribe };
   for await (const message of subscription) {
-    callback.current(message);
+    if (message.data) callback.current(message);
   }
   return unsubscribe;
 };

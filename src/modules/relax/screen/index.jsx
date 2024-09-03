@@ -8,14 +8,19 @@ import useImage from "@/modules/order/helper/use-image";
 import UserProfile from "@/components/widget/user";
 import { Button } from "@/components/ui/button-hero";
 import { ChevronsRightIcon } from "lucide-react";
+import AxiosClient from "@/lib/api/axios-client";
+import { useAuth } from "@/hooks/use-auth";
+import ListUserPoint from "../component/list-user-point";
 
 const Relax = () => {
   const { isLoading, getNextQuestion, questions } = useQuestion();
   const [question, setQuestion] = useState();
+  const [isEnd, setIsEnd] = useState(false);
 
   const getNext = () => {
     if (questions.length === 0) return;
     const index = getNextQuestion();
+    if (index === -1) setIsEnd(true);
     setQuestion(questions[index]);
   };
   useEffect(() => {
@@ -23,7 +28,8 @@ const Relax = () => {
     getNext();
   }, [questions]);
 
-  if (isLoading || !question) return <LoadingPage />;
+  if ((isLoading || !question) && !isEnd) return <LoadingPage />;
+
   return (
     <motion.div>
       <motion.div
@@ -36,22 +42,19 @@ const Relax = () => {
         <div className="absolute top-2/3 left-1/2 bg-secondary-01/5  blur-2xl w-64 h-64 rounded-full"></div>
         <div className="flex items-stretch gap-10 mt-10 relative z-10">
           <div className="w-4/6 ">
-            <Question question={question} key={question.id} getNext={getNext} />
+            {isEnd && (
+              <div className="border flex items-center justify-center flex-col h-full min-h-[500px] border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
+                <img src="/not-found.png" alt="" className="w-40 h-40 object-contain" />
+                <div className="text-gray-600">Làm gì mà làm dữ ác dị 🤬</div>
+                <div className="text-primary-01">Nghĩ ngơi đi FEN</div>
+              </div>
+            )}
+            {!isEnd && <Question question={question} key={question.id} getNext={getNext} />}
           </div>
           <div className="w-2/6 border border-primary-01 rounded-xl p-6  bg-white">
             <div className="text-primary-01">Cẩn thận với các người chơi này</div>
             <div className="mt-4 flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <div className="rounded-full border-dashed border-pastel-pink border px-2 py-1 text-primary-01">232 điểm</div>
-                <UserProfile
-                  profile={{
-                    id: "qqweqew",
-                    first_name: " Nhất",
-                    last_name: "Nguyễn  ",
-                    avatar: "1eb2299c-f72a-42e8-8cb7-3910f3e83618",
-                  }}
-                />
-              </div>
+              <ListUserPoint />
             </div>
           </div>
         </div>
@@ -61,11 +64,37 @@ const Relax = () => {
 };
 export default Relax;
 
+const getStatistic = async (userId) => {
+  const data = await AxiosClient.get("/items/statictis_user?filter[user][_eq]=$CURRENT_USER");
+  const staticUser = data.data[0];
+  if (staticUser) return staticUser;
+  const statics = await AxiosClient.post("/items/statictis_user", {
+    user: userId,
+    point: 0,
+  });
+  return statics.data;
+};
+
 const Question = ({ question, getNext }) => {
   const [active, setActive] = useState(null);
-  const onClick = (option) => {
+  const { profile } = useAuth();
+  const { createAnswer } = useQuestion();
+  const onClick = async (option) => {
     if (active) return;
     setActive(option);
+    const point = option.is_correct ? 5 : 0;
+    const staticUser = await getStatistic(profile.id);
+    await createAnswer({
+      question: question.id,
+      detail: option,
+      is_correct: option.is_correct,
+      point: option.is_correct ? 5 : 0,
+    });
+    await AxiosClient.patch(`/items/statictis_user/${staticUser.id}`, {
+      point: staticUser.point + point,
+      count_correct: staticUser.count_correct + (option.is_correct ? 1 : 0),
+      count_incorrect: staticUser.count_incorrect + (option.is_correct ? 0 : 1),
+    });
   };
   const { data } = useImage("juice");
   const enumJuice = data.map((item) => item.directus_files_id);

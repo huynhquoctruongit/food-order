@@ -14,11 +14,12 @@ const useQuestion = () => {
   const getNextQuestion = () => {
     const randomIndex = Math.floor(Math.random() * questions.length);
     const question = questions[randomIndex];
+    if (listAnswer.length >= questions.length) return -1;
     if (listAnswer.find((item) => item.question === question.id)) return getNextQuestion();
     return randomIndex;
   };
-  const createAnswer = (id, payload) => {
-    AxiosClient.post("/items/answer", payload);
+  const createAnswer = async (payload) => {
+    await AxiosClient.post("/items/answer", payload);
     mutateAnswer(
       (oldData) => {
         const newData = [...oldData.data, payload];

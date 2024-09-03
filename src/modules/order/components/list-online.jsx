@@ -13,7 +13,6 @@ import { useMediaQuery } from "usehooks-ts";
 
 const ListOnline = () => {
   const others = useOthers();
-  console.log(others);
 
   const { profile } = useAuth();
   const [persence, updateMyPresence] = useMyPresence();
