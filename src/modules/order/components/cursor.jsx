@@ -11,7 +11,7 @@ export default function Cursor({ color, x, y, message, profile }) {
     >
       <MousePointer2 className={" stroke-none fill-primary-01"} />
       <div className="absolute top-full left-1/2 flex items-center gap-2">
-        <div className="w-8 h-8 bg-white shadow-md rounded-full">
+        <div className="w-10 h-10 bg-white shadow-md rounded-full">
           <img src={createImage(profile.avatar, 100)} alt="avatar" className="w-full h-full object-cover" />
         </div>
 
