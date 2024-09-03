@@ -4,7 +4,7 @@ import { useRef } from "react";
 import useSWR from "swr";
 
 const ListUserPoint = () => {
-  const { data, isLoading, mutate } = useSWR("/items/statictis_user?sort=-point&limit=10");
+  const { data, mutate } = useSWR("/items/statictis_user?fields=*,user.*&sort=-point&limit=10");
   const listAnswer = data?.data || [];
 
   const callback = useRef(null);
@@ -19,17 +19,20 @@ const ListUserPoint = () => {
   };
   useSubscribe("update", "statictis_user", ["*,user.*"], {}, callback);
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {listAnswer.map((item) => {
+        const profile = item?.user || {};
         return (
           <div key={item.id} className="flex items-center gap-2">
-            <div className="rounded-full border-dashed border-pastel-pink border px-2 py-1 text-primary-01">{item.point} điểm</div>
+            <div className="rounded-full border-dashed border-pastel-pink border px-2 py-1 text-primary-01">
+              {item.point} điểm
+            </div>
             <UserProfile
               profile={{
-                id: "qqweqew",
-                first_name: " Nhất",
-                last_name: "Nguyễn  ",
-                avatar: "1eb2299c-f72a-42e8-8cb7-3910f3e83618",
+                id: profile.id,
+                first_name: profile.first_name,
+                last_name: profile.last_name,
+                avatar: profile.avatar,
               }}
             />
           </div>
