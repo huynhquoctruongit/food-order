@@ -6,33 +6,25 @@ import { useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import useSWR from "swr";
 import { motion } from "framer-motion";
+import { useMyPresence, useOthers } from "@liveblocks/react/suspense";
+import { useAuth } from "@/hooks/use-auth";
+import { createImage } from "@/lib/helper";
 
 const ListOnline = () => {
-  const callback = useRef();
-  const { companyId } = useParams();
-  const { data, mutate } = useSWR([
-    "/items/activity_user",
-    {
-      fields: "*,user_created.*",
-      filter: {
-        company: companyId,
-        name: "online",
-      },
-    },
-  ]);
-  const users = (data?.data || []).map((el) => el.user_created);
-  useEffect(() => {
-    AxiosClient.post("/items/activity_user", {
-      name: "online",
-      company: parseInt(companyId),
-    }).then(() => mutate());
-  }, []);
-  callback.current = (data) => {
-    console.log("data", data);
-  };
+  const others = useOthers();
+  const { profile } = useAuth();
+  const [persence, updateMyPresence] = useMyPresence();
+  const userCount = others.length;
 
-  useSubscribe("delete", "activity_user", ["*,user_created.*"], { company: companyId, name: "online" }, callback);
-  if (users.length === 0) return;
+  useEffect(() => {
+    const user = {
+      name: profile.first_name + " " + profile.last_name,
+      avatar: profile.avatar,
+      id: profile.id,
+    };
+    updateMyPresence({ profile: user });
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -46,29 +38,37 @@ const ListOnline = () => {
         transition={{ duration: 0.3 }}
         className="flex items-center gap-4 p-4 shadow-lg bg-white w-fit rounded-full flex-wrap"
       >
-        {users.map((el, index) => {
-          return (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="border flex items-center gap-1 border-dashed border-primary-01 pl-1 pr-2 py-1 rounded-full hover:border-pastel-pink cursor-pointer"
-              key={el.id + el.fullname + index}
-            >
-              <motion.div whileHover={{ scale: 1.1 }} className="w-6 h-6 rounded-full bg-pastel-pink/5">
-                <img className="w-6 h-6 rounded-full" src={enumFood[index % enumFood.length]} />
-              </motion.div>
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3, delay: index * 0.1 + 0.2 }}
-                className="text-sm text-gray-700"
+        {others
+          .filter((el) => el.presence?.profile)
+          .map((el, index) => {
+            const profile = el.presence?.profile;
+            return (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="border flex items-center gap-1 border-dashed border-primary-01 group relative rounded-full hover:border-pastel-pink cursor-pointer"
+                key={profile.id}
               >
-                {el.first_name + " " + el.last_name}
-              </motion.span>
-            </motion.div>
-          );
-        })}
+                <motion.div whileHover={{ scale: 1.1 }} className="w-10 h-10 rounded-full bg-pastel-pink/5 ">
+                  <img className="w-10 h-10 rounded-full" src={createImage(profile.avatar, 100)} />
+                </motion.div>
+                <span className="text-sm absolute bottom-full left-full px-2 py-1 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md bg-primary-01 text-white  whitespace-nowrap ">
+                  {profile.name}
+                </span>
+              </motion.div>
+            );
+          })}
+        {/* <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, }}
+          className="border flex items-center gap-1 border-dashed border-primary-01 group relative rounded-full hover:border-pastel-pink cursor-pointer"
+        >
+          <span className="text-sm absolute bottom-full left-full px-2 py-1 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md bg-primary-01 text-white  whitespace-nowrap ">
+            {userCount}
+          </span>
+        </motion.div> */}
       </motion.div>
     </motion.div>
   );

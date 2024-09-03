@@ -4,9 +4,8 @@ import { useAuth } from "./use-auth";
 import { getCookie } from "react-use-cookie";
 import { create } from "zustand";
 import _ from "lodash";
-import AxiosClient from "@/lib/api/axios-client";
-let statusConnected = "disconnected";
 
+let statusConnected = "disconnected";
 const useStatusConnection = create((set) => ({
   status: "disconnected",
   setStatus: (status) => set({ status }),

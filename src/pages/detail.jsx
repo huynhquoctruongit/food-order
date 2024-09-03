@@ -17,6 +17,8 @@ import EditCompany from "@/modules/order/screen/config";
 import ChatWiget from "@/modules/chat/screen";
 import MarqueeChat from "@/modules/chat/screen/real-chat";
 import useMessage from "@/modules/chat/helper/use-message";
+import { ClientSideSuspense, RoomProvider } from "@liveblocks/react/suspense";
+import BoxCursor from "@/modules/order/components/box-cursor";
 
 const GroupButtonHero = () => {
   const onScroll = () => {
@@ -133,8 +135,14 @@ const Wrap = () => {
     );
   return (
     <>
-      <Order />
-      <ChatWiget />
+      <RoomProvider id="my-room">
+        <ClientSideSuspense fallback={<LoadingPage />}>
+          <BoxCursor>
+            <Order />
+            <ChatWiget />
+          </BoxCursor>
+        </ClientSideSuspense>
+      </RoomProvider>
     </>
   );
 };

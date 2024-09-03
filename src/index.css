@@ -46,3 +46,8 @@ h1 {
     color: #747bff;
   }
 }
+
+.cusor-hidden * {
+  /* cursor: none;
+  pointer-events: painted; */
+}
