@@ -204,13 +204,13 @@ const MyCursor = ({ refInput, state, setState }) => {
           </div>
         </>
       )}
-      {state.mode === CursorMode.ReactionSelector && (
+      {/* {state.mode === CursorMode.ReactionSelector && (
         <ReactionSelector
           setReaction={(reaction) => {
             setReaction(reaction);
           }}
         />
-      )}
+      )} */}
       {state.mode === CursorMode.Reaction && (
         <div className="pointer-events-none absolute top-3.5 left-1 select-none">{state.reaction}</div>
       )}
