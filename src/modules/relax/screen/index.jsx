@@ -105,7 +105,7 @@ const Question = ({ question, getNext }) => {
   };
   const { data } = useImage("juice");
   const enumJuice = data.map((item) => item.directus_files_id);
-
+ 
   return (
     <div className="border h-full min-h-[500px] flex flex-col border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
       <div className="flex gap-10 items-start">
@@ -139,9 +139,6 @@ const Question = ({ question, getNext }) => {
                   {option.label} {active && active?.id === option.id && (option.is_correct ? "👍" : "👎")}
                 </div>
                 <motion.div
-                  // initial={{ opacity: 0, y: 10, height: 0 }}
-                  // animate={{ opacity: 1, y: 0, height: "auto" }}
-                  // transition={{ duration: 0.3, type: "ease" }}
                   className={cn("text-xs mt-1 ml-2 opacity-0 duration-200", {
                     "text-green-700 opacity-100": option.is_correct && active,
                     "text-gray-500 opacity-100": !option.is_correct && active,
@@ -154,9 +151,17 @@ const Question = ({ question, getNext }) => {
           );
         })}
       </div>
+      <div className="flex flex-col gap-2 mt-8 text-primary-01">
+        {question.fact && active && <div className="text-primary-01"> Fact: {question.fact}</div>}
+        {question.insight && active && <div className="text-secondary-01"> Insight: {question.insight}</div>}
+      </div>
+
       <div className="flex justify-between mt-auto pt-10">
         <div>
-          Điểm hiện tại: <span className="border border-dashed border-primary-01 px-2 py-1 rounded-full text-primary-01 font-bold">{staticUser.point}</span>
+          Điểm hiện tại:{" "}
+          <span className="border border-dashed border-primary-01 px-2 py-1 rounded-full text-primary-01 font-bold">
+            {staticUser.point}
+          </span>
         </div>
         <Button className="flex items-center gap-2" onClick={getNext}>
           Câu tiếp đê <ChevronsRightIcon className="w-4" />
