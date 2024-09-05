@@ -37,12 +37,12 @@ const Relax = () => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="root-wrapper text-left relative mt-10"
+        className="root-wrapper text-left relative my-10"
       >
         <div className="absolute top-1/3 left-0 bg-pastel-pink/20  blur-xl w-72 h-72 rounded-full"></div>
         <div className="absolute top-2/3 left-1/2 bg-secondary-01/10  blur-[100px] w-96 h-96 rounded-full"></div>
-        <div className="flex items-stretch gap-10 mt-10 relative z-10">
-          <div className="w-7/12 ">
+        <div className="flex items-stretch gap-10 mt-10 relative z-10 flex-wrap md:flex-nowrap">
+          <div className="w-full md:w-7/12 ">
             {isEnd && (
               <div className="border flex items-center justify-center flex-col h-full min-h-[500px] border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
                 <img src="/not-found.png" alt="" className="w-40 h-40 object-contain" />
@@ -52,7 +52,7 @@ const Relax = () => {
             )}
             {!isEnd && <Question question={question} key={question.id} getNext={getNext} />}
           </div>
-          <div className="w-5/12 border border-primary-01 rounded-xl p-6">
+          <div className="w-full md:w-5/12 border border-primary-01 rounded-xl p-6">
             <div className="text-primary-01 text-xl font-bold">Cẩn thận với các người chơi này</div>
             <div className="mt-4 flex flex-col gap-4">
               <ListUserPoint />
@@ -108,16 +108,16 @@ const Question = ({ question, getNext }) => {
  
   return (
     <div className="border h-full min-h-[500px] flex flex-col border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
-      <div className="flex gap-10 items-start">
-        <div className="text-primary-01 w-10/12">
+      <div className="flex gap-10 flex-wrap md:flex-nowrap items-start">
+        <div className="text-primary-01 w-full md:w-10/12">   
           <div className="text-lg font-bold text-gray-600">Món quà: {question.topic.name}</div>
           <div>{question.content}</div>
         </div>
-        <div className="w-2/12">
+        <div className="w-full md:w-2/12">
           <img
             src={createImage(question.image || "4ff542bd-bbbb-4ee2-809a-f941e05b2605", 500)}
             alt=""
-            className="w-40 h-full object-contain"
+            className="w-40 h-full object-contain mx-auto md:mx-0"
           />
         </div>
       </div>
@@ -131,7 +131,7 @@ const Question = ({ question, getNext }) => {
                 <div
                   onClick={() => onClick(option)}
                   className={cn(
-                    "text-sm rounded-full w-fit whitespace-nowrap  hover:shadow-lg hover:shadow-primary-01/10 duration-200 px-3 py-1 border-dashed border-pastel-pink border ",
+                    "text-sm rounded-full w-fit hover:shadow-lg hover:shadow-primary-01/10 duration-200 px-3 py-1 border-dashed border-pastel-pink border ",
                     { "bg-secondary-01 text-white border-secondary-01": active && active?.id === option.id && option.is_correct },
                     { "bg-primary-01 text-white border-primary-01": active && active?.id === option.id && !option.is_correct },
                   )}
@@ -139,7 +139,7 @@ const Question = ({ question, getNext }) => {
                   {option.label} {active && active?.id === option.id && (option.is_correct ? "👍" : "👎")}
                 </div>
                 <motion.div
-                  className={cn("text-xs mt-1 ml-2 opacity-0 duration-200", {
+                  className={cn("text-xs mt-1 ml-2 opacity-0 duration-200 hidden md:block", {
                     "text-green-700 opacity-100": option.is_correct && active,
                     "text-gray-500 opacity-100": !option.is_correct && active,
                   })}
@@ -156,7 +156,7 @@ const Question = ({ question, getNext }) => {
         {question.insight && active && <div className="text-secondary-01"> Insight: {question.insight}</div>}
       </div>
 
-      <div className="flex justify-between mt-auto pt-10">
+      <div className="flex justify-between mt-auto gap-6 pt-10 flex-wrap">
         <div>
           Điểm hiện tại:{" "}
           <span className="border border-dashed border-primary-01 px-2 py-1 rounded-full text-primary-01 font-bold">
