@@ -207,7 +207,7 @@ export const SplitButton = () => {
   return (
     <>
       {(profile.uuid === admin.uuid || profile.permission_to_create_menu) && (
-        <ButtonHero variant="secondary" size="default" className="relative" onClick={() => setSplit(true)}>
+        <ButtonHero variant="secondary" size="default" className="relative flex items-center gap-2" onClick={() => setSplit(true)}>
           <TableCellsSplitIcon className="w-4 h-4" />
           <span className="hidden md:block"> Chia tiên </span>
         </ButtonHero>
