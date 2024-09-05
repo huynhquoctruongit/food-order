@@ -23,7 +23,7 @@ const EditCompany = () => {
   return (
     <>
       <div className="bg-pastel-pink/40 ">
-        <div className="root-wrapper py-4 flex justify-end gap-4">
+        <div className="root-wrapper py-4 flex justify-end gap-2 md:gap-4 flex-wrap">
           <Button
             variant="secondary"
             size="default"
@@ -31,12 +31,12 @@ const EditCompany = () => {
             onClick={() => navigate("/admin-report?week=this_week")}
           >
             <span className="flex items-center gap-2 whitespace-nowrap">
-              <SquareKanban className="w-4 h-4" /> Quản lý công ty
+              <SquareKanban className="w-4 h-4" /> <span className="hidden md:block">Quản lý công ty</span>
             </span>
           </Button>
           <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
             <span className="flex items-center gap-2 whitespace-nowrap">
-              <SquaresPlusIcon className="w-4 h-4" /> Thêm menu
+              <SquaresPlusIcon className="w-4 h-4" /> <span className="hidden md:block">Thêm menu</span>
             </span>
           </Button>
 
