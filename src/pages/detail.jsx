@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button-hero.jsx";
-import { SquaresPlusIcon, PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import OCRComponent from "@/modules/order/screen";
 import { mode } from "@/lib/config";
 import useSWR from "swr";
 import { useParams, Link } from "react-router-dom";
 import { LoadingPage } from "@/components/widget/loading";
-import CreateMenu, { SplitButton } from "@/modules/order/screen/create-menu";
 import { cn } from "@/lib/utils";
 import { useCompany } from "@/hooks/use-company";
 import { useAuth } from "@/hooks/use-auth";
@@ -14,7 +13,6 @@ import { useOdersIsNotPaid } from "@/hooks/use-order";
 import AxiosClient from "@/lib/api/axios-client";
 import ModalRemind from "@/modules/order/components/remind";
 import EditCompany from "@/modules/order/screen/config";
-import ChatWiget from "@/modules/chat/screen";
 import MarqueeChat from "@/modules/chat/screen/real-chat";
 import useMessage from "@/modules/chat/helper/use-message";
 import { ClientSideSuspense, RoomProvider } from "@liveblocks/react/suspense";
@@ -139,7 +137,6 @@ const Wrap = () => {
         <ClientSideSuspense fallback={<LoadingPage />}>
           <BoxCursor>
             <Order />
-            <ChatWiget />
           </BoxCursor>
         </ClientSideSuspense>
       </RoomProvider>
