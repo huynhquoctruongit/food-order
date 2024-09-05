@@ -5,16 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
 import { useCompany } from "@/hooks/use-company";
-import { Settings } from "lucide-react";
+import { Settings, SquareKanban } from "lucide-react";
 import { useRef, useState } from "react";
 import AxiosClient from "@/lib/api/axios-client";
 import { useToast } from "@/components/ui/use-toast";
 import CreateMenu, { SplitButton } from "./create-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PresentationChartBarIcon, SquaresPlusIcon } from "@heroicons/react/24/outline";
 
 const EditCompany = () => {
   const [openConfig, setOpenConfig] = useState(false);
+  const navigate = useNavigate();
   const { profile } = useAuth();
   const { company, isLoading } = useCompany();
   const refMenu = useRef();
@@ -23,6 +24,16 @@ const EditCompany = () => {
     <>
       <div className="bg-pastel-pink/40 ">
         <div className="root-wrapper py-4 flex justify-end gap-4">
+          <Button
+            variant="secondary"
+            size="default"
+            className="relative"
+            onClick={() => navigate("/admin-report?week=this_week")}
+          >
+            <span className="flex items-center gap-2 whitespace-nowrap">
+              <SquareKanban className="w-4 h-4" /> Quản lý công ty
+            </span>
+          </Button>
           <Button variant="secondary" size="default" className="relative" onClick={() => refMenu.current.setOpen(true)}>
             <span className="flex items-center gap-2 whitespace-nowrap">
               <SquaresPlusIcon className="w-4 h-4" /> Thêm menu
