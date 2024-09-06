@@ -19,6 +19,8 @@ import useOrder from "../helper/use-menu";
 import useMenuToday from "@/hooks/use-menu";
 import { useCompany } from "@/hooks/use-company";
 import { useOdersIsNotPaid } from "@/hooks/use-order";
+import ListOnline from "../components/list-online";
+import BoxCursor from "../components/box-cursor";
 
 const OCRComponent = () => {
   const { toast } = useToast();
@@ -177,6 +179,7 @@ const OCRComponent = () => {
           </div>
         </div>
       </div>
+      <ListOnline />
     </div>
   );
 };

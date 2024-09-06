@@ -2,7 +2,7 @@ import AxiosClient from "@/lib/api/axios-client";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { ChevronDown, SendIcon } from "lucide-react";
 import { act, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import useMessage from "../helper/use-message";
 import useConnection, { useSubscribe } from "@/hooks/use-connection";
@@ -13,7 +13,34 @@ import { createImage } from "@/lib/helper";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
 
-const ChatWiget = () => {
+const Widgets = () => {
+  const [show, setShow] = useState(false);
+  const { companyId, ...rest } = useParams();
+  const location = window.location.pathname;
+  console.log(companyId, rest, location);
+  return (
+    <>
+      <div className="fixed cursor-pointer bottom-4 flex flex-col gap-2 md:bottom-10 right-4 md:right-10 z-[1000]">
+        <Link to="/relax" className=" rounded-full p-2 bg-white shadow-md relative group ">
+          <img src="/health.png" className="w-8 h-8 object-contain" />
+          <div className="absolute hidden group-hover:flex bottom-full border border-dashed border-primary-01/50 right-full w-96 h-96 bg-white rounded-full items-center justify-center">
+            <img src="/health.png" className="w-80 h-80 object-contain " />
+          </div>
+          <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
+        </Link>
+        {companyId && (
+          <div className=" rounded-full p-2 bg-white shadow-md relative" onClick={() => setShow(true)}>
+            <img src="/chat.png" className="w-8 h-8 object-contain" />
+          </div>
+        )}
+        {!companyId && <div className="rounded-full p-2 w-12 h-12 relative"></div>}
+      </div>
+      <ChatWidget show={show} setShow={setShow} />
+    </>
+  );
+};
+
+const ChatWidget = ({ show, setShow }) => {
   const ref = useRef(null);
   const wrap = useRef(null);
   const refLoading = useRef(null);
@@ -24,7 +51,6 @@ const ChatWiget = () => {
   const { connection, status } = useConnection();
   const [activity, setActivity] = useState([]);
   const prevent = useRef(false);
-  const [show, setShow] = useState(false);
 
   const refActivity = useRef(null);
   refActivity.current = activity.find((elm) => elm.user_created.id === profile.id);
@@ -50,8 +76,6 @@ const ChatWiget = () => {
   useSubscribe("create", "message", ["*,user_created.*"], { company: { _eq: companyId } }, callback);
   const typing = useRef(null);
   typing.current = (message) => {
-    console.log(message);
-
     if (message.event !== "create" && message.event !== "delete") return;
 
     if (message.event === "create") setActivity([...activity, message.data[0]]);
@@ -119,15 +143,6 @@ const ChatWiget = () => {
 
   return (
     <>
-      {!show && (
-        <div className="fixed cursor-pointer bottom-4 md:bottom-10 right-4 md:right-10 z-100">
-          <div className=" rounded-full p-2 bg-white shadow-md relative" onClick={() => setShow(true)}>
-            <img src="/chat.png" className="w-8 h-8 object-contain" />
-            <div className="w-2 h-2 rounded-full absolute top-0 right-0 animate-ping bg-primary-01"></div>
-          </div>
-        </div>
-      )}
-
       <div className={cn("fixed bottom-0 z-[10] right-0 md:right-10 w-full md:w-96 h-[30rem] ", { hidden: !show })}>
         <div className="absolute top-0 left-0 w-full h-full scale-[103%] border border-pastel-pink/30 bg-white z-[-3] rounded-2xl rounded-b-none"></div>
         <div className="bg-slate-50/20 border border-b-0 border-pastel-pink rounded-b-none rounded-xl flex flex-col relative z-10 w-full h-full">
@@ -208,4 +223,4 @@ const ChatWiget = () => {
   );
 };
 
-export default ChatWiget;
+export default Widgets;

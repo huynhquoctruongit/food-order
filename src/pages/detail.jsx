@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button-hero.jsx";
-import { SquaresPlusIcon, PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import OCRComponent from "@/modules/order/screen";
 import { mode } from "@/lib/config";
 import useSWR from "swr";
 import { useParams, Link } from "react-router-dom";
 import { LoadingPage } from "@/components/widget/loading";
-import CreateMenu, { SplitButton } from "@/modules/order/screen/create-menu";
 import { cn } from "@/lib/utils";
 import { useCompany } from "@/hooks/use-company";
 import { useAuth } from "@/hooks/use-auth";
@@ -14,12 +13,12 @@ import { useOdersIsNotPaid } from "@/hooks/use-order";
 import AxiosClient from "@/lib/api/axios-client";
 import ModalRemind from "@/modules/order/components/remind";
 import EditCompany from "@/modules/order/screen/config";
-import ChatWiget from "@/modules/chat/screen";
 import MarqueeChat from "@/modules/chat/screen/real-chat";
 import useMessage from "@/modules/chat/helper/use-message";
+import { ClientSideSuspense, RoomProvider } from "@liveblocks/react/suspense";
+import BoxCursor from "@/modules/order/components/box-cursor";
 
 const GroupButtonHero = () => {
- 
   const onScroll = () => {
     const menu = document.getElementById("menu");
     menu.scrollIntoView({ behavior: "smooth" });
@@ -29,7 +28,7 @@ const GroupButtonHero = () => {
       <Button className="whitespace-nowrap" variant="default" size="default" onClick={onScroll}>
         Lết xuống menu
       </Button>
-      
+
       <Link to="/report?week=this_week" className="text-[#218d7f] hover:text-[#34756c]">
         <Button
           variant="outline"
@@ -75,21 +74,17 @@ const Order = () => {
   return (
     <div>
       <EditCompany />
-      <div className="min-h-[calc(100vh-56px)] md:min-h-fit">
+      <div className="">
         <MarqueeChat />
-        <div className="-translate-y-2.5 relative flex items-center justify-center md:pt-0 ">
-          <img
-            className="w-full h-[calc(100vh-56px)] md:h-full object-cover md:object-contain aspect-square md:aspect-[4/1]"
-            src="/hero.png"
-            alt=""
-          />
+        <div className="-translate-y-1.5 relative flex items-center justify-center md:pt-0 ">
+          <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
 
-          <div className="absolute root-wrapper w-full">
+          <div className="root-wrapper w-full py-20">
             <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
               <div className="text-left">
-                <h1 className="text-[20px] md:text-3xl font-bold text-black text-left">{company?.name}</h1>
-                <h6 className="italic mt-2 text-gray-400">{company?.address}</h6>
-                <div className="mt-6  text-gray-700 hidden md:block pr-40">{company?.description}</div>
+                <h1 className="text-[20px] md:text-3xl font-bold text-black text-center md:text-left">{company?.name}</h1>
+                <h6 className="italic mt-2 text-gray-400 text-center md:text-left">{company?.address}</h6>
+                <div className="mt-6 text-gray-700 hidden md:block pr-40 text-center md:text-left">{company?.description}</div>
                 <GroupButtonHero />
               </div>
               <div className="relative">
@@ -138,8 +133,13 @@ const Wrap = () => {
     );
   return (
     <>
-      <Order />
-      <ChatWiget />
+      <RoomProvider id={companyId}>
+        <ClientSideSuspense fallback={<LoadingPage />}>
+          <BoxCursor>
+            <Order />
+          </BoxCursor>
+        </ClientSideSuspense>
+      </RoomProvider>
     </>
   );
 };

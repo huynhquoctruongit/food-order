@@ -16,7 +16,7 @@ const ListFood = ({ onSelectFood }) => {
   const expand = listFood?.length > 9;
   const generateFood = provider?.type === "drink" ? getRandImage : getRandImageAvatar;
   return (
-    <div className="flex flex-col md:flex-row gap-4 relative items-stretch">
+    <div className="flex flex-col md:flex-row gap-4 relative items-stretch z-0">
       <img className="absolute z-0 top-0 right-10 w-64 opacity-70" src="/bg-opacity.png" />
       {!expand && (
         <div className="w-full md:w-1/5 relative">

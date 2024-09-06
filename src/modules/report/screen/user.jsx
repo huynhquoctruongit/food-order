@@ -4,6 +4,8 @@ import HeroHeader from "@/components/widget/hero";
 import TablePink from "@/components/widget/table-pink";
 import useHistory from "@/hooks/use-order";
 import groupBy from "lodash/groupBy";
+import ChartPrice from "../component/chart-price";
+import LabelInfo from "../component/info";
 dayjs.extend(isoWeek);
 
 const optionss = [
@@ -59,13 +61,20 @@ const ReportByUser = () => {
   if (isLoading) return null;
   return (
     <div className="">
-      <HeroHeader title="Lịch sử ăn dằm nằm dề" description="Nhìn bụng biết bụng ăn bao nhiêu! Nhìn bạn biết nặng bao nhiêu" />
-      <div className="root-wrapper my-20">
-        <div className="flex flex-col gap-20">
+      <HeroHeader
+        title="Lịch sử ăn dằm nằm dề"
+        description="Nhìn bụng biết bụng ăn bao nhiêu! Nhìn bạn biết bạn mặp bấy nhiêu"
+      />
+      <div className="root-wrapper my-10">
+        <div className="flex flex-col-reverse md:flex-row gap-6 md:gap-10 mb-20 items-stretch w-full">
+          <ChartPrice />
+          <LabelInfo />
+        </div>
+        <div className="flex flex-col gap-20 ">
           {listWeek.map((item, index) => {
             return (
               <div className="">
-                <div className="text-left  font-bold mb-8 text-lg rounded-md border border-dashed border-primary-01 w-fit px-2 py-1">
+                <div className="text-left font-bold mb-8 text-lg rounded-md border border-dashed border-primary-01 w-fit px-2 py-1">
                   <span className="text-lg  text-primary-01"> Tuần thứ {dayjs(item[0].date_created).isoWeek()} </span>
                   {item[0].startWeek} -{" "}
                   {dayjs(item[0].startWeekUnix * 1000)

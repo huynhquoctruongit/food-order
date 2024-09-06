@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { PlusCircle, XIcon } from "lucide-react";
+import { PlusCircle, TableCellsSplitIcon, XIcon } from "lucide-react";
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import useImage from "../helper/use-image";
 import { createImage, sleep } from "@/lib/helper";
@@ -207,8 +207,9 @@ export const SplitButton = () => {
   return (
     <>
       {(profile.uuid === admin.uuid || profile.permission_to_create_menu) && (
-        <ButtonHero variant="secondary" size="default" className="relative" onClick={() => setSplit(true)}>
-          <span className="flex items-center gap-2 ">Chia tiền</span>
+        <ButtonHero variant="secondary" size="default" className="relative flex items-center gap-2" onClick={() => setSplit(true)}>
+          <TableCellsSplitIcon className="w-4 h-4" />
+          <span className="hidden md:block"> Chia tiên </span>
         </ButtonHero>
       )}
       <Dialog open={split} className="" onOpenChange={setSplit}>

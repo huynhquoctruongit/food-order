@@ -4,20 +4,22 @@ import { useAuth } from "./use-auth";
 import { getCookie } from "react-use-cookie";
 import { create } from "zustand";
 import _ from "lodash";
-let statusConnected = "disconnected";
 
+let statusConnected = "disconnected";
 const useStatusConnection = create((set) => ({
   status: "disconnected",
   setStatus: (status) => set({ status }),
 }));
 
 const useConnection = () => {
-  const { isLogin } = useAuth();
+  const { isLogin, profile } = useAuth();
   const { status, setStatus } = useStatusConnection();
 
   useEffect(() => {
     if (!isLogin) return;
+    const token = getCookie("auth_token");
     if (status === "connected" || statusConnected !== "disconnected") return;
+    connection.onWebSocket("close", function () {});
     const cleanup = connection.onWebSocket("message", function (data) {
       if (data.type == "auth" && data.status == "ok") {
         statusConnected = "connected";
@@ -39,7 +41,15 @@ const useConnection = () => {
         statusConnected = "disconnected";
         setStatus("disconnected");
       });
-
+    // window.addEventListener("beforeunload", (event) => {
+    //   const url = "https://mindguros.vercel.app/api/activity-user/" + profile.id; // URL API của bạn
+    //   navigator.sendBeacon(url);
+    //   if (window.location.hostname.includes("localhost")) return;
+    //   const confirmationMessage = "Bạn có chắc chắn muốn rời khỏi trang này? Các thay đổi của bạn có thể không được lưu.";
+    //   event.preventDefault(); // Cần cho một số trình duyệt
+    //   event.returnValue = confirmationMessage; // Hỗ trợ các trình duyệt mới
+    //   return confirmationMessage;
+    // });
     return () => {};
   }, [isLogin]);
   return { connection, status };
@@ -60,7 +70,7 @@ const createSubscribe = async (event, collection, fields, filter, callback) => {
   });
   cache.keys[key] = { subscription, unsubscribe };
   for await (const message of subscription) {
-    callback.current(message);
+    if (message.data) callback.current(message);
   }
   return unsubscribe;
 };
