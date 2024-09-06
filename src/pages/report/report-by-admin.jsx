@@ -41,13 +41,13 @@ const ReportByAdmin = () => {
     )
     const orderMembers = orderToday?.data
     const reciptList = reciptData?.data
-    const groupedData = orderMembers?.reduce((acc, { user_created, name, price, date_created, id, is_paid }) => {
-        let group = acc.find(group => (group.user.id == user_created?.id || fullName(group.user) === fullName(user_created)));
+    const groupedData = orderMembers?.reduce((acc, { user_created, paid_user, name, price, date_order, date_created, id, is_paid }) => {
+        let group = acc.find(group => (group.user.id === (paid_user || user_created?.id)));
         if (!group) {
             group = { user: { id: user_created?.id, fullname: fullName(user_created) }, items: [] };
             acc.push(group);
         }
-        group.items.push({ name: name, date_created: date_created, id: id, price: price, is_paid: is_paid });
+        group.items.push({ name: name, date_created: date_created, date_order: date_order, paid_user: paid_user, id: id, price: price, is_paid: is_paid });
         return acc;
     }, []);
     const isAdmin = profile?.permission_to_update_order
@@ -61,9 +61,10 @@ const ReportByAdmin = () => {
             order_id: ortherList?.id,
             note: "Nước",
             name: type,
-            user: item.user.id,
+            paid_user: item.user.id,
             price: price,
-            date_created: date + "T12:00:00+07:00"
+            date_created: date + "T12:00:00+07:00",
+            date_order: date + "T12:00:00+07:00"
         }
         setDataReport({
             [item.user.id + "-" + date]: params
@@ -84,7 +85,6 @@ const ReportByAdmin = () => {
 
     }, [dataReport])
 
-
     const onSave = () => {
         if (dataReport) {
             Object.fromEntries(
@@ -93,13 +93,13 @@ const ReportByAdmin = () => {
                         const params = {
                             note: value.note,
                             name: value.name,
-                            user: value.user,
+                            paid_user: value.paid_user,
                             price: value.price || 0,
                             company: profile.company,
-                            date_created: value.date_created
+                            date_order: value.date_order
                         }
                         const paramsRecipt = {
-                            user_created: value.user,
+                            paid_user: value.paid_user,
                             amount: value.price || 0,
                             company: profile.company,
                             date_start: value.date_created
@@ -136,8 +136,9 @@ const ReportByAdmin = () => {
         orderUser?.items?.map((elm) => {
             total = total + elm.price * 1
         })
+
         type == "total-left" && reciptList?.map((elm) => {
-            if (orderUser.user.id == elm?.user?.id) {
+            if (orderUser.user.id == elm?.paid_user) {
                 total = total - elm?.amount * 1
             }
         })
@@ -225,15 +226,15 @@ const ReportByAdmin = () => {
                         {groupedData?.map((userItem, index) => {
                             const date = dayjs(currentSelect[0] + "T12:00:00+07:00").format("YYYY-MM-DD")
                             const valueInput = userItem.user.id + "-" + date
-                            const recipt = reciptList?.find((elm) => elm?.user_created === userItem?.user?.id && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
+                            const recipt = reciptList?.find((elm) => elm?.paid_user === userItem?.user?.id && dayjs(elm.date_start).format("YYYY-MM-DD") == currentSelect?.[0])
                             const valueRecipt = dataReport?.[valueInput]?.name === "recipt" && dataReport?.[valueInput]?.price || undefined
                             return (
                                 <TableRow className={`${index % 2 == 0 ? "bg-pastel-pink/30" : "bg-white"} hover:bg-unset`} key={userItem.user.id + date + "group"}>
                                     <TableCell className="font-medium text-left p-2 flex items-center"><div className="p-[6px] text-[13px] line-clamp-2">{fullName(userItem.user)}</div></TableCell>
                                     {currentSelect?.map((elm, index) => {
-                                        const ortherList = userItem?.items?.find((ortherItem) => ortherItem.name === "orther-food" && dayjs(ortherItem.date_created).format("YYYY-MM-DD") == elm)
+                                        const ortherList = userItem?.items?.find((ortherItem) => ortherItem.name === "orther-food" && dayjs(ortherItem.date_order).format("YYYY-MM-DD") == elm)
                                         const riceList = userItem?.items?.filter((riceItem) => riceItem.name !== "orther-food" && dayjs(riceItem.date_created).format("YYYY-MM-DD") == elm)
-                                        const match = ortherList && dayjs(ortherList.date_created).format("YYYY-MM-DD") == elm
+                                        const match = ortherList && dayjs(ortherList.date_order).format("YYYY-MM-DD") == elm
                                         const date = dayjs(elm + "T12:00:00+07:00").format("YYYY-MM-DD")
                                         const valueInput = userItem.user.id + "-" + date
                                         const valueWater = dataReport?.[valueInput]?.name !== "recipt" && dataReport?.[valueInput]?.price || undefined
@@ -286,10 +287,10 @@ const ReportByAdmin = () => {
                             {currentSelect?.map((elm, index) => {
                                 const totalPrice = groupedData?.reduce((total, { items }) =>
                                     total + items?.reduce((sum, { date_created, price, name }) =>
-                                        sum + (date_created.startsWith(elm) && price && name !== "orther-food" ? price * 1 : 0), 0), 0);
+                                        sum + (date_created?.startsWith(elm) && price && name !== "orther-food" ? price * 1 : 0), 0), 0);
                                 const totalOther = groupedData?.reduce((total, { items }) =>
                                     total + items?.reduce((sum, { date_created, price, name }) =>
-                                        sum + (date_created.startsWith(elm) && price && name === "orther-food" ? price * 1 : 0), 0), 0);
+                                        sum + (date_created?.startsWith(elm) && price && name === "orther-food" ? price * 1 : 0), 0), 0);
                                 return (
                                     <TableCell className="text-left p-2">
                                         <input className="w-[50%] text-center bg-transparent font-bold" disabled value={totalPrice}></input>
