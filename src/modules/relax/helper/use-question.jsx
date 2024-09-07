@@ -1,13 +1,22 @@
 import AxiosClient from "@/lib/api/axios-client";
 import useSWR from "swr";
 
+const convertArrayToObject = (arr) => {
+  return arr.reduce((acc, item) => {
+    acc[item.detail.question] = item;
+    return acc;
+  }, {});
+};
 function difference(arr1, arr2) {
-  const set2 = new Set(arr2);
-  return arr1.filter((item) => !set2.has(item));
+  const object2 = convertArrayToObject(arr2);
+
+  const result = arr1.filter((item) => !object2[item.id]);
+
+  return result;
 }
 
 const useQuestion = () => {
-  const { data, isLoading } = useSWR("/items/question?fields=*,options.*,topic.name");
+  const { data, isLoading } = useSWR("/items/question?fields=*,options.*,topic.name&limit=200");
   const {
     data: answer,
     isLoading: isLoadingAnswer,

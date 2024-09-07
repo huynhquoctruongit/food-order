@@ -60,6 +60,9 @@ const Relax = () => {
           </div>
         </div>
       </motion.div>
+      <div className="root-wrapper text-left relative my-10">
+        <div className="px-4 py-1 border border-dashed text-black rounded-full">Ngày 7/09/2024 - Fixbug: Ngẫu nhiên câu hỏi</div>
+      </div>
     </motion.div>
   );
 };
@@ -105,12 +108,12 @@ const Question = ({ question, getNext }) => {
   };
   const { data } = useImage("juice");
   const enumJuice = data.map((item) => item.directus_files_id);
- 
+
   return (
     <div className="border h-full min-h-[500px] flex flex-col border-primary-01 rounded-xl p-6 bg-white ring-[6px] ring-primary-01/5 ring-offset-0">
       <div className="flex gap-10 flex-wrap md:flex-nowrap items-start">
-        <div className="text-primary-01 w-full md:w-10/12">   
-          <div className="text-lg font-bold text-gray-600">Món quà: {question.topic.name}</div>
+        <div className="text-primary-01 w-full md:w-10/12">
+          <div className="text-lg font-bold text-gray-600">Quà tặng cuộc sống: {question?.topic?.name}</div>
           <div>{question.content}</div>
         </div>
         <div className="w-full md:w-2/12">
