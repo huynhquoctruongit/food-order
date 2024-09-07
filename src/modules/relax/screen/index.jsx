@@ -61,7 +61,7 @@ const Relax = () => {
         </div>
       </motion.div>
       <div className="root-wrapper text-left relative my-10">
-        <div className="px-4 py-1 border border-dashed text-black rounded-full">Ngày 7/09/2024 - Fixbug: Ngẫu nhiên câu hỏi</div>
+        <div className="px-4 py-1 border border-dashed text-black rounded-full">Ngày 7/09/2024 - Cập nhật: Ngẫu nhiên câu hỏi, câu hỏi không có lặp lại.</div>
       </div>
     </motion.div>
   );
