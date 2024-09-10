@@ -68,7 +68,7 @@ const ListFinal = ({ order }) => {
                     if (!item.note) return null;
                     return (
                       <div key={index + key} className="flex items-center gap-3">
-                        <div className="w-fit h-6 items-center flex px-2 text-sm rounded-full border border-dashed border-gray-700">
+                        <div className="w-fit h-6 items-center whitespace-nowrap flex px-2 text-sm rounded-full border border-dashed border-gray-700">
                           1 phần
                         </div>
                         {item.note}

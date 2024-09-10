@@ -21,10 +21,11 @@ const ListOnline = () => {
   const limit = isMd ? 5 : 3;
 
   useEffect(() => {
+    if (!profile) return;
     const user = {
-      name: profile.first_name + " " + profile.last_name,
-      avatar: profile.avatar,
-      id: profile.id,
+      name: profile?.first_name + " " + profile?.last_name,
+      avatar: profile?.avatar,
+      id: profile?.id,
     };
     updateMyPresence({ profile: user });
   }, []);
