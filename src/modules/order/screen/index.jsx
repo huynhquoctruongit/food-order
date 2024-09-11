@@ -148,7 +148,6 @@ const OCRComponent = () => {
   };
 
   const listFood = menu.detail || [];
-
   const getSelectRice = (e, item) => {
     setFoodSelect({ ...selectFood, type: e });
   };

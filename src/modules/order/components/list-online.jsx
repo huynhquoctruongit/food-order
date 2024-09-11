@@ -28,7 +28,7 @@ const ListOnline = () => {
       id: profile?.id,
     };
     updateMyPresence({ profile: user });
-  }, []);
+  }, [profile]);
   if (userCount === 0) return null;
   return (
     <div className="w-fit flex flex-wrap gap-4 fixed bottom-4 xl:bottom-10  left-1/2  -translate-x-1/2 py-2 justify-center z-10">

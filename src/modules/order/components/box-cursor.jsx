@@ -14,11 +14,10 @@ const COLORS = ["#DC2626", "#D97706", "#059669", "#7C3AED", "#DB2777"];
 
 const BoxCursor = ({ children }) => {
   const others = useOthers();
-  const [{ cursor }, setMyPresence] = useMyPresence();
+  const [{ cursor }, updateMyPresence] = useMyPresence();
   const [state, setState] = useState({
     mode: CursorMode.Hidden,
   });
-  const [_, updateMyPresence] = useMyPresence();
   const onPointerMove = (event) => {
     if (cursor == null || state.mode !== CursorMode.ReactionSelector) {
       updateMyPresence({
