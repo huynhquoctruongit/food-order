@@ -21,14 +21,13 @@ const ListOnline = () => {
   const limit = isMd ? 5 : 3;
 
   useEffect(() => {
-    if (!profile) return;
     const user = {
       name: profile?.first_name + " " + profile?.last_name,
       avatar: profile?.avatar,
       id: profile?.id,
     };
     updateMyPresence({ profile: user });
-  }, [profile]);
+  }, []);
   if (userCount === 0) return null;
   return (
     <div className="w-fit flex flex-wrap gap-4 fixed bottom-4 xl:bottom-10  left-1/2  -translate-x-1/2 py-2 justify-center z-10">
@@ -40,7 +39,7 @@ const ListOnline = () => {
       >
         {others
           .slice(0, limit)
-          .filter((el) => el.presence?.profile)
+          .filter((el) => el.presence?.profile?.id)
           .map((el, index) => {
             const profile = el.presence?.profile;
             return (
