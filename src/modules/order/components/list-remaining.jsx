@@ -14,7 +14,7 @@ const ListRemaining = ({ userNonOrderd }) => {
           >
             <div className="w-6 h-6 rounded-full bg-pastel-pink/5">
               <img
-                className="w-6 h-6 rounded-full"
+                className="w-6 h-6 rounded-full object-cover"
                 src={el.avatar ? createImage(el.avatar, 400) : enumFood[index % enumFood.length]}
               />
             </div>
