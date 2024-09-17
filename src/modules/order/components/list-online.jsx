@@ -54,7 +54,7 @@ const ListOnline = () => {
                   whileHover={{ scale: 1.1 }}
                   className="w-6 h-6 lg:w-10 lg:h-10 rounded-full bg-pastel-pink/5 flex items-center justify-center "
                 >
-                  <img className="w-6 h-6lg:w-10 lg:h-10 rounded-full object-contain" src={createImage(profile.avatar, 100)} />
+                  <img className="w-6 h-6lg:w-10 lg:h-10 rounded-full object-cover" src={createImage(profile.avatar, 100)} />
                 </motion.div>
                 <span className="text-sm absolute bottom-full left-full px-2 py-1 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md bg-primary-01 text-white  whitespace-nowrap ">
                   {profile.name}

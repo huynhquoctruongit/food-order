@@ -40,7 +40,7 @@ const ListUserPoint = () => {
             <span className="text-xl font-bold text-primary-01"> {index + 1}.</span>
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-pastel-pink/50 p-1 shadow">
-                <img className="w-8 h-8 rounded-full" src={createImage(profile.avatar, 100)} />
+                <img className="w-8 h-8 rounded-full object-cover" src={createImage(profile.avatar, 100)} />
               </div>
               <div>
                 <div className="text-lg text-gray-600 font-bold"> {viewFullname}</div>
