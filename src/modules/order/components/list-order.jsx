@@ -8,6 +8,7 @@ import useOrder from "../helper/use-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { connection } from "@/lib/directus";
 import { useCompany } from "@/hooks/use-company";
+import { createImage } from "@/lib/helper";
 
 export const ItemTable = ({ children, className }) => {
   return (
@@ -83,7 +84,11 @@ const ListOrder = () => {
               <div key={index + "-elm"} className="flex items-stretch border-gray-300 border-t text-gray-500 text-md">
                 <ItemTable className={options[0].className}>
                   <div className="flex items-center gap-2 w-full">
-                    <img src={enumFood[index % enumFood.length]} alt="" className="w-10 h-10 rounded-md border-2 border-white" />
+                    <img
+                      src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
+                      alt=""
+                      className="w-10 h-10 rounded-md border-2 border-white"
+                    />
                     <span>{fullname}</span>
                   </div>
                 </ItemTable>

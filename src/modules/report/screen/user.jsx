@@ -61,10 +61,7 @@ const ReportByUser = () => {
   if (isLoading) return null;
   return (
     <div className="">
-      <HeroHeader
-        title="Lịch sử ăn dằm nằm dề"
-        description="Nhìn bụng biết bụng ăn bao nhiêu! Nhìn bạn biết bạn mặp bấy nhiêu"
-      />
+      <HeroHeader title="Lịch sử ăn dằm nằm dề" description="Nhìn bụng biết bụng ăn bao nhiêu! Nhìn bạn biết bạn mặp bấy nhiêu" />
       <div className="root-wrapper my-10">
         <div className="flex flex-col-reverse md:flex-row gap-6 md:gap-10 mb-20 items-stretch w-full">
           <ChartPrice />

@@ -76,9 +76,12 @@ const ListOnline = () => {
             >
               {userCount - limit}
             </motion.div>
-            <span className="text-sm absolute bottom-full left-full px-2 py-1 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md bg-primary-01 text-white  whitespace-nowrap ">
-              {profile.name}
-            </span>
+            <div className="text-sm bg-primary-01 flex flex-col gap-2 absolute bottom-full left-full px-4 py-2 group-hover:z-10 pointer-events-none group-hover:pointer-events-auto  duration-300 opacity-0 group-hover:opacity-100 rounded-md  text-white  whitespace-nowrap ">
+              {others.slice(limit, userCount).map((el) => {
+                const profile = el.presence?.profile;
+                return <div className="font-bold">{profile.name}</div>;
+              })}
+            </div>
           </motion.div>
         )}
       </motion.div>

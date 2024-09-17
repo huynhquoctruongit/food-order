@@ -9,7 +9,7 @@ const options = [
 
 const NumberOval = ({ children }) => {
   return (
-    <div className="w-6 h-6 rounded-full border border-dashed border-gray-500 text-xs flex items-center justify-center">
+    <div className="w-6 min-w-6 h-6 rounded-full border border-dashed border-gray-500 text-xs flex items-center justify-center">
       {children}
     </div>
   );

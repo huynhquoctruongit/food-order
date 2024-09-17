@@ -1,4 +1,5 @@
 import { useUserInCompany } from "@/hooks/use-company";
+import { createImage } from "@/lib/helper";
 import { enumFood } from "@/lib/utils";
 
 const ListRemaining = ({ userNonOrderd }) => {
@@ -12,7 +13,10 @@ const ListRemaining = ({ userNonOrderd }) => {
             key={el.id + el.fullname + index}
           >
             <div className="w-6 h-6 rounded-full bg-pastel-pink/5">
-              <img className="w-6 h-6 rounded-full" src={enumFood[index % enumFood.length]} />
+              <img
+                className="w-6 h-6 rounded-full"
+                src={el.avatar ? createImage(el.avatar, 400) : enumFood[index % enumFood.length]}
+              />
             </div>
             <span className="text-sm text-gray-700"> {el.first_name + " " + el.last_name}</span>
           </div>
