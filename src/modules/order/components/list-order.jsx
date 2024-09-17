@@ -87,7 +87,7 @@ const ListOrder = () => {
                     <img
                       src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
                       alt=""
-                      className="w-10 h-10 rounded-full border-2 border-white"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-white"
                     />
                     <span>{fullname}</span>
                   </div>
