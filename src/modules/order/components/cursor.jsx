@@ -3,7 +3,7 @@ import { MousePointer2 } from "lucide-react";
 
 export default function Cursor({ color, x, y, message, profile }) {
   console.log(profile);
-  
+
   return (
     <div
       className="pointer-events-none absolute top-0 left-0 z-[100000]"
@@ -13,9 +13,11 @@ export default function Cursor({ color, x, y, message, profile }) {
     >
       <MousePointer2 className={" stroke-none fill-primary-01"} />
       <div className="absolute top-full left-1/2 flex items-center gap-2">
-        <div className="w-10 h-10 bg-white shadow-md rounded-full relative">
+        <div className="w-12 h-12 bg-white shadow-md rounded-full relative">
           <img src={createImage(profile.avatar, 100)} alt="avatar" className="w-full h-full object-cover rounded-full" />
-          <div className="absolute top-full left-0 whitespace-nowrap mt-2 bg-white shadow-xl rounded-md px-2 py-0.5">{profile.name}</div>
+          <div className="absolute top-full left-0 whitespace-nowrap mt-2 bg-white shadow-xl rounded-md px-2 py-0.5">
+            {profile.name}
+          </div>
         </div>
 
         {message && (
