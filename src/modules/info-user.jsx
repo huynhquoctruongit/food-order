@@ -4,6 +4,7 @@ import { LogOutIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import useStateModal from "@/hooks/use-modal";
+import { createImage } from "@/lib/helper";
 
 const Profile = () => {
   const { profile, isLogin, logout } = useAuth();
@@ -15,7 +16,7 @@ const Profile = () => {
   return (
     <div className="flex items-center justify-between gap-4 relative">
       <div className="flex items-center justify-between">{profile?.fullname}</div>
-      <div className="min-w-8 min-h-8 rounded-md shadow-md bg-pastel-pink cursor-pointer" onClick={() => setOpen(!open)}>
+      <div className="min-w-8 min-h-8 rounded-full overflow-hidden shadow-md  bg-pastel-pink cursor-pointer" onClick={() => setOpen(!open)}>
         <img src={createImage(profile.avatar, 200)} alt="" className="w-8 h-8  " />
       </div>
       {open && (
