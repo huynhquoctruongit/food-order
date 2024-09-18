@@ -87,7 +87,7 @@ const ListOrder = () => {
                     <img
                       src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
                       alt=""
-                      className="w-10 h-10 animate-rotate rounded-full object-cover border-2 border-white"
+                      className="w-16 h-16 animate-rotate rounded-full object-cover border-2 border-white"
                     />
                     <span>{fullname}</span>
                   </div>
@@ -151,7 +151,11 @@ const ListOrder = () => {
           return (
             <div key={index + "-elm"} className="flex flex-col gap-2 border-b border-gray-200 last:border-b-0 pb-4 mb-2">
               <div className="flex items-center gap-2 w-full">
-                <img src={enumFood[index % enumFood.length]} alt="" className="w-10 h-10 rounded-md border-2 border-white" />
+                <img
+                  src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
+                  alt=""
+                  className="w-10 h-10 rounded-full overflow-hidden animate-rotate border-2 border-white"
+                />
                 <span>{fullname}</span>
               </div>
               <div className="flex flex-col gap-2">

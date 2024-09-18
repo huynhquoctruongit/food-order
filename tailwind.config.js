@@ -68,15 +68,15 @@ module.exports = {
           to: { height: "0" },
         },
         rotate: {
-          from: { transform: "rotate(-6deg)" },
-          to: { transform: "rotate(6deg)" },
+          from: { transform: "rotate(-10deg)" },
+          to: { transform: "rotate(10deg)" },
         },
       },
 
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "rotate": "rotate 0.1s ease-out infinite alternate",
+        "rotate": "rotate 0.15s ease-out infinite alternate",
       },
     },
   },
