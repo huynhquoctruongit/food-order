@@ -81,13 +81,7 @@ const Order = () => {
         <div className="-translate-y-1.5 relative flex items-center justify-center md:pt-0 ">
           <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
           <div className="root-wrapper w-full py-20 relative">
-            <div className="flex w-full flex-col-reverse gap-10 md:flex-row items-center justify-between ">
-              <div className="text-left w-full md:w-1/2 relative z-10">
-                <h1 className="text-[20px] md:text-3xl font-bold text-black text-center md:text-left">{company?.name}</h1>
-                <h6 className="italic mt-2 text-gray-400 text-center md:text-left">{company?.address}</h6>
-                <div className="mt-6 text-gray-700 hidden md:block pr-40 text-center md:text-left">{company?.description}</div>
-                <GroupButtonHero />
-              </div>
+            <div className="flex w-full flex-col-reverse gap-10 md:flex-row justify-between  items-stretch">
               <div className="absolute top-0 right-0 h-full w-full flex justify-end">
                 {/* <div className="absolute bottom-0 -translate-x-1/2 w-96 left-1/2 h-2 rounded-md bg-red-400 blur-md"></div> */}
                 <iframe
@@ -106,18 +100,26 @@ const Order = () => {
                   <div className="text-xs text-gray-700">Đẹp trai, vui tính</div>
                 </div>
               </div>
-              <img
-                onClick={onClick}
-                className={cn(
-                  "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
-                  play ? "animate-spin" : "",
-                )}
-                src="/audio.png"
-                alt=""
-              />
-              <audio id="audio">
-                <source src="/audio.mp3" type="audio/mpeg" />
-              </audio>
+              <div className="text-left w-full md:w-1/2 relative  z-10">
+                <h1 className="text-[20px] md:text-3xl font-bold text-black text-center md:text-left">{company?.name}</h1>
+                <h6 className="italic mt-2 text-gray-400 text-center md:text-left">{company?.address}</h6>
+                <div className="mt-6 text-gray-700 hidden md:block pr-40 text-center md:text-left">{company?.description}</div>
+                <GroupButtonHero />
+              </div>
+              <div className="text-left w-full md:w-1/2 relative z-10 h-10">
+                <img
+                  onClick={onClick}
+                  className={cn(
+                    "w-12 h-12 absolute top-0 right-0 cursor-pointer hover:shadow-button rounded-full",
+                    play ? "animate-spin" : "",
+                  )}
+                  src="/audio.png"
+                  alt=""
+                />
+                <audio id="audio">
+                  <source src="/audio.mp3" type="audio/mpeg" />
+                </audio>
+              </div>
             </div>
           </div>
         </div>
