@@ -18,8 +18,7 @@ import useMessage from "@/modules/chat/helper/use-message";
 import { ClientSideSuspense, LiveblocksProvider, RoomProvider } from "@liveblocks/react/suspense";
 import BoxCursor from "@/modules/order/components/box-cursor";
 import { Environment, OrbitControls, Outlines, useAnimations, useGLTF } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { MeshStandardMaterial } from "three";
+
 import Widgets from "@/modules/chat/screen";
 import { publicApiKey } from "@/main";
 
@@ -171,22 +170,5 @@ const LiveBLockWrap = () => {
 };
 
 export default LiveBLockWrap;
-
-function Model({ outlines, ...props }) {
-  const { nodes, materials, scene } = useGLTF("/modal.gltf");
-  // modal.gltf /jump-transformed.glb
-
-  return <primitive object={scene} scale={0.7} />;
-}
-
-function Sphere({ outlines, ...props }) {
-  return (
-    <mesh castShadow receiveShadow {...props}>
-      <sphereGeometry args={[1, 64, 64]} />
-      <meshStandardMaterial />
-      {outlines && <Outlines screenspace thickness={8} />}
-    </mesh>
-  );
-}
 
 // jump-transformed.glb
