@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button-hero.jsx";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import OCRComponent from "@/modules/order/screen";
@@ -17,6 +17,9 @@ import MarqueeChat from "@/modules/chat/screen/real-chat";
 import useMessage from "@/modules/chat/helper/use-message";
 import { ClientSideSuspense, RoomProvider } from "@liveblocks/react/suspense";
 import BoxCursor from "@/modules/order/components/box-cursor";
+import { Environment, OrbitControls, Outlines, useAnimations, useGLTF } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { MeshStandardMaterial } from "three";
 
 const GroupButtonHero = () => {
   const onScroll = () => {
@@ -80,15 +83,30 @@ const Order = () => {
           <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
 
           <div className="root-wrapper w-full py-20">
-            <div className="flex flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
-              <div className="text-left">
+            <div className="flex w-full flex-col-reverse gap-10 md:flex-row items-center justify-between relative">
+              <div className="text-left w-full md:w-1/2 relative z-10">
                 <h1 className="text-[20px] md:text-3xl font-bold text-black text-center md:text-left">{company?.name}</h1>
                 <h6 className="italic mt-2 text-gray-400 text-center md:text-left">{company?.address}</h6>
                 <div className="mt-6 text-gray-700 hidden md:block pr-40 text-center md:text-left">{company?.description}</div>
                 <GroupButtonHero />
               </div>
-              <div className="relative">
-                <img className="w-[512px] aspect-[512/256] object-cover" src={imgActive} alt="" />
+              <div className="relative w-full md:w-1/2 h-[400px]">
+                <div className="absolute bottom-0 -translate-x-1/2 w-96 left-1/2 h-2 rounded-md bg-red-400 blur-md"></div>
+                <div className="absolute top-1/2 left-1/2 w-screen lg:w-full -translate-y-1/2 -translate-x-1/2 aspect-square">
+                  <iframe
+                  className="mb-32"
+                    src="https://my.spline.design/roomrelaxingcopy-ace6cfcc6449daeed47bc7128c8b3829/"
+                    // src="https://my.spline.design/littleworldkawaiipigcopy-d724a97745e7299502f798f6251394f0/"
+                    frameborder="0"
+                    
+                    id="hihi"
+                    width="100%"
+                    height="100%"
+                  ></iframe>
+                </div>
+                <div className="absolute bottom-3 pointer-events-none -right-10 w-52 h-10 rounded-md bg-white z-10 backdrop-blur-sm flex items-center justify-center shadow-lg font-semibold">
+                  NGỌC NHẤT COPY
+                </div>
               </div>
 
               <img
@@ -145,3 +163,22 @@ const Wrap = () => {
 };
 
 export default Wrap;
+
+function Model({ outlines, ...props }) {
+  const { nodes, materials, scene } = useGLTF("/modal.gltf");
+  // modal.gltf /jump-transformed.glb
+
+  return <primitive object={scene} scale={0.7} />;
+}
+
+function Sphere({ outlines, ...props }) {
+  return (
+    <mesh castShadow receiveShadow {...props}>
+      <sphereGeometry args={[1, 64, 64]} />
+      <meshStandardMaterial />
+      {outlines && <Outlines screenspace thickness={8} />}
+    </mesh>
+  );
+}
+
+// jump-transformed.glb
