@@ -17,7 +17,6 @@ const Widgets = () => {
   const [show, setShow] = useState(false);
   const { companyId, ...rest } = useParams();
   const location = window.location.pathname;
-  console.log(companyId, rest, location);
   return (
     <>
       <div className="fixed cursor-pointer bottom-4 flex flex-col gap-2 md:bottom-10 right-4 md:right-10 z-[1000]">
