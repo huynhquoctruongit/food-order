@@ -81,18 +81,18 @@ const Order = () => {
           <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
           <div className="root-wrapper w-full py-20 relative">
             <div className="flex w-full flex-col-reverse gap-10 md:flex-row justify-between  items-stretch">
-              <div className="absolute top-0 right-0 h-full w-full flex justify-end">
-                {/* <div className="absolute bottom-0 -translate-x-1/2 w-96 left-1/2 h-2 rounded-md bg-red-400 blur-md"></div> */}
+              <div className="absolute top-0 right-0 h-full w-[1100px] flex justify-end">
+                <div className="absolute bottom-0 -translate-x-1/2 w-96 right-0 h-2 rounded-md bg-red-400 blur-md"></div>
                 <iframe
-                  src="https://my.spline.design/roomrelaxingcopy-dbfd6dcc16387d1598b33e27317ca3f8/"
-                  // src="https://my.spline.design/littleworldkawaiipigcopy-d724a97745e7299502f798f6251394f0/"
+                  // src="https://my.spline.design/roomrelaxingcopy-dbfd6dcc16387d1598b33e27317ca3f8/"
+                  src="https://my.spline.design/roomrelaxingcopy-6d374778a39793e60b070fcfc2a8b968/"
                   frameborder="0"
                   id="hihi"
                   // width: 1006px; height: 468px;
-                  width="1006px"
-                  height="468px"
+                  width="100%"
+                  height="100%"
                 ></iframe>
-                <div className="absolute shadow-md -bottom-5 right-2 w-52 h-12 rounded-md bg-white z-40 py-2 px-4 text-left">
+                <div className="absolute shadow-md bottom-2 right-2 w-48 h-12 rounded-md bg-white z-40 py-2 px-4 text-left">
                   <div className="text-xs font-bold text-primary-01">
                     NGỌC NHẤT, <span className="text-gray-700 font-normal">30 tuổi</span>
                   </div>
@@ -116,7 +116,7 @@ const Order = () => {
                   alt=""
                 />
                 <audio id="audio">
-                  <source src="/audio.mp3" type="audio/mpeg" />
+                  <source src="/audo-2.mp3" type="audio/mpeg" />
                 </audio>
               </div>
             </div>

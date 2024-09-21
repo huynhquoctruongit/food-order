@@ -87,7 +87,7 @@ const ListOrder = () => {
                     <img
                       src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
                       alt=""
-                      className="w-16 h-16 animate-rotate rounded-full object-cover border-2 border-white"
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white"
                     />
                     <span>{fullname}</span>
                   </div>
@@ -154,7 +154,7 @@ const ListOrder = () => {
                 <img
                   src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
                   alt=""
-                  className="w-10 h-10 rounded-full overflow-hidden animate-rotate border-2 border-white"
+                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-white"
                 />
                 <span>{fullname}</span>
               </div>
