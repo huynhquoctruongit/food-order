@@ -21,6 +21,7 @@ const ListUserPoint = () => {
     filter: {
       confirm_paid: { _eq: false },
       company: { _eq: companyId || 3 },
+      status: { _eq: "published" },
     },
   };
   const { data, mutate } = useSWR([`/items/order`, payload]);
@@ -42,13 +43,12 @@ const ListUserPoint = () => {
       {(topUserDebtor || []).map((item, index) => {
         const profile = item?.user_created || {};
         const fullname = profile.first_name + " " + profile.last_name + "";
-        const viewFullname = fullname.length > 20 ? fullname.slice(0, 20) + "..." : fullname;
-        const detail = top[index] || {};
+        const detail = top[index] || { img: "", title: "" };
 
         return (
           <div key={profile.id} className="flex items-center gap-2 group relative">
-            <div className="text-xl font-bold text-primary-01">
-              {index >= 5 ? index + 1 : <img className="w-6 min-w-6" src={detail.img} alt={profile.title} />}
+            <div className="text-xl font-bold text-primary-01 min-w-[24px]">
+              {index >= 5 ? index + 1 : <img className="w-6 min-w-6" src={detail?.img} alt={profile.title} />}
             </div>
             <div className="flex items-center gap-4 ml-2">
               <div className="w-10 h-10 rounded-full bg-pastel-pink/50 p-1 shadow">

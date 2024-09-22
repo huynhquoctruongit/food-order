@@ -1,9 +1,4 @@
-import { LoadingPage } from "@/components/widget/loading";
-import useQuestion from "../helper/use-question";
 import { motion } from "framer-motion";
-
-import { useEffect, useState } from "react";
-
 import ListUserPoint from "../component/list-user-point";
 
 const Debtor = () => {
