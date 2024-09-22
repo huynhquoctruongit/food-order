@@ -20,6 +20,12 @@ const Widgets = () => {
   return (
     <>
       <div className="fixed cursor-pointer bottom-4 flex flex-col gap-2 md:bottom-10 right-4 md:right-10 z-[1000]">
+        <Link to={"/company/" + companyId + "/debtor"} className=" rounded-full p-2 bg-white shadow-md relative group ">
+          <img src="/top/top-4.png" className="w-8 h-8 object-contain" />
+          {/* <div className="absolute hidden group-hover:flex bottom-full border border-dashed border-primary-01/50 right-full w-96 h-96 bg-white rounded-full items-center justify-center">
+            <img src="/top/top-4.png" className="w-80 h-80 object-contain " />
+          </div> */}
+        </Link>
         <Link to="/relax" className=" rounded-full p-2 bg-white shadow-md relative group ">
           <img src="/health.png" className="w-8 h-8 object-contain" />
           <div className="absolute hidden group-hover:flex bottom-full border border-dashed border-primary-01/50 right-full w-96 h-96 bg-white rounded-full items-center justify-center">
