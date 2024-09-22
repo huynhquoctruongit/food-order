@@ -276,7 +276,7 @@ const ReportByAdmin = () => {
                                                         <Tooltip>
                                                             <TooltipTrigger className="text-center">
                                                                 {riceList?.length &&
-                                                                    <div className="flex items-center gap-1"><input key={userItem.user.id + date + index + "-elm-input1"} disabled className={`w-[50%] rounded-md p-[6px] text-center bg-transparent select-none font-semibold ${confirmPaid && "bg-[#3bdd6b] text-white"}`} value={finalPrice}></input>
+                                                                    <div className="flex items-center gap-1"><input key={userItem.user.id + date + index + "-elm-input1"} disabled className={`w-[50%] rounded-md p-[6px] text-center select-none font-semibold text-black ${confirmPaid && "bg-[#3bdd6b] text-white"}`} value={finalPrice}></input>
                                                                         <div onClick={() => onPay(riceList, 'item')}>
                                                                             {riceList?.[0].confirm_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (isAdmin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)}
                                                                         </div></div> || ""}
