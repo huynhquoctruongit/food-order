@@ -1,3 +1,4 @@
+import { useMediaQuery } from "usehooks-ts";
 import useOrder from "../helper/use-menu";
 import { ItemTable } from "./list-order";
 import groupBy from "lodash/groupBy";
@@ -27,9 +28,11 @@ const Item = ({ number, title }) => {
 const ListFinal = ({ order }) => {
   const { orders } = useOrder();
   const groupedData = groupBy(orders, "name");
+  const isLg = useMediaQuery("(min-width: 1024px)");
   const getClass = (index) => {
     return options[index].className;
   };
+  if (!isLg) return <ListFinalMobile getClass={getClass} groupedData={groupedData} />;
   return (
     <div className="w-full border border-pastel-pink rounded-md mt-10">
       <div className="flex items-center justify-center">
@@ -95,6 +98,49 @@ const ListFinal = ({ order }) => {
           </ItemTable>
         </div>
       </div>
+    </div>
+  );
+};
+
+const ListFinalMobile = ({ groupedData, getClass }) => {
+  return (
+    <div className="flex flex-col gap-4 mt-20">
+      {Object.keys(groupedData).map((key, index) => {
+        const items = groupedData[key];
+        const group = groupBy(items, "price");
+        return (
+          <div key={key} className="flex flex-col border border-pastel-pink rounded-md items-stretch text-gray-500 text-md">
+            <div className="border-b border-pastel-pink p-2">
+              <div className="flex gap-2">
+                <NumberOval>{items.length}</NumberOval>
+                {key}
+              </div>
+              <div className="flex flex-col gap-2">
+                {Object.keys(group).map((keyx, index) => {
+                  const item = group[keyx];
+                  if (keyx !== "25") return null;
+                  return <Item key={index + key} number={item.length} title={keyx === "25" ? "Không cơm" : "Có cơm"} />;
+                })}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4 text-left p-2 py-3">
+              {items.filter(item => item.note).length === 0 && <div className="text-gray-300">Không có note</div>}
+              {items.map((item, index) => {
+                if (!item.note) return null;
+                return (
+                  <div key={index + key} className="flex gap-3">
+                    <div className="w-fit h-6 text-left whitespace-nowrap flex px-2 text-sm rounded-full border border-dashed border-gray-700">
+                      1 phần
+                    </div>
+                    {item.note}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

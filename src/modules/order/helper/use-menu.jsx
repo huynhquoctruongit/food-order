@@ -1,10 +1,17 @@
 import dayjs from "dayjs";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import useSWR from "swr";
 
 const useOrder = () => {
+  const [query, _] = useSearchParams();
   const { providerId, companyId } = useParams();
-  const today = dayjs().startOf("day").toISOString();
+  const backday = query.get("backday");
+  console.log(backday);
+
+  const today = dayjs()
+    .add(backday ? backday * -1 : 0, "day")
+    .startOf("day")
+    .toISOString();
   const payload = {
     filter: {
       date_created: {

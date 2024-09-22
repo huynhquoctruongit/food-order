@@ -73,22 +73,20 @@ const Order = () => {
     setPlay(!play);
   };
   return (
-    <div>
+    <div className="mb-20">
       <EditCompany />
       <div className="">
         <MarqueeChat />
         <div className="-translate-y-1.5 relative flex items-center justify-center md:pt-0 ">
           <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
-          <div className="root-wrapper w-full py-20 relative">
+          <div className="root-wrapper w-full py-10 md:py-20 relative">
             <div className="flex w-full flex-col-reverse gap-10 md:flex-row justify-between  items-stretch">
-              <div className="absolute top-0 right-0 h-full w-[1100px] flex justify-end">
-                <div className="absolute bottom-0 -translate-x-1/2 w-96 right-0 h-2 rounded-md bg-red-400 blur-md"></div>
+              <div className="hidden absolute top-0 right-0 h-full w-[1100px] md:flex justify-end">
+                <div className="absolute bottom-0 md:-translate-x-1/2 w-96 right-0 h-2 rounded-md bg-red-400 blur-md"></div>
                 <iframe
-                  // src="https://my.spline.design/roomrelaxingcopy-dbfd6dcc16387d1598b33e27317ca3f8/"
                   src="https://my.spline.design/roomrelaxingcopy-6d374778a39793e60b070fcfc2a8b968/"
                   frameborder="0"
                   id="hihi"
-                  // width: 1006px; height: 468px;
                   width="100%"
                   height="100%"
                 ></iframe>
@@ -123,7 +121,6 @@ const Order = () => {
           </div>
         </div>
       </div>
-
       <OCRComponent />
       <ModalRemind />
     </div>

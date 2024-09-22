@@ -15,6 +15,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ReportByAdmin from "./pages/report/report-by-admin";
 import Relax from "./modules/relax/screen";
+import Debtor from "./modules/debtor/screen";
 
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
@@ -53,6 +54,7 @@ const MainApp = () => {
                   <Route element={<ReportByAdmin />} path="/admin-report" />
                   <Route element={<Report />} path="/report" />
                   <Route element={<Relax />} path="/relax" />
+                  <Route element={<Debtor />} path="/company/:companyId/debtor" />
                   <Route element={<MainPage />} path="/" />
                 </Route>
               </Routes>
