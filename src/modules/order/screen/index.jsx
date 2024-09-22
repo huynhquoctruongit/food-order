@@ -173,7 +173,7 @@ const OCRComponent = () => {
         <div className="mt-10 md:mt-20">
           <ListOrder />
           <ListRemaining />
-          <div className="hidden md:block">
+          <div className="">
             <ListFinal order={refOder.current} />
           </div>
         </div>
