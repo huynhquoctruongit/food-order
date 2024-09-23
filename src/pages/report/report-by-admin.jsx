@@ -34,7 +34,7 @@ const ReportByAdmin = () => {
     const dateCurrent = currentSelect?.[0] + "T05:00:00.000Z"
     const { profile } = useAuth()
     const { data: orderToday, mutate: mutateOrder } = useSWR(currentSelect?.[0] && profile?.company &&
-        `/items/order?fields=*,user_created.*&filter[status]=published&filter[company]=${profile.company}&filter[date_created][_between]=${currentSelect?.[0]},${"2024-09-24"}T24:00:00.000Z&filter[price][_neq]=0&sort=id`
+        `/items/order?fields=*,user_created.*&filter[status]=published&filter[company]=${profile.company}&filter[date_created][_between]=${currentSelect?.[0]},${currentSelect?.[4]}T24:00:00.000Z&filter[price][_neq]=0&sort=id`
     )
     const { data: reciptData, mutate: mutateRecipt } = useSWR(currentSelect?.[0] && profile?.company &&
         `/items/recipt?fields=*&filter[company]=${profile.company}&filter[date_start][_eq]=${dateCurrent}&filter[amount][_neq]=0`
