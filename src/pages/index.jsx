@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button-hero";
 import { useAuth } from "@/hooks/use-auth";
 import useHistory from "@/hooks/use-order";
 import { createLinkOrder, enumFood } from "@/lib/utils";
+import { CoverIcon } from "@/modules/home/component/icon";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -22,7 +23,8 @@ const MainPage = () => {
   };
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-pastel-pink/40 flex items-center justify-center">
-      <div className="p-4">
+      <div className="absolute w-96 h-96 z-10 top-1/3 right-1/3 bg-[#F6FFFE] blur-2xl"></div>
+      <div className="p-4 relative z-10">
         <div>
           <img src="/not-found.png" className="w-60 mx-auto" alt="" />
         </div>

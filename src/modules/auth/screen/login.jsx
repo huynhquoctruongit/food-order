@@ -8,8 +8,11 @@ import { cn, enumFood } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import useStateModal from "@/hooks/use-modal";
+import { useLocation } from "react-router-dom";
 
 const ModalLogin = () => {
+  const location = useLocation();
+
   const { data } = useSWR("/items/collection_image?filter[name][_eq]=avatar&fields=*,images.*");
   const listAvatar = data?.data[0]?.images || [];
   const { profile, isLogin, mutate } = useAuth();
@@ -26,7 +29,7 @@ const ModalLogin = () => {
   };
   const isOnboarding = !profile?.avatar && isLogin;
   useEffect(() => {
-    if (isLogin === false) setOpenLogin(true);
+    if (isLogin === false && location.pathname !== "/") setOpenLogin(true);
     if (isOnboarding) setOpenOnboarding(true);
     if (isLogin === true) {
       setText(profile?.fullname);

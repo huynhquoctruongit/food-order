@@ -16,6 +16,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import ReportByAdmin from "./pages/report/report-by-admin";
 import Relax from "./modules/relax/screen";
 import Debtor from "./modules/debtor/screen";
+import Home from "./modules/home/screen";
+import { useAuth } from "./hooks/use-auth";
 
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
@@ -24,11 +26,16 @@ dayjs.extend(utc);
 export const publicApiKey = "pk_dev_uoTGKQGMLG3uDQB7VCdsooAq1zaBjg7Wz6G35hzvgiWeGEnnrkbMr8BwaFh9x_ts";
 
 const Layout = () => {
+  const { isLogin } = useAuth();
   return (
     <>
       <Outlet />
-      <Toaster />
-      <ModalLogin />
+      {isLogin && (
+        <>
+          <Toaster />
+          <ModalLogin />
+        </>
+      )}
     </>
   );
 };
@@ -55,7 +62,7 @@ const MainApp = () => {
                   <Route element={<Report />} path="/report" />
                   <Route element={<Relax />} path="/relax" />
                   <Route element={<Debtor />} path="/company/:companyId/debtor" />
-                  <Route element={<MainPage />} path="/" />
+                  <Route element={<Home />} path="/" />
                 </Route>
               </Routes>
             </div>

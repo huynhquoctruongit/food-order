@@ -5,13 +5,14 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "focus-visible:outline-none font-bold rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "focus-visible:outline-none duration-200 font-bold rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-[#FA9382] to-[#E5624D] text-white hover:shadow-button duration-200",
+        default: "bg-gradient-to-r from-[#FA9382] to-[#E5624D] text-white hover:shadow-button",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        "outline-primary": "border border-dashed border-primary-01 text-primary-01 bg-none hover:bg-accent hover:text-primary-01 hover:shadow-button ",
         secondary: "bg-gradient-to-br from-[#188E7E] to-[#188E7E] text-white hover:shadow-button2 duration-200",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
@@ -19,7 +20,7 @@ const buttonVariants = cva(
       size: {
         default: "h-10 px-4 py-2",
         sm: "px-3 text-sm py-1.5",
-        lg: "h-11 rounded-md px-8",
+        lg: "h-[52px] px-8",
         icon: "h-10 w-10",
       },
     },

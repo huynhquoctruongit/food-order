@@ -82,13 +82,14 @@ const Order = () => {
           <div className="root-wrapper w-full py-10 md:py-20 relative">
             <div className="flex w-full flex-col-reverse gap-10 md:flex-row justify-between  items-stretch">
               <div className="hidden absolute top-0 right-0 h-full w-[1100px] md:flex justify-end">
-                <div className="absolute bottom-0 md:-translate-x-1/2 w-96 right-0 h-2 rounded-md bg-red-400 blur-md"></div>
+                <div className="absolute bottom-0 bg-transparent md:-translate-x-1/2 w-96 right-0 h-2 rounded-md bg-red-400 blur-md"></div>
                 <iframe
                   src="https://my.spline.design/roomrelaxingcopy-6d374778a39793e60b070fcfc2a8b968/"
                   frameborder="0"
                   id="hihi"
                   width="100%"
                   height="100%"
+                  className="bg-transparent"
                 ></iframe>
                 <div className="absolute shadow-md bottom-2 right-2 w-48 h-12 rounded-md bg-white z-40 py-2 px-4 text-left">
                   <div className="text-xs font-bold text-primary-01">
