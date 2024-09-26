@@ -37,12 +37,12 @@ export const FollowerPointer = ({ children, className, title }) => {
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
       onMouseMoveCapture={handleMouseMove}
-      style={{
-        // cursor: "none",
-      }}
+      // style={{
+      //   cursor: "none",
+      // }}
       ref={ref}
       id="follower"
-      className={cn("relative", className)}
+      className={cn("relative cursor-pointer", className)}
     >
       {children}
       <AnimatePresence>{isInside && <FollowPointer x={x} y={y} title={title} />}</AnimatePresence>
