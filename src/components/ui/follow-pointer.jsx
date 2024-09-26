@@ -42,7 +42,7 @@ export const FollowerPointer = ({ children, className, title }) => {
       // }}
       ref={ref}
       id="follower"
-      className={cn("relative cursor-pointer", className)}
+      className={cn("relative cursor-none", className)}
     >
       {children}
       <AnimatePresence>{isInside && <FollowPointer x={x} y={y} title={title} />}</AnimatePresence>
