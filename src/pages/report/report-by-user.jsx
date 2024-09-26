@@ -40,13 +40,13 @@ const ReportByUser = () => {
     )
     const orderMembers = orderToday?.data
     const reciptList = reciptData?.data
-    const groupedData = orderMembers?.reduce((acc, { user_created, name, price, date_created, id, is_paid }) => {
+    const groupedData = orderMembers?.reduce((acc, { user_created, name, price, date_created, id, confirm_paid, is_paid }) => {
         let group = acc.find(group => (group.user.id == user_created?.id || fullName(group.user) === fullName(user_created)));
         if (!group) {
             group = { user: { id: user_created?.id, fullname: fullName(user_created) }, items: [] };
             acc.push(group);
         }
-        group.items.push({ name: name, date_created: date_created, id: id, price: price, is_paid: is_paid });
+        group.items.push({ name: name, date_created: date_created, id: id, price: price, confirm_paid: confirm_paid, is_paid : is_paid });
         return acc;
     }, []);
     const isAdmin = profile?.permission_to_update_order
@@ -122,9 +122,9 @@ const ReportByUser = () => {
     const onPay = async (date, user, item) => {
         if (!item || !isAdmin) return
         const dataItem = item?.id ? item : item[0]
-        const isPay = dataItem.is_paid ? true : false
+        const isPay = dataItem.confirm_paid ? true : false
         const params = {
-            is_paid: !isPay
+            confirm_paid: !isPay
         }
         await AxiosAPI.patch("/items/order/" + dataItem.id, params)
         mutateOrder()
@@ -240,7 +240,7 @@ const ReportByUser = () => {
                                                             {riceList?.length &&
                                                                 <div className="flex items-center"><input key={userItem.user.id + date + index + "-elm-input1"} disabled className="w-[50%] rounded-md p-[6px] text-center bg-transparent text-gray-600 select-none" value={finalPrice}></input>
                                                                     <div onClick={() => onPay(date, userItem, riceList)}>
-                                                                        {riceList?.[0].is_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (isAdmin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)}
+                                                                        {riceList?.[0].confirm_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (isAdmin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)}
                                                                     </div></div> || ""}
                                                         </TooltipTrigger>
                                                         <TooltipContent className="bg-white">
@@ -253,7 +253,7 @@ const ReportByUser = () => {
                                                     <div className="flex items-center gap-2 justify-center">
                                                         <input id={date} key={userItem.user.id + date + index + "-elm-input2"} disabled={!isAdmin} className={`rounded-md p-[6px] w-[50%] text-center bg-transparent text-gray-600 ${isAdmin && "border-[1px] border-pastel-pink"}`} value={valueWater} defaultValue={match ? (ortherList?.price == 0 ? "" : ortherList?.price) : ""} onKeyUp={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")} onChange={(e) => onUpdateOrder(e, userItem, ortherList, date, "orther-food")}></input>
                                                         <div onClick={() => onPay(date, userItem, ortherList)}>
-                                                            {ortherList && (ortherList?.is_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (isAdmin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)) || <div className="w-5"></div>}
+                                                            {ortherList && (ortherList?.confirm_paid ? <CircleCheckBig color="#ed4b33" strokeWidth={0.9} size={20} /> : (isAdmin && <Circle color="#ed4b33" strokeWidth={0.9} size={20} />)) || <div className="w-5"></div>}
                                                         </div>
                                                     </div>
                                                 </div>

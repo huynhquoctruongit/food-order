@@ -42,11 +42,11 @@ const ModalRemind = () => {
   ];
 
   const onSubmit = async () => {
-    // const payload = orders.map((item) => ({
-    //   id: item.id,
-    //   is_paid: true,
-    // }));
-    // await AxiosClient.patch("/items/order", payload);
+    const payload = orders.map((item) => ({
+      id: item.id,
+      is_paid: true,
+    }));
+    await AxiosClient.patch("/items/order", payload);
     mutate();
     setOpenRemind(false);
   };
