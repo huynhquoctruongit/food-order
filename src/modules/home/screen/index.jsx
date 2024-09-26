@@ -1,9 +1,5 @@
 import { Button } from "@/components/ui/button-hero";
-import { useAuth } from "@/hooks/use-auth";
-import useHistory from "@/hooks/use-order";
-import { createLinkOrder, enumFood } from "@/lib/utils";
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BackgroundGradientAnimation } from "../component/background";
 import AnimateText, { AnimateLineText, AnimateView } from "@/components/widget/animate-text";
 import Transfer from "../component/transfer";
@@ -62,8 +58,9 @@ const Home = () => {
       </div>
       <div>
         <Transfer />
-        <Interactive />
       </div>
+      <Interactive />
+      <div className="w-full h-screen"></div>
     </div>
   );
 };

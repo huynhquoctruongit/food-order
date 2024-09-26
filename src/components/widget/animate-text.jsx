@@ -58,7 +58,7 @@ const AnimateText = ({ children = "", className, delay = 0, ...props }) => {
       variants={variantParents}
       viewport={{ once: true }}
       initial={"initial"}
-      animate="animate"
+      whileInView="animate"
       className={cn("flex overflow-hidden", className)}
       {...props}
     >
