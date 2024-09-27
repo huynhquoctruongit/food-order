@@ -19,6 +19,7 @@ import Debtor from "./modules/debtor/screen";
 import Home from "./modules/home/screen";
 import { useAuth } from "./hooks/use-auth";
 import { useEffect } from "react";
+import Background from "./modules/home/component/local";
 
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
@@ -57,12 +58,15 @@ const MainApp = () => {
       value={{
         revalidateIfStale: false,
         revalidateOnFocus: false,
+        shouldRetryOnError: false,
         fetcher: fetcherClient,
       }}
     >
       <TooltipProvider>
+        <Background />
         <BrowserRouter>
-          <div className="text-primary bg-[url(/background.png)] bg-contain bg-white text-left overflow-hidden min-h-[100vh] flex flex-col">
+          {/* bg-[url(/background.png)] */}
+          <div className="text-primary bg-contain text-left overflow-hidden min-h-[100vh] flex flex-col">
             <Header />
             <div className="bg-white/40 flex-1 relative text-gray-700">
               <Routes>

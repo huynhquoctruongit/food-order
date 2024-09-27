@@ -1,28 +1,8 @@
 import AnimateText, { AnimateLineText, AnimateView } from "@/components/widget/animate-text";
+import { cn } from "@/lib/utils";
 
-const LoginByGoogle = () => {
-  const loginByGoogle = () => {
-    location.replace("https://cms.toidot.com/auth/login/google?redirect=" + location.origin + "?callback=" + location.pathname);
-  };
-  //   <AnimateLineText className="alata text-3xl justify-center leading-relaxed">Đăng nhập </AnimateLineText>
-  //   <AnimateText delay={0.5} className="alata justify-center text-5xl mt-4 text-primary-01 leading-relaxed">
-  //     BẰNG TÀI KHOẢN GOOGLE
-  //   </AnimateText>
-  //   <AnimateView delay={1} className=" text-gray-500 mt-6">
-  //     Nhanh chóng, linh hoạt, bảo mật, an toàn, đồng bộ <br /> thông tin trên nhiều thiết bị cùng lúc
-  //   </AnimateView>
-  //   <AnimateView delay={1.3} className="mt-10 flex justify-center">
-  //     <div
-  //       onClick={loginByGoogle}
-  //       className="rounded-full cursor-pointer hover:border-solid hover:-translate-y-0.5 hover:shadow-sm duration-200 border gap-3 border-primary-01 text-primary-01 p-1.5 pr-3 flex items-center justify-center bg-white w-fit"
-  //     >
-  //       <img src="/google.png" className="w-6 h-6 rounded-full" alt="" />
-  //       Đăng nhập bằng Google
-  //     </div>
-  //   </AnimateView>
-
+const Partners = () => {
   const partners = [
-   
     { title: "IELTS 1984" },
     { title: "YOUPASS" },
     { title: "VUTHIEN" },
@@ -35,11 +15,33 @@ const LoginByGoogle = () => {
     <div className="py-20">
       <div className="root-wrapper mx-auto">
         <div className="border rounded-md border-primary-01 grid grid-cols-4">
-            <div className=""></div>
+          <div className="p-4 border-b border-primary-01 flex justify-center items-center">
+            <div>
+              <div className="text-left alata text-gray-700">Được tin dùng</div>
+              <div className="flex items-end gap-1 alata">
+                <span className="text-4xl font-semibold text-primary-01">NHÂN VIÊN</span>
+                <span className=" text-gray-700">tại</span>
+              </div>
+            </div>
+          </div>
+          {partners.map((item, index) => {
+            const isSecondLine = index > 2;
+            return (
+              <div
+                key={item.title}
+                className={cn("p-5 h-40 flex items-center justify-center text-3xl font-bold text-primary-01", {
+                  "border-l border-b border-primary-01 ": !isSecondLine,
+                  "border-l border-primary-01": isSecondLine && index !== 3,
+                })}
+              >
+                {item.title}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 };
 
-export default LoginByGoogle;
+export default Partners;

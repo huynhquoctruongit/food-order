@@ -3,11 +3,10 @@ import Profile from "@/modules/info-user";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const { profile } = useAuth()
+  const { profile } = useAuth();
   const navigate = useNavigate();
   const onGoHome = () => {
-    const link = `/company/${profile?.company}/provider/1`
-    profile ? navigate(link) : navigate("/");
+    navigate("/");
   };
   return (
     <div className="bg-white">

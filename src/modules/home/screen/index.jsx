@@ -7,13 +7,18 @@ import Interactive from "../component/interactive";
 import SumaryOrder from "../component/summary";
 import TotalReport from "../component/total-report";
 import LoginByGoogle from "../component/login";
+import Partners from "../component/partner";
+import Background from "../component/local";
+import { useAuth } from "@/hooks/use-auth";
+import useOrder from "@/modules/order/helper/use-menu";
 
 const foods = ["/foods/mon-1.png", "/foods/mon-2.png", "/foods/mon-3.png", "/foods/mon-4.png", "/foods/mon-5.png"];
 const Home = () => {
   const navigate = useNavigate();
+  const { profile, isLogin } = useAuth();
 
-  const onClick = () => {
-    // navigate(createLinkOrder(company, bulk_food_provider));
+  const onUse = () => {
+    navigate(`/company/${profile.company}/provider/1`);
   };
   return (
     <div className="text-left">
@@ -40,10 +45,10 @@ const Home = () => {
             </AnimateView>
 
             <AnimateView delay={1} className="flex items-center justify-center gap-10 mb-10">
-              <Button variant="default" size="lg" onClick={onClick}>
-                SỬ DỤNG MIỄN PHÍ
+              <Button variant="default" size="lg" onClick={onUse}>
+                ĐẶT MÓN NGAY
               </Button>
-              <Button variant="outline-primary" size="lg" onClick={onClick}>
+              <Button variant="outline-primary" size="lg">
                 SỬ DỤNG MIỄN PHÍ
               </Button>
             </AnimateView>
@@ -64,6 +69,7 @@ const Home = () => {
       <SumaryOrder />
       <TotalReport />
       <LoginByGoogle />
+      <Partners />
       <div className="w-full h-screen"></div>
     </div>
   );

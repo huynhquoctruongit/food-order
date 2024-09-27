@@ -20,6 +20,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --background: 0 0% 100%;
+}
+
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
 }
 
 a {
