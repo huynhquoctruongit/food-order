@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, useSearchParams, useNavigate } from "react-router-dom";
 import { SWRConfig } from "swr";
 import { fetcherClient } from "@/lib/api/axios-client";
 import Report from "@/pages/report/index";
@@ -18,6 +18,7 @@ import Relax from "./modules/relax/screen";
 import Debtor from "./modules/debtor/screen";
 import Home from "./modules/home/screen";
 import { useAuth } from "./hooks/use-auth";
+import { useEffect } from "react";
 
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
@@ -27,21 +28,31 @@ export const publicApiKey = "pk_dev_uoTGKQGMLG3uDQB7VCdsooAq1zaBjg7Wz6G35hzvgiWe
 
 const Layout = () => {
   const { isLogin } = useAuth();
+  const [query, setQuery] = useSearchParams();
+  const callback = query.get("callback");
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log(callback);
+
+    if (callback) {
+      navigate(callback);
+    }
+  }, [callback, isLogin]);
+
   return (
     <>
       <Outlet />
+      <ModalLogin />
       {isLogin && (
         <>
           <Toaster />
         </>
       )}
-      <ModalLogin />
     </>
   );
 };
 const MainApp = () => {
   return (
-
     <SWRConfig
       value={{
         revalidateIfStale: false,
