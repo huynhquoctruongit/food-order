@@ -1,9 +1,8 @@
-import { useAuth } from "@/hooks/use-auth";
 import { useMediaQuery } from "usehooks-ts";
-import useSWR from "swr";
 import { motion } from "framer-motion";
+import { chartsData } from "../helper/user-data";
 
-const ChartPrice = () => {
+const ChartBar = () => {
   const variants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0 },
@@ -12,23 +11,10 @@ const ChartPrice = () => {
     hidden: { opacity: 0, height: 0 },
     visible: { opacity: 1, height: height },
   });
-  const { profile } = useAuth();
   const isMd = useMediaQuery("(min-width: 768px)");
-  const payload = {
-    filter: {
-      company: { _eq: profile.company },
-      status: { _eq: "published" },
-      user_created: { _eq: profile.id },
-      date_created: { _gte: "$NOW(-35 day)" },
-    },
-    groupBy: ["week(date_created)"],
-    aggregate: { sum: ["price", "delivery_fee"] },
-  };
-  const { data: report, isLoading } = useSWR(["/items/order", payload]);
   const gap = 50;
   const height = isMd ? 48 : 32;
-  const week = [...(report?.data || [])];
-
+  const week = chartsData;
   const again = Array.from({ length: 5 - week.length }, (_, i) => ({
     sum: { price: 0, delivery_fee: 0 },
     date_created_week: null,
@@ -38,13 +24,13 @@ const ChartPrice = () => {
 
   return (
     <div className="text-left">
-      {week.length > 0 && !isLoading && (
+      {week.length > 0 && (
         <div className="rounded-xl w-full p-3 md:p-6 flex border border-primary-01/40 ring-[6px] bg-white ring-primary-01/5 ring-offset-0">
           <div>
             <motion.div
               className=""
               initial="hidden"
-              animate="visible"
+              whileInView="visible"
               variants={{
                 hidden: { opacity: 0 },
                 visible: {
@@ -81,7 +67,7 @@ const ChartPrice = () => {
                       <motion.div
                         variants={variantsBar(heightStyle)}
                         initial="hidden"
-                        animate="visible"
+                        whileInView="visible"
                         transition={{ duration: 0.5, type: "spring" }}
                         className="absolute bottom-full left-0 w-10 hover:bg-primary-01 bg-pastel-pink duration-200 rounded-t-sm"
                         // style={{ height: Math.ceil((value * height) / gap) }}
@@ -90,7 +76,7 @@ const ChartPrice = () => {
                           <motion.div
                             variants={variants}
                             initial="hidden"
-                            animate="visible"
+                            whileInView="visible"
                             transition={{ duration: 0.3, delay: 0.6 }}
                             className="absolute bottom-full left-0 w-10 text-xs text-center rounded-t-sm mb-2"
                           >
@@ -106,22 +92,8 @@ const ChartPrice = () => {
           </div>
         </div>
       )}
-
-      {week.length === 0 && !isLoading && (
-        <div className="text-center text-gray-400 border flex items-center justify-center border-primary-01/40 ring-[6px] bg-white ring-primary-01/5 ring-offset-0 min-h-[360px] rounded-md md:min-w-[350px]">
-          <div className="flex items-center justify-center flex-col">
-            <img src="/not-found.png" className="w-20 h-20" />
-            <div className="text-gray-400">Không có dữ liệu</div>
-          </div>
-        </div>
-      )}
-      {isLoading && (
-        <div className="text-center text-gray-400 border flex items-center justify-center border-primary-01/40 ring-[6px] bg-white ring-primary-01/5 ring-offset-0 min-h-[360px] rounded-md md:min-w-[490px] w-[490px]">
-          <div className="flex items-center justify-center flex-col"></div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default ChartPrice;
+export default ChartBar;

@@ -54,16 +54,16 @@ const Interactive = () => {
       <AnimateLineText className="alata mt-20 mb-10 text-5xl justify-center text-primary-01 uppercase text-center">
         Tương tác cùng với nhau
       </AnimateLineText>
-      <FollowerPointer title={<TitleComponent author={blogContent} />} className="relative">
-        <div className="h-fit bg-gradient-to-tr from-pastel-pink/5 to-primary-01/30 py-32 w-screen relative">
-          <div className="absolute w-96 h-72 z-10 top-5/12 right-32 bg-[#fca98ddf] blur-3xl"></div>
+      <div title={<TitleComponent author={blogContent} />} className="relative">
+        <div className="h-fit bg-gradient-to-tr from-[#fffaf8] to-primary-01/30 py-16 w-screen relative">
+          <div className="absolute w-96 h-72 z-10 top-[5rem] left-[40%] bg-[#ffe4db49] blur-3xl"></div>
           <div className="absolute w-96 h-72 z-10 top-2/12 right-10 bg-[#edfffd9e] blur-3xl"></div>
           <div className="root-wrapper mx-auto relative flex gap-10 z-10 px-32">
             <div className="grid grid-cols-2 h-fit items-center flex-wrap w-2/3 gap-5">
               {dataTransfer.map((item) => (
                 <div
                   key={item.image}
-                  className="w-full bg-white hover:shadow-button duration-200 border border-pastel-pink rounded-lg items-center relative flex"
+                  className="w-full bg-white hover:-translate-y-1 hover:shadow-button duration-200 border border-pastel-pink rounded-lg items-center relative flex"
                 >
                   <div className="min-w-24 w-24 aspect-square bg-pastel-pink/20 flex items-center justify-center">
                     <img src={item.image} alt="" className="w-20" />
@@ -72,21 +72,22 @@ const Interactive = () => {
                 </div>
               ))}
             </div>
-            <div className="flex flex-col gap-4 ml-auto">
-              <Notification />
-              <Notification />
-              <Notification />
-              <Notification />
-              <Notification />
+            <div className=" ml-auto p-10 -translate-y-10 relative overflow-hidden">
+              <div className="flex flex-col gap-4 mx-auto w-fit relative">
+                <Notification />
+                <Notification />
+                <Notification />
+                <Notification />
+              </div>
             </div>
           </div>
 
           <ElementCursor x={400} y={270} vx={7} vy={4} title={<TitleComponent author={Linh} />} />
-          <ElementCursor delay={0.5} x={800} y={120} vx={3} vy={6} title={<TitleComponent author={Nhat} />} />
-          <ElementCursor delay={0.3} x={500} y={400} vx={3} vy={6} title={<TitleComponent author={Anonymus} />} />
+          <ElementCursor delay={0.5} x={800} y={120} vx={-3} vy={-6} title={<TitleComponent author={Nhat} />} />
+          <ElementCursor delay={0.3} x={500} y={50} vx={3} vy={6} title={<TitleComponent author={Anonymus} />} />
           <FloatingDockDemo />
         </div>
-      </FollowerPointer>
+      </div>
     </>
   );
 };
@@ -95,7 +96,7 @@ export default Interactive;
 
 const Notification = () => {
   return (
-    <div className="w-60 px-2 bg-white rounded-md border border-dashed border-pastel-pink flex items-center hover:shadow-button duration-200">
+    <div className="w-60 px-2 bg-white rounded-md border hover:-translate-y-1 ease-in-out border-dashed border-pastel-pink flex items-center hover:shadow-button duration-200">
       <div className="w-10 h-10 min-w-10 p-1 border-pastel-pink border-2 rounded-full">
         <img className="w-full h-full object-contain" src={"/foods/mon-1.png"} alt="" />
       </div>
@@ -208,7 +209,7 @@ export function FloatingDockDemo() {
     href: "#",
   };
   return (
-    <div className="flex items-center justify-center w-full">
+    <div className="flex items-center justify-center w-full relative z-10">
       <FloatingDock
         mobileClassName="" // only for demo, remove for production
         items={[...links, more]}
