@@ -33,15 +33,14 @@ const Layout = () => {
       {isLogin && (
         <>
           <Toaster />
-          <ModalLogin />
         </>
       )}
+      <ModalLogin />
     </>
   );
 };
 const MainApp = () => {
   return (
-    // <React.StrictMode>
 
     <SWRConfig
       value={{
@@ -52,7 +51,7 @@ const MainApp = () => {
     >
       <TooltipProvider>
         <BrowserRouter>
-          <div className="text-primary bg-[url(/background.png)] bg-contain text-left overflow-hidden min-h-[100vh] flex flex-col">
+          <div className="text-primary bg-[url(/background.png)] bg-contain bg-white text-left overflow-hidden min-h-[100vh] flex flex-col">
             <Header />
             <div className="bg-white/40 flex-1 relative text-gray-700">
               <Routes>
