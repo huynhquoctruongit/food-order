@@ -19,7 +19,7 @@ const Background = () => {
         <div className="bg-muted-foreground/20 absolute inset-0 z-[0]"></div>
         <motion.div
           style={{ top: y, left: x }}
-          className="bg-gradient-radial absolute from-muted-foreground/80 z-[0] h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full from-0% to-transparent to-90% blur-md"
+          className="bg-gradient-radial absolute from-primary-01 z-[0] h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full from-0% to-transparent to-90% blur-md"
         ></motion.div>
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" className="relative z-10">
           <defs>
