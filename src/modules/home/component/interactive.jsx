@@ -18,13 +18,8 @@ const TitleComponent = ({ author }) => (
   </div>
 );
 const blogContent = {
-  name: "Nhất Nguyên",
-  date: "28th March, 2023",
-  title: "Amazing Tailwindcss Grid Layout Examples",
-  description:
-    "Grids are cool, but Tailwindcss grids are cooler. In this article, we will learn how to create amazing Grid layouts with Tailwindcs grid and React.",
+  name: "YOU",
   avatar: "/foods/mon-1.png",
-  authorAvatar: "/foods/mon-1.png",
 };
 
 const Linh = {
@@ -54,7 +49,7 @@ const Interactive = () => {
       <AnimateLineText className="alata mt-20 mb-10 text-5xl justify-center text-primary-01 uppercase text-center">
         Tương tác cùng với nhau
       </AnimateLineText>
-      <div title={<TitleComponent author={blogContent} />} className="relative">
+      <FollowerPointer title={<TitleComponent author={blogContent} />} className="relative">
         <div className="h-fit bg-gradient-to-tr from-[#fffaf8] to-primary-01/30 py-16 w-screen relative">
           <div className="absolute w-96 h-72 z-10 top-[5rem] left-[40%] bg-[#ffe4db49] blur-3xl"></div>
           <div className="absolute w-96 h-72 z-10 top-2/12 right-10 bg-[#edfffd9e] blur-3xl"></div>
@@ -87,7 +82,7 @@ const Interactive = () => {
           <ElementCursor delay={0.3} x={500} y={50} vx={3} vy={6} title={<TitleComponent author={Anonymus} />} />
           <FloatingDockDemo />
         </div>
-      </div>
+      </FollowerPointer>
     </>
   );
 };

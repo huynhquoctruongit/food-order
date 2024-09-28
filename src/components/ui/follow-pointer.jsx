@@ -1,30 +1,22 @@
 // Core component that receives mouse positions and renders pointer and content
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useMouse } from "@uidotdev/usehooks";
 
 export const FollowerPointer = ({ children, className, title }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const [rect, setRect] = useState(null);
   const [isInside, setIsInside] = useState(false); // Add this line
-
-  const ref = useRef();
+  const [mouse, refContainer] = useMouse();
 
   useEffect(() => {
-    if (ref.current) {
-      setRect(ref.current.getBoundingClientRect());
-    }
-  }, []);
+    x.set(mouse.elementX);
+    y.set(mouse.elementY);
+  }, [mouse]);
 
-  const handleMouseMove = (e) => {
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    x.set(e.clientX - rect.left + scrollX);
-    y.set(e.clientY - rect.top + scrollY);
-  };
   const handleMouseLeave = () => {
     setIsInside(false);
   };
@@ -36,11 +28,10 @@ export const FollowerPointer = ({ children, className, title }) => {
     <div
       onMouseLeave={handleMouseLeave}
       onMouseEnter={handleMouseEnter}
-      onMouseMoveCapture={handleMouseMove}
-      // style={{
-      //   cursor: "none",
-      // }}
-      ref={ref}
+      style={{
+        cursor: "none",
+      }}
+      ref={refContainer}
       id="follower"
       className={cn("relative cursor-none", className)}
     >
@@ -60,6 +51,7 @@ export const FollowPointer = ({ x, y, title }) => {
     "var(--red-500)",
     "var(--yellow-500)",
   ];
+  const background = useMemo(() => colors[Math.floor(Math.random() * colors.length)], []);
   return (
     <motion.div
       className="h-4 w-4 rounded-full absolute z-50"
@@ -95,7 +87,7 @@ export const FollowPointer = ({ x, y, title }) => {
       </svg>
       <motion.div
         style={{
-          backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+          backgroundColor: background,
         }}
         initial={{
           scale: 0.5,
@@ -111,7 +103,7 @@ export const FollowPointer = ({ x, y, title }) => {
         }}
         className={"px-2 py-2 bg-neutral-200 text-white whitespace-nowrap min-w-max text-xs rounded-full"}
       >
-        {title || `William Shakespeare`}
+        {title}
       </motion.div>
     </motion.div>
   );
