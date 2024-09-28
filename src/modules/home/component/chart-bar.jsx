@@ -56,7 +56,7 @@ const ChartBar = () => {
             </motion.div>
             <div className="flex items-center ">
               <div className="w-12 md:w-20 relative"></div>
-              <div className="items-center gap-4 md:gap-10 flex">
+              <div className="items-center gap-4 md:gap-8 flex">
                 {[...again, ...week].map((item, index) => {
                   const value = parseInt(item.sum.price) + (parseInt(item.sum.delivery_fee) || 0);
                   const label = item.date_created_week === null ? null : `T.${item.date_created_week}`;
