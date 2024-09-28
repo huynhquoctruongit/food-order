@@ -65,7 +65,6 @@ const MainApp = () => {
       <TooltipProvider>
         <Background />
         <BrowserRouter>
-          {/* bg-[url(/background.png)] */}
           <div className="text-primary bg-contain text-left overflow-hidden min-h-[100vh] flex flex-col">
             <Header />
             <div className="bg-white/40 flex-1 relative text-gray-700">

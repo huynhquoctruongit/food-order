@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 const Partners = () => {
   const partners = [
-    { title: "IELTS 1984" },
+    { title: "TÁM BỐN" },
     { title: "YOUPASS" },
     { title: "VUTHIEN" },
     { title: "KYLONG TECH" },
@@ -17,10 +17,10 @@ const Partners = () => {
         <div className="border rounded-md border-primary-01 grid grid-cols-4">
           <div className="p-4 border-b border-primary-01 flex justify-center items-center">
             <div>
-              <div className="text-left alata text-gray-700">Được tin dùng</div>
+              <div className="text-left alata text-gray-600">Được tin dùng bởi</div>
               <div className="flex items-end gap-1 alata">
                 <span className="text-4xl font-semibold text-primary-01">NHÂN VIÊN</span>
-                <span className=" text-gray-700">tại</span>
+                <span className=" text-gray-600">của</span>
               </div>
             </div>
           </div>

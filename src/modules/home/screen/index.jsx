@@ -11,6 +11,8 @@ import Partners from "../component/partner";
 import Background from "../component/local";
 import { useAuth } from "@/hooks/use-auth";
 import useOrder from "@/modules/order/helper/use-menu";
+import Testimonials from "../component/testimonial";
+import Footer from "../component/footer";
 
 const foods = ["/foods/mon-1.png", "/foods/mon-2.png", "/foods/mon-3.png", "/foods/mon-4.png", "/foods/mon-5.png"];
 const Home = () => {
@@ -70,7 +72,8 @@ const Home = () => {
       <TotalReport />
       <LoginByGoogle />
       <Partners />
-      <div className="w-full h-screen"></div>
+      <Testimonials />
+      <Footer />
     </div>
   );
 };
