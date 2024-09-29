@@ -74,6 +74,11 @@ module.exports = {
           from: { transform: "rotate(-10deg)" },
           to: { transform: "rotate(10deg)" },
         },
+        scrolls: {
+          to: {
+            transform: "translateY(calc(-50% - 0.5rem))",
+          },
+        },
         moveHorizontal: {
           "0%": {
             transform: "translateX(-50%) translateY(-10%)",
@@ -127,6 +132,7 @@ module.exports = {
         fourth: "moveHorizontal 40s ease infinite",
         fifth: "moveInCircle 20s ease infinite",
         bg: "blurbackground 1.5s ease-out infinite",
+        scroll: "scrolls var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
       },
     },
   },

@@ -1,3 +1,4 @@
+import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { cn } from "@/lib/utils";
 import Marquee from "react-fast-marquee";
 
@@ -5,8 +6,8 @@ const Testimonials = () => {
   return (
     <div className="py-20">
       <div className="root-wrapper mx-auto ">
-        <div className="grid grid-cols-3 gap-4">
-          {[1, 2, 4].map((item) => {
+        <div className="grid grid-cols-3 gap-4 [mask-image:linear-gradient(to_top,transparent,white_20%,white_80%,transparent)]">
+          {[1, 2, 3].map((item) => {
             const isFast = item % 2 === 0;
             return <ColTestimonial direction={isFast ? "up" : "down"} time={isFast ? 100 : 50} />;
           })}
@@ -45,27 +46,12 @@ const testimonials = [
 
 const ColTestimonial = ({ item, direction, time }) => {
   return (
-    <div className="flex flex-col gap-4" style={{ width: "fit-content" }} direction="up">
-      {testimonials.map((item, index) => {
-        return (
-          <div
-            key={index + "testimonial"}
-            className={cn("p-5 justify-start bg-white text-primary-01 border-primary-01 border border-dashed rounded-md")}
-          >
-            <div className="flex items-center gap-2 justify-start">
-              <div className=" min-w-[3.75rem] w-[3.75rem] aspect-square">
-                <img c src={item.avatar} alt="" className="w-full h-full border border-primary-01 rounded-full" />
-              </div>
-              <div>
-                <div className="text-md uppercase text-left">{item.name}</div>
-                <div className="text-sm text-gray-600 text-left">{item.title}</div>
-              </div>
-            </div>
-            <div className="text-sm text-gray-700 text-left mt-2"> {item.description}</div>
-          </div>
-        );
-      })}
-    </div>
+    <InfiniteMovingCards
+      direction={direction}
+      className="flex flex-col gap-4"
+      style={{ width: "fit-content" }}
+      items={testimonials}
+    ></InfiniteMovingCards>
   );
 };
 
