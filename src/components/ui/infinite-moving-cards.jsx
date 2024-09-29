@@ -1,3 +1,4 @@
+import { createImage } from "@/lib/helper";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -69,14 +70,18 @@ export const InfiniteMovingCards = ({ items, direction = "left", speed = "fast",
           >
             <div className="flex items-center gap-2 justify-start">
               <div className=" min-w-[3.75rem] w-[3.75rem] aspect-square">
-                <img src={item.avatar} alt="" className="w-full h-full border border-primary-01 rounded-full" />
+                <img
+                  src={createImage(item.avatar, 200)}
+                  alt=""
+                  className="w-full object-cover h-full border border-primary-01 rounded-full"
+                />
               </div>
               <div>
-                <div className="text-md uppercase text-left">{item.name}</div>
+                <div className="text-md uppercase text-left">{item.first_name + " " + item.last_name}</div>
                 <div className="text-sm text-gray-600 text-left">{item.title}</div>
               </div>
             </div>
-            <div className="text-sm text-gray-700 text-left mt-2"> {item.description}</div>
+            <div className="text-sm text-gray-700 text-left mt-2"> {item.content}</div>
           </div>
         ))}
       </div>
