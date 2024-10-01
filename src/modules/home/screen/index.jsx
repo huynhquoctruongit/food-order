@@ -8,9 +8,7 @@ import SumaryOrder from "../component/summary";
 import TotalReport from "../component/total-report";
 import LoginByGoogle from "../component/login";
 import Partners from "../component/partner";
-import Background from "../component/local";
 import { useAuth } from "@/hooks/use-auth";
-import useOrder from "@/modules/order/helper/use-menu";
 import Testimonials from "../component/testimonial";
 import Footer from "../component/footer";
 

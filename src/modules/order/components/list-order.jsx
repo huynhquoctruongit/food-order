@@ -83,7 +83,7 @@ const ListOrder = () => {
             return (
               <div key={index + "-elm"} className="flex items-stretch border-gray-300 border-t text-gray-500 text-md">
                 <ItemTable className={options[0].className}>
-                  <div className="flex items-center gap-2 w-full">
+                  <div className="flex items-left gap-2 w-full">
                     <img
                       src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
                       alt=""
@@ -149,30 +149,36 @@ const ListOrder = () => {
           const fullname = elm.user.first_name + " " + elm.user.last_name;
 
           return (
-            <div key={index + "-elm"} className="flex flex-col gap-2 border-b border-gray-200 last:border-b-0 pb-4 mb-2">
-              <div className="flex items-center gap-2 w-full">
+            <div key={index + "-elm"} className="flex flex-col gap-2 border-b border-gray-200 last:border-b-0 p-2 pb-4 mb-2">
+              <div className="flex items-left gap-2 w-full">
                 <img
                   src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
                   alt=""
-                  className="w-10 h-10 rounded-full overflow-hidden border-2 border-white"
+                  className="w-10 h-10 rounded-full object-cover overflow-hidden border-2 border-white"
                 />
                 <span>{fullname}</span>
               </div>
               <div className="flex flex-col gap-2">
                 {elm.items.map((el, index) => {
                   return (
-                    <div key={el.name + index + "name"} className="flex items-center">
-                      <span className="mr-3"> -{el.name} </span>
-                      {profile.id == elm.user.id && (
-                        <div
-                          onClick={() => {
-                            deleteFood(el);
-                          }}
-                          className="ml-auto bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"
-                        >
-                          <XIcon className="w-3 h-3 stroke-white " />
-                        </div>
-                      )}
+                    <div key={el.name + index + "name"} className="">
+                      <div className="mr-3 text-left flex">
+                        {el.name}
+                        {profile.id == elm.user.id && (
+                          <div
+                            onClick={() => {
+                              deleteFood(el);
+                            }}
+                            className="ml-auto mt-1 bg-[#E5624D] min-w-4 w-4 h-4 rounded-lg  flex items-center justify-center cursor-pointer  hover:shadow-button"
+                          >
+                            <XIcon className="w-3 h-3 stroke-white " />
+                          </div>
+                        )}
+                      </div>
+                      {el.note && <div className="text-left text-gray-500">Note: {el.note} </div>}
+                      <div className="text-left text-xs mt-1 flex justify-between">
+                        {dayjs(el.date_created).format("hh:mm:ss")} <span className="ml-auto ">{el.price} cá</span>{" "}
+                      </div>
                     </div>
                   );
                 })}
