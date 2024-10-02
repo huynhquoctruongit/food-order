@@ -16,6 +16,7 @@ const Invester = () => {
   const open = (href) => {
     window.open(href + `?utm_source=web-dat-com&utm_url=${window.location.href}`, "_blank");
   };
+  return null
 
   return (
     <motion.div className="py-4 md:py-3 bg-white md:bg-pastel-pink">
