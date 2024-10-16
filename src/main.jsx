@@ -24,8 +24,8 @@ import Background from "./modules/home/component/local";
 dayjs.extend(isoWeek);
 dayjs.extend(utc);
 
-// const publicApiKey = "pk_prod_2oVxL3i1hs4YnjgBRzAvH3-G9GLo1e2HWjVS7NUf3oPEsn1mpfJVpkaHuguE4VMC";
-export const publicApiKey = "pk_dev_uoTGKQGMLG3uDQB7VCdsooAq1zaBjg7Wz6G35hzvgiWeGEnnrkbMr8BwaFh9x_ts";
+export const publicApiKey = "pk_prod_2oVxL3i1hs4YnjgBRzAvH3-G9GLo1e2HWjVS7NUf3oPEsn1mpfJVpkaHuguE4VMC";
+// export const publicApiKey = "pk_dev_uoTGKQGMLG3uDQB7VCdsooAq1zaBjg7Wz6G35hzvgiWeGEnnrkbMr8BwaFh9x_ts";
 
 const Layout = () => {
   const { isLogin } = useAuth();
