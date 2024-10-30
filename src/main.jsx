@@ -25,7 +25,8 @@ dayjs.extend(isoWeek);
 dayjs.extend(utc);
 
 // export const publicApiKey = "pk_prod_2oVxL3i1hs4YnjgBRzAvH3-G9GLo1e2HWjVS7NUf3oPEsn1mpfJVpkaHuguE4VMC";
-export const publicApiKey = "pk_dev_uoTGKQGMLG3uDQB7VCdsooAq1zaBjg7Wz6G35hzvgiWeGEnnrkbMr8BwaFh9x_ts";
+// export const publicApiKey = "pk_dev_uoTGKQGMLG3uDQB7VCdsooAq1zaBjg7Wz6G35hzvgiWeGEnnrkbMr8BwaFh9x_ts";
+export const publicApiKey = "pk_prod_LfbF-mZ4W3yAA-OK-cWuFrSSy1dgSOkBl7MluvQ9NzIFrpsp2qSjT5a8_WaWbGxv";
 
 const Layout = () => {
   const { isLogin } = useAuth();
