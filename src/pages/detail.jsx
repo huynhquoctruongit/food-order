@@ -21,6 +21,7 @@ import { Environment, OrbitControls, Outlines, useAnimations, useGLTF } from "@r
 
 import Widgets from "@/modules/chat/screen";
 import { publicApiKey } from "@/main";
+import Snow from "./report/snow";
 
 const GroupButtonHero = () => {
   const onScroll = () => {
@@ -81,23 +82,12 @@ const Order = () => {
           <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
           <div className="root-wrapper w-full py-10 md:py-20 relative">
             <div className="flex w-full flex-col-reverse gap-10 md:flex-row justify-between  items-stretch">
-              <div className="hidden absolute top-0 right-0 h-full w-[1100px] md:flex justify-end">
-                <div className="absolute bottom-0 bg-transparent md:-translate-x-1/2 w-96 right-0 h-2 rounded-md bg-red-400 blur-md"></div>
-                <iframe
-                  src="https://my.spline.design/roomrelaxingcopy-6d374778a39793e60b070fcfc2a8b968/"
-                  frameborder="0"
-                  id="hihi"
-                  width="100%"
-                  height="100%"
-                  className="bg-transparent"
-                ></iframe>
-                <div className="absolute shadow-md bottom-2 right-2 w-48 h-12 rounded-md bg-white z-40 py-2 px-4 text-left">
-                  <div className="text-xs font-bold text-primary-01">
-                    NGỌC NHẤT, <span className="text-gray-700 font-normal">30 tuổi</span>
-                  </div>
-                  <div className="text-xs text-gray-700">Đẹp trai, vui tính</div>
-                </div>
+              <div className="hidden absolute top-0 right-32 h-full w-[1100px] md:flex justify-end">
+                <img src="/bell.gif" className="w-32 aspect-square absolute left-1/2 top-10 translate-x-0" alt="" />
+                <img src="/gifs.gif" className="w-40 aspect-square absolute left-1/2 bottom-10 translate-x-0" alt="" />
+                <img src="/santa.gif" alt="" />
               </div>
+
               <div className="text-left w-full md:w-1/2 relative  z-10">
                 <h1 className="text-[20px] md:text-3xl font-bold text-black text-center md:text-left">{company?.name}</h1>
                 <h6 className="italic mt-2 text-gray-400 text-center md:text-left">{company?.address}</h6>
@@ -124,6 +114,7 @@ const Order = () => {
       </div>
       <OCRComponent />
       <ModalRemind />
+      <Snow />
     </div>
   );
 };
