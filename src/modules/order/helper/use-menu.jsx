@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/use-auth";
 import dayjs from "dayjs";
 import { useParams, useSearchParams } from "react-router-dom";
 import useSWR from "swr";
@@ -6,7 +7,7 @@ const useOrder = () => {
   const [query, _] = useSearchParams();
   const { providerId, companyId } = useParams();
   const backday = query.get("backday");
-  console.log(backday);
+  const { profile } = useAuth();
 
   const today = dayjs()
     .add(backday ? backday * -1 : 0, "day")
@@ -21,6 +22,7 @@ const useOrder = () => {
       bulk_food_provider: providerId,
       company: companyId,
     },
+    auth: profile?.id ? "true" : "",
     sort: "date_created",
     fields: "*,user_created.*",
   };
