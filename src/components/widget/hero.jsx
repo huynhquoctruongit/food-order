@@ -25,7 +25,7 @@ const HeroHeader = ({ title = "REPORT", description = "Nội dụng report" }) =
   const [play, setPlay] = useState(false);
   useEffect(() => {
     const audio = document.getElementById("audio");
-    audio.volumn = 0.5;
+    audio.volumn = 0.4;
     document.addEventListener("click", function () {
       if (isPlaying || mode === "development") return;
       isPlaying = true;
