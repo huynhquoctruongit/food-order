@@ -115,7 +115,7 @@ const Order = () => {
                   alt=""
                 />
                 <audio id="audio">
-                  <source src="/audo-3.mp3" type="audio/mpeg" />
+                  <source src="/audio-3.mp3" type="audio/mpeg" />
                 </audio>
               </div>
             </div>
