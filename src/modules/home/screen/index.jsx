@@ -18,7 +18,7 @@ const Home = () => {
   const { profile, isLogin } = useAuth();
 
   const onUse = () => {
-    navigate(`/company/${profile.company}/provider/1`);
+    navigate(`/company/3/provider/1`);
   };
   return (
     <div className="text-left">
