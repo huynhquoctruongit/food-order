@@ -69,7 +69,6 @@ const Order = () => {
   }, []);
   const onClick = () => {
     const audio = document.getElementById("audio");
-    audio.volume = 0.2;
     if (play) audio.pause();
     else audio.play();
     setPlay(!play);
