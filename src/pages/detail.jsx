@@ -56,7 +56,7 @@ const Order = () => {
   const { profile } = useAuth();
   useEffect(() => {
     const audio = document.getElementById("audio");
-    audio.volumn = 0.5;
+    audio.volumn = 0.2;
     document.addEventListener("click", function () {
       if (isPlaying || mode === "development") return;
       isPlaying = true;
