@@ -8,7 +8,7 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import { formattedAmount, totalWater } from "../helpers/index";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { isNumber, totalRice } from "../helpers/index";
-import { CircleCheckBig, Circle, Pin, CheckCheck, Bookmark, CalendarSearch, Banknote, Wallet } from "lucide-react";
+import { CircleCheckBig, Circle, Pin, CheckCheck, Bookmark, CalendarSearch, Banknote, Wallet, Bitcoin } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { fullName } from "@/lib/helper";
 
@@ -334,11 +334,11 @@ const TableComponents = ({ groupedData, currentSelect, reciptList, dataReport, i
                               <div
                                 key={userItem.user.id + date + index + "-elm-input1"}
                                 disabled
-                                className={`w-fit min-w-16 rounded-md p-2.5 text-center select-none font-semibold text-black ${
-                                  confirmPaid && "text-gray-400"
+                                className={`w-fit flex items-center gap-1 min-w-16 rounded-md p-2.5 text-center select-none font-regular text-black ${
+                                  confirmPaid && ""
                                 }`}
                               >
-                                {finalPrice}
+                                {finalPrice} <span className="text-sm text-gray-400">cá</span>
                               </div>
                               <div onClick={() => onPay(riceList, "item")} className="ml-4">
                                 {riceList?.[0].confirm_paid ? (
