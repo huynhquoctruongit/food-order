@@ -206,12 +206,12 @@ export const SplitButton = () => {
   if (!profile.permission_to_create_menu) return null;
   return (
     <>
-      {(profile.uuid === admin.uuid || profile.permission_to_create_menu) && (
+      {/* {(profile.uuid === admin.uuid || profile.permission_to_create_menu) && (
         <ButtonHero variant="secondary" size="default" className="relative flex items-center gap-2" onClick={() => setSplit(true)}>
           <TableCellsSplitIcon className="w-4 h-4" />
           <span className="hidden md:block"> Chia tiên </span>
         </ButtonHero>
-      )}
+      )} */}
       <Dialog open={split} className="" onOpenChange={setSplit}>
         <DialogContent
           onOpenAutoFocus={(e) => e.preventDefault()}

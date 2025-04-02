@@ -22,6 +22,7 @@ import { Environment, OrbitControls, Outlines, useAnimations, useGLTF } from "@r
 import Widgets from "@/modules/chat/screen";
 import { publicApiKey } from "@/main";
 import Snow from "./report/snow";
+import ThirtyFour from "@/components/theme/30-4";
 
 const GroupButtonHero = () => {
   const onScroll = () => {
@@ -69,6 +70,7 @@ const Order = () => {
   }, []);
   const onClick = () => {
     const audio = document.getElementById("audio");
+    audio.volumn = 0.1;
     if (play) audio.pause();
     else audio.play();
     setPlay(!play);
@@ -80,13 +82,9 @@ const Order = () => {
         <MarqueeChat />
         <div className="-translate-y-1.5 relative flex items-center justify-center md:pt-0 ">
           <img className="w-full absolute top-0 left-0 h-full object-cover" src="/hero.png" alt="" />
-          <div className="root-wrapper w-full py-10 md:py-20 relative">
-            <div className="flex w-full flex-col-reverse gap-10 md:flex-row justify-between  items-stretch">
-              <div className="hidden absolute top-0 right-32 h-full w-[1100px] md:flex justify-end">
-                <img src="/bell.gif" className="w-32 aspect-square absolute left-1/2 top-10 translate-x-0" alt="" />
-                <img src="/gifs.gif" className="w-40 aspect-square absolute left-1/2 bottom-10 translate-x-0" alt="" />
-                <img src="/santa.gif" alt="" />
-              </div>
+          <div className="root-wrapper w-full py-10 relative">
+            <div className="flex w-full flex-col-reverse gap-10 md:flex-row justify-between  items-stretch relative">
+              <ThirtyFour />
 
               <div className="text-left w-full md:w-1/2 relative  z-10">
                 <h1 className="text-[20px] md:text-3xl font-bold text-black text-center md:text-left">{company?.name}</h1>
@@ -105,7 +103,7 @@ const Order = () => {
                   alt=""
                 />
                 <audio id="audio">
-                  <source src="/audio-3.mp3" type="audio/mpeg" />
+                  <source src="/audios/30-4.mp3" type="audio/mpeg" />
                 </audio>
               </div>
             </div>
@@ -114,7 +112,7 @@ const Order = () => {
       </div>
       <OCRComponent />
       <ModalRemind />
-      <Snow />
+      {/* <Snow /> */}
     </div>
   );
 };
