@@ -27,10 +27,10 @@ const Home = () => {
           <div className="absolute w-96 h-64 z-10 top-2/12 right-12 bg-[#F6FFFE] blur-3xl"></div>
           <div className="p-4 relative z-10 flex flex-col gap-12">
             <div className="text-md md:text-5xl text-center alata leading-normal [mix-blend-mode:hard-light]">
-              <AnimateLineText className="">Ứng dụng tập trung cho văn phòng.</AnimateLineText>
+              <AnimateLineText className="leading-normal">Ứng dụng tập trung cho văn phòng.</AnimateLineText>
               <div className="flex items-center gap-2 justify-center">
-                <AnimateLineText>Tạo món, chọn món</AnimateLineText>
-                <AnimateText className="text-primary-01">nhanh hơn điện giật.</AnimateText>
+                <AnimateLineText className="leading-normal">Tạo món, chọn món</AnimateLineText>
+                <AnimateText className="text-primary-01 leading-normal">nhanh hơn điện giật.</AnimateText>
               </div>
               <div className="flex items-center gap-2 justify-center">
                 <AnimateLineText delay={0.5}>Hoàn toàn</AnimateLineText>

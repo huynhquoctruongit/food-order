@@ -154,7 +154,7 @@ const ListOrder = () => {
                 <img
                   src={elm?.user?.avatar ? createImage(elm.user.avatar, 200) : enumFood[index % enumFood.length]}
                   alt=""
-                  className="w-10 h-10 rounded-full object-cover overflow-hidden border-2 border-white"
+                  className="w-7 h-7 md:w-10 md:h-10 rounded-full object-cover overflow-hidden border-2 border-white"
                 />
                 <span>{fullname}</span>
               </div>
@@ -162,7 +162,7 @@ const ListOrder = () => {
                 {elm.items.map((el, index) => {
                   return (
                     <div key={el.name + index + "name"} className="">
-                      <div className="mr-3 text-left flex">
+                      <div className="text-left flex justify-between gap-2 ">
                         {el.name}
                         {profile.id == elm.user.id && (
                           <div
@@ -174,10 +174,11 @@ const ListOrder = () => {
                             <XIcon className="w-3 h-3 stroke-white " />
                           </div>
                         )}
+                        <span className="whitespace-nowrap">| {el.price} cá</span>
                       </div>
                       {el.note && <div className="text-left text-gray-500">Note: {el.note} </div>}
                       <div className="text-left text-xs mt-1 flex justify-between">
-                        {dayjs(el.date_created).format("hh:mm:ss")} <span className="ml-auto ">{el.price} cá</span>{" "}
+                        {/* {dayjs(el.date_created).format("hh:mm:ss")} <span className="ml-auto ">{el.price} cá</span>{" "} */}
                       </div>
                     </div>
                   );
